@@ -1,0 +1,112 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <view class="page-title">
+        <text class="t-cn">我</text>
+        <text class="t-en">PROFILE</text>
+      </view>
+      <view class="setting" bindtap="goSetting">
+        <view class="setting-dot"></view>
+        <view class="setting-dot"></view>
+        <view class="setting-dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <!-- 个人信息 -->
+    <view class="hero-card">
+      <view class="avatar">
+        <text class="avatar-char">{{user.initial}}</text>
+      </view>
+      <view class="user">
+        <view class="user-name-row">
+          <text class="user-name">{{user.name}}</text>
+          <text class="vip">{{user.level}}</text>
+        </view>
+        <text class="user-motto">{{user.motto}}</text>
+        <view class="stats">
+          <view class="stat"><text class="stat-num">{{user.collect}}</text><text class="stat-label">收藏</text></view>
+          <view class="vbar"></view>
+          <view class="stat"><text class="stat-num">{{user.follow}}</text><text class="stat-label">足迹</text></view>
+          <view class="vbar"></view>
+          <view class="stat"><text class="stat-num">{{user.points}}</text><text class="stat-label">积分</text></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单区 -->
+    <view class="block">
+      <view class="block-head">
+        <view class="head-left">
+          <text class="h-cn">我的订单</text>
+          <text class="h-en">MY ORDERS</text>
+        </view>
+        <view class="all-orders" bindtap="goOrders">
+          <text>查看全部</text>
+          <text class="arrow">→</text>
+        </view>
+      </view>
+      <view class="orders">
+        <view wx:for="{{orders}}" wx:key="key" class="order" data-key="{{item.key}}" bindtap="goOrderTab">
+          <view class="order-icon">
+            <text>{{item.glyph}}</text>
+          </view>
+          <text class="order-label">{{item.label}}</text>
+          <view wx:if="{{item.count > 0}}" class="dot-badge">{{item.count}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 收藏·足迹 -->
+    <view class="block">
+      <view class="block-head">
+        <view class="head-left">
+          <text class="h-cn">雅 · 藏</text>
+          <text class="h-en">COLLECTION</text>
+        </view>
+      </view>
+      <scroll-view scroll-x enable-flex class="coll">
+        <view
+          wx:for="{{collected}}"
+          wx:key="id"
+          class="coll-item"
+          data-id="{{item.id}}"
+          bindtap="goDetail"
+        >
+          <image src="{{item.cover}}" mode="aspectFill" class="coll-img"></image>
+          <text class="coll-title">{{item.name}}</text>
+          <text class="coll-price price"><text class="unit">¥</text>{{item.price}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 菜单列表 -->
+    <view class="menu">
+      <view
+        wx:for="{{menu}}"
+        wx:key="key"
+        class="menu-item"
+        data-key="{{item.key}}"
+        bindtap="onMenu"
+      >
+        <view class="menu-left">
+          <text class="menu-char">{{item.glyph}}</text>
+          <view class="menu-text">
+            <text class="menu-label">{{item.label}}</text>
+            <text wx:if="{{item.sub}}" class="menu-sub">{{item.sub}}</text>
+          </view>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="footer">
+      <view class="footer-seal">央 · 茗</view>
+      <text class="footer-line">器 · 以 · 载 · 道</text>
+      <text class="footer-en">YANGMING CERAMICS · est. 2016</text>
+    </view>
+
+    <view style="height: 200rpx;"></view>
+  </scroll-view>
+</view>

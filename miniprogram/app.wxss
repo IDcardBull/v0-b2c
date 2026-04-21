@@ -1,0 +1,88 @@
+/* app.wxss —— 央茗陶瓷 · 全局设计体系
+ * 主色：淡青 #B8CFC8
+ * 底色：米宣 #EFE8DC / #F6F1E6
+ * 炭灰 #3A3A3A / 次文 #6B6B6B
+ * 字体：Songti SC / PingFang SC
+ */
+
+page {
+  --color-bg: #EFE8DC;
+  --color-paper: #F6F1E6;
+  --color-card: #ECE4D4;
+  --color-ink: #3A3A3A;
+  --color-ink-soft: #6B6B6B;
+  --color-ink-faint: #A69F92;
+  --color-celadon: #B8CFC8;
+  --color-celadon-deep: #8AAFA6;
+  --color-line: rgba(58, 58, 58, 0.08);
+
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  letter-spacing: 0.5rpx;
+}
+
+view,
+text,
+image {
+  box-sizing: border-box;
+}
+
+.sans {
+  font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+.hairline {
+  height: 1rpx;
+  background: var(--color-line);
+}
+
+.divider-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  padding: 40rpx 0;
+  color: var(--color-ink-faint);
+  font-size: 22rpx;
+  letter-spacing: 8rpx;
+}
+
+.divider-seal::before,
+.divider-seal::after {
+  content: "";
+  flex: 1;
+  height: 1rpx;
+  background: var(--color-line);
+}
+
+.price {
+  font-family: "PingFang SC", sans-serif;
+  color: var(--color-ink);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.price .unit {
+  font-size: 22rpx;
+  color: var(--color-ink-soft);
+  margin-right: 4rpx;
+}
+
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 20rpx);
+}
+
+/* 统一按钮重置 */
+button {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  line-height: inherit;
+  font-size: inherit;
+}
+button::after {
+  border: none;
+}

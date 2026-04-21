@@ -1,0 +1,17 @@
+<view class="tabbar safe-bottom">
+  <view class="tabbar-line"></view>
+  <view class="tabbar-row">
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="tab {{selected === index ? 'tab--on' : ''}}"
+      data-index="{{index}}"
+      data-path="{{item.pagePath}}"
+      bindtap="switchTab"
+    >
+      <view class="dot"></view>
+      <view class="tab-label">{{item.text}}</view>
+      <view wx:if="{{item.text === '购物袋' && cartCount > 0}}" class="badge">{{cartCount}}</view>
+    </view>
+  </view>
+</view>
