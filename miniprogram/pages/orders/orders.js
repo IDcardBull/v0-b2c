@@ -2,33 +2,139 @@ const app = getApp()
 const api = require('../../utils/api.js')
 const adapter = require('../../utils/adapter.js')
 
-const tabs = [
+const TABS = [
   { key: '', label: '全部' },
-  { key: 'pending_pay', label: '待付款' },
-  { key: 'pending_ship', label: '待发货' },
-  { key: 'shipped', label: '待收货' },
-  { key: 'completed', label: '已完成' },
+  { key: 'pending_pay', label: '待付' },
+  { key: 'pending_ship', label: '待发' },
+  { key: 'shipped', label: '在途' },
+  { key: 'completed', label: '已成' },
 ]
 
 Page({
-  data: { statusBarHeight: 20, navBarHeight: 44, tabs, current: '', list: [], page: 1, pageSize: 10, finished: false, loading: false },
+  data: {
+    statusBarHeight: 20,
+    navBarHeight: 44,
+    tabs: TABS,
+    status: '',
+    list: [],
+    loading: true,
+    empty: false,
+  },
+
   onLoad(options) {
-    this.setData({ statusBarHeight: app.globalData.statusBarHeight, navBarHeight: app.globalData.navBarHeight, current: options.status || '' })
+    this.setData({
+      statusBarHeight: app.globalData.statusBarHeight,
+      navBarHeight: app.globalData.navBarHeight,
+      status: options.status || '',
+    })
   },
-  onShow() { this.refresh() },
-  back() { wx.navigateBack({ fail: () => wx.switchTab({ url: '/pages/profile/profile' }) }) },
-  tapTab(e) { this.setData({ current: e.currentTarget.dataset.key }); this.refresh() },
-  refresh() { this.setData({ page: 1, list: [], finished: false }); this.loadList(true) },
-  async loadList(reset) {
-    if (this.data.loading || (!reset && this.data.finished)) return
+
+  onShow() {
+    this.fetch()
+  },
+
+  onPullDownRefresh() {
+    this.fetch().finally(() => wx.stopPullDownRefresh())
+  },
+
+  back() {
+    wx.navigateBack({ fail: () => wx.switchTab({ url: '/pages/profile/profile' }) })
+  },
+
+  switchTab(e) {
+    const status = e.currentTarget.dataset.status
+    if (status === this.data.status) return
+    this.setData({ status, list: [], loading: true })
+    this.fetch()
+  },
+
+  fetch() {
     this.setData({ loading: true })
-    try {
-      const params = { page: this.data.page, pageSize: this.data.pageSize }
-      if (this.data.current) params.status = this.data.current
-      const data = await api.order.list(params)
-      const list = adapter.pickList(data).map(adapter.normalizeOrder)
-      this.setData({ list: reset ? list : this.data.list.concat(list), page: this.data.page + 1, finished: list.length < this.data.pageSize, loading: false })
-    } catch (err) { this.setData({ loading: false }) }
+    const params = {}
+    if (this.data.status) params.status = this.data.status
+    return api.order
+      .list(params)
+      .then((data) => {
+        const list = adapter.pickList(data).map(adapter.normalizeOrder)
+        this.setData({ list, loading: false, empty: list.length === 0 })
+      })
+      .catch(() => this.setData({ loading: false, empty: true }))
   },
-  goDetail(e) { wx.navigateTo({ url: `/pages/order-detail/order-detail?id=${e.currentTarget.dataset.id}` }) },
+
+  goDetail(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/order-detail/order-detail?id=${id}` })
+  },
+
+  goShop() {
+    wx.switchTab({ url: '/pages/index/index' })
+  },
+
+  payOrder(e) {
+    const id = e.currentTarget.dataset.id
+    wx.showLoading({ title: '请稍候', mask: true })
+    api.pay
+      .order(id)
+      .then((res) => {
+        wx.hideLoading()
+        const params = res && (res.payParams || res)
+        if (!params || !params.timeStamp) {
+          return wx.redirectTo({
+            url: `/pages/pay-result/pay-result?orderId=${id}`,
+          })
+        }
+        wx.requestPayment({
+          ...params,
+          success: () =>
+            wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${id}` }),
+          fail: () => wx.showToast({ title: '已取消支付', icon: 'none' }),
+        })
+      })
+      .catch((err) => {
+        wx.hideLoading()
+        wx.showToast({ title: err.message || '发起失败', icon: 'none' })
+      })
+  },
+
+  cancelOrder(e) {
+    const id = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '撤 · 单',
+      content: '确认撤销此订单？',
+      confirmText: '撤销',
+      cancelText: '保留',
+      success: ({ confirm }) => {
+        if (!confirm) return
+        api.order
+          .cancel(id)
+          .then(() => {
+            wx.showToast({ title: '已撤销', icon: 'none' })
+            this.fetch()
+          })
+          .catch((err) =>
+            wx.showToast({ title: err.message || '撤销失败', icon: 'none' }),
+          )
+      },
+    })
+  },
+
+  confirmReceive(e) {
+    const id = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '确 · 收',
+      content: '确认已收到此器物？',
+      success: ({ confirm }) => {
+        if (!confirm) return
+        api.order
+          .confirm(id)
+          .then(() => {
+            wx.showToast({ title: '已确认', icon: 'none' })
+            this.fetch()
+          })
+          .catch((err) =>
+            wx.showToast({ title: err.message || '操作失败', icon: 'none' }),
+          )
+      },
+    })
+  },
 })

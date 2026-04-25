@@ -185,9 +185,11 @@
   padding: 22rpx 28rpx;
   border-top: 1rpx solid rgba(58, 58, 58, 0.06);
 }
-.card-time {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
+.card-time,
+.card-qty {
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink-faint);
 }
 .amount {
@@ -216,4 +218,41 @@
   color: var(--color-ink-faint);
   letter-spacing: 8rpx;
   padding: 40rpx 0;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  padding: 0 28rpx 24rpx;
+}
+.action {
+  height: 60rpx;
+  padding: 0 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Songti SC", serif;
+  font-size: 24rpx;
+  letter-spacing: 4rpx;
+  border-radius: 30rpx;
+}
+.action.ghost {
+  border: 1rpx solid rgba(58, 58, 58, 0.32);
+  color: var(--color-ink);
+  background: transparent;
+}
+.action.solid {
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+
+.empty-btn {
+  margin-top: 32rpx;
+  padding: 18rpx 56rpx;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  letter-spacing: 8rpx;
 }

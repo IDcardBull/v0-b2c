@@ -3,7 +3,7 @@
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
       <text class="back" bindtap="back">‹</text>
       <view class="page-title">
-        <text class="t-cn">订单</text>
+        <text class="t-cn">订 · 单</text>
         <text class="t-en">ORDERS</text>
       </view>
       <view></view>
@@ -14,51 +14,98 @@
     <view
       wx:for="{{tabs}}"
       wx:key="key"
-      class="tab {{current === item.key ? 'tab--on' : ''}}"
-      data-key="{{item.key}}"
-      bindtap="tapTab"
+      class="tab {{status === item.key ? 'tab--on' : ''}}"
+      data-status="{{item.key}}"
+      bindtap="switchTab"
     >
       <text>{{item.label}}</text>
-      <view wx:if="{{current === item.key}}" class="tab-line"></view>
+      <view wx:if="{{status === item.key}}" class="tab-line"></view>
     </view>
   </view>
 
-  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight + 86}}px;" bindscrolltolower="loadList">
-    <view wx:if="{{list.length === 0}}" class="empty">
-      <view class="empty-seal">空</view>
-      <text class="empty-cn">暂无订单</text>
-      <text class="empty-en">NO ORDER YET</text>
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight + 96}}px;">
+    <view wx:if="{{loading && list.length === 0}}" class="empty">
+      <text class="empty-cn">载入中…</text>
     </view>
 
-    <view wx:for="{{list}}" wx:key="id" class="card" data-id="{{item.id}}" bindtap="goDetail">
+    <view wx:elif="{{empty}}" class="empty">
+      <view class="empty-seal">空</view>
+      <text class="empty-cn">尚无订单</text>
+      <text class="empty-en">NO ORDER YET</text>
+      <view class="empty-btn" bindtap="goShop">即去选器</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="card"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
       <view class="card-head">
-        <text class="order-no">单号 {{item.orderNo || item.id}}</text>
-        <text class="status">{{item.statusText}}</text>
+        <text class="order-no">单号 {{item.orderNo}}</text>
+        <text class="status">{{item.statusLabel}}</text>
       </view>
 
       <view class="goods-list">
-        <view wx:for="{{item.items}}" wx:for-item="goods" wx:key="id" class="goods-row">
-          <image class="goods-img" src="{{goods.skuImage || goods.image || goods.cover}}" mode="aspectFill"></image>
+        <view
+          wx:for="{{item.items}}"
+          wx:for-item="goods"
+          wx:key="id"
+          class="goods-row"
+        >
+          <image class="goods-img" src="{{goods.image}}" mode="aspectFill"></image>
           <view class="goods-meta">
-            <text class="goods-name">{{goods.productName || goods.name || goods.skuName || '釉见器物'}}</text>
-            <text wx:if="{{goods.skuSpec}}" class="goods-spec">{{goods.skuSpec}}</text>
+            <text class="goods-name">{{goods.name}}</text>
+            <text wx:if="{{goods.spec}}" class="goods-spec">{{goods.spec}}</text>
             <view class="goods-bottom">
-              <text class="goods-price"><text class="unit">¥</text>{{goods.unitPrice || goods.price}}</text>
-              <text class="goods-qty">× {{goods.qty || goods.quantity}}</text>
+              <text class="goods-price">
+                <text class="unit">¥</text>{{goods.price}}
+              </text>
+              <text class="goods-qty">× {{goods.quantity}}</text>
             </view>
           </view>
         </view>
       </view>
 
       <view class="card-foot">
-        <text class="card-time">{{item.createdAt}}</text>
+        <text class="card-qty">共 {{item.totalQty}} 件</text>
         <view class="amount">
-          实付 <text class="price"><text class="unit">¥</text>{{item.amount}}</text>
+          实付
+          <text class="price">
+            <text class="unit">¥</text>{{item.total}}
+          </text>
+        </view>
+      </view>
+
+      <view class="card-actions" catchtap="noop">
+        <view
+          wx:if="{{item.statusKey === 'pending_pay'}}"
+          class="action ghost"
+          data-id="{{item.id}}"
+          catchtap="cancelOrder"
+        >
+          撤销
+        </view>
+        <view
+          wx:if="{{item.statusKey === 'pending_pay'}}"
+          class="action solid"
+          data-id="{{item.id}}"
+          catchtap="payOrder"
+        >
+          去付款
+        </view>
+        <view
+          wx:if="{{item.statusKey === 'shipped'}}"
+          class="action solid"
+          data-id="{{item.id}}"
+          catchtap="confirmReceive"
+        >
+          确认收货
         </view>
       </view>
     </view>
 
-    <view wx:if="{{list.length > 0 && finished}}" class="end-text">— 止 —</view>
     <view style="height: 160rpx;"></view>
   </scroll-view>
 </view>
