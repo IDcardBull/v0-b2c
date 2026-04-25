@@ -5,13 +5,12 @@ __v0_jsx-dev-runtime.ts
 .snowflake/
 .v0-trash/
 .vercel/
-next.user-config.*
 
-# Environment variables
-.env*.local
+# 微信开发者工具
+miniprogram/.idea/
+miniprogram/.vscode/
+miniprogram_npm/
 
-# Common ignores
-node_modules
-.next/
+# 系统与编辑器
 .DS_Store
-.vercel
+*.log
