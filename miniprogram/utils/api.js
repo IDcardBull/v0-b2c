@@ -1,72 +1,38 @@
-// utils/api.js
-// 与后端通信层。后端基址：http://124.221.2.61:3001
-// 商品对象按 Prisma 模型对齐：
-//   mainImage: 主图（String）
-//   images:    多图（JSON 数组）
-//   detail:    富文本详情（LongText）
-// 兼容旧字段：cover / image / coverImage / gallery / pictures
+// utils/api.js —— 业务 API 入口
+// 服务器：http://124.221.2.61:3001 ，前缀 /api ，业务在 /client/...
+const request = require('./request.js')
+const RESOURCE_BASE = 'http://124.221.2.61:3001'
 
-const BASE_URL = 'http://124.221.2.61:3001'
-
-/**
- * 解析图片地址：把后端返回的相对路径补全为绝对地址。
- * - 已是 http(s)/data:/wxfile:// 直接返回
- * - 以 / 开头的路径补全为 BASE_URL + path
- * - 仅文件名的回退到 /uploads/<file>
- */
+// 把后端返回的相对图片路径补全成绝对 URL
 function resolveImageUrl(url) {
   if (!url || typeof url !== 'string') return ''
   if (/^(https?:|data:|wxfile:|cloud:|http:\/\/tmp\/)/i.test(url)) return url
-  if (url.charAt(0) === '/') return BASE_URL + url
-  // 本地资源：/images/xxx.jpg 这类已经 / 开头会被上一行命中，
-  // 这里只剩单纯文件名的极端情况。
-  return BASE_URL + '/uploads/' + url
+  if (url.charAt(0) === '/') {
+    // 本地静态资源：以 /images 开头
+    if (url.indexOf('/images/') === 0) return url
+    return RESOURCE_BASE + url
+  }
+  return RESOURCE_BASE + '/uploads/' + url
 }
 
-/**
- * 把后端商品对象规范化为前端使用的形态。
- * 优先 mainImage / images，再依次回退老字段。
- */
+// 商品对象规范化
 function normalizeProduct(raw) {
   if (!raw || typeof raw !== 'object') return null
   const mainImage =
-    raw.mainImage ||
-    raw.main_image ||
-    raw.image ||
-    raw.coverImage ||
-    raw.cover ||
-    ''
+    raw.mainImage || raw.main_image || raw.image || raw.coverImage || raw.cover || ''
   let images = raw.images || raw.gallery || raw.pictures || []
-  // 后端 JSON 字段可能是字符串
   if (typeof images === 'string') {
-    try {
-      images = JSON.parse(images)
-    } catch (_) {
-      images = images ? [images] : []
-    }
+    try { images = JSON.parse(images) } catch (_) { images = images ? [images] : [] }
   }
   if (!Array.isArray(images)) images = []
-  // 详情页画册：若没有 images，则用 mainImage 顶上
   if (images.length === 0 && mainImage) images = [mainImage]
 
   const resolvedMain = resolveImageUrl(mainImage)
   const resolvedGallery = images.map(resolveImageUrl).filter(Boolean)
 
-  // 分类映射：后端 categoryId 是数字；前端按业务需要落到 'tea'/'vase'/...
-  // 这里给一个软映射，未匹配则透传字符串。
-  const CAT_MAP = { 1: 'tea', 2: 'vase', 3: 'incense', 4: 'art' }
-  const category =
-    raw.category ||
-    (raw.categoryId != null ? CAT_MAP[raw.categoryId] || String(raw.categoryId) : '')
-
-  // 规格：后端可能是字符串/数组/对象，统一为 string[]
   let specs = raw.specs
   if (typeof specs === 'string') {
-    try {
-      specs = JSON.parse(specs)
-    } catch (_) {
-      specs = specs.split(/\n+/).filter(Boolean)
-    }
+    try { specs = JSON.parse(specs) } catch (_) { specs = specs.split(/\n+/).filter(Boolean) }
   }
   if (!Array.isArray(specs)) specs = []
 
@@ -78,9 +44,11 @@ function normalizeProduct(raw) {
     price: typeof raw.price === 'number' ? raw.price : Number(raw.price) || 0,
     mainImage: resolvedMain,
     images: resolvedGallery,
-    category: category,
+    cover: resolvedMain, // 兼容旧字段名
+    gallery: resolvedGallery,
+    category: raw.category || raw.categoryCode || '',
     categoryId: raw.categoryId != null ? raw.categoryId : null,
-    tag: raw.tag || raw.label || '',
+    tag: raw.tag || raw.label || (raw.isLimited ? '限量' : ''),
     intro: raw.intro || raw.description || raw.detail || '',
     specs: specs,
     craft: raw.craft || '',
@@ -88,9 +56,6 @@ function normalizeProduct(raw) {
   }
 }
 
-/**
- * 把后端 banner 规范化为 { id, image, link }
- */
 function normalizeBanner(raw) {
   if (!raw) return null
   const image =
@@ -103,157 +68,89 @@ function normalizeBanner(raw) {
   }
 }
 
-/**
- * 通用请求
- * @param {string} path  以 / 开头的接口路径
- * @param {object} opts  { method, data, header }
- */
-function request(path, opts) {
-  const options = opts || {}
-  return new Promise(function (resolve, reject) {
-    wx.request({
-      url: BASE_URL + path,
-      method: options.method || 'GET',
-      data: options.data || {},
-      header: Object.assign(
-        { 'content-type': 'application/json' },
-        options.header || {}
-      ),
-      timeout: options.timeout || 15000,
-      success: function (res) {
-        if (res.statusCode < 200 || res.statusCode >= 300) {
-          reject(new Error('HTTP ' + res.statusCode))
-          return
-        }
-        // 兼容 { code, data } / 直接 data 两种返回
-        const body = res.data
-        if (body && typeof body === 'object' && 'data' in body && !Array.isArray(body)) {
-          resolve(body.data)
-        } else {
-          resolve(body)
-        }
-      },
-      fail: reject,
-    })
-  })
+function pickList(payload) {
+  if (Array.isArray(payload)) return payload
+  if (payload && Array.isArray(payload.list)) return payload.list
+  if (payload && Array.isArray(payload.items)) return payload.items
+  if (payload && Array.isArray(payload.records)) return payload.records
+  if (payload && Array.isArray(payload.rows)) return payload.rows
+  if (payload && Array.isArray(payload.data)) return payload.data
+  return []
 }
 
-/**
- * 商品列表。可选 params: { categoryId, keyword, page, pageSize }
- * 接口路径默认 /api/products，未约定时也兼容 /api/product/list。
- */
+// ===== 兼容旧式 helper =====
 function getProducts(params) {
-  const query = params || {}
-  return request('/api/products', { data: query })
-    .catch(function () {
-      return request('/api/product/list', { data: query })
-    })
-    .then(function (data) {
-      // 列表可能藏在 data.list / data.items / data.records 里
-      const list = Array.isArray(data)
-        ? data
-        : (data && (data.list || data.items || data.records || data.rows)) || []
-      return list.map(normalizeProduct).filter(Boolean)
-    })
+  return request.get('/client/products', params || {}, { silent: true })
+    .then((data) => pickList(data).map(normalizeProduct).filter(Boolean))
+    .catch(() => [])
 }
 
-/**
- * 商品详情。先按 RESTful /api/products/:id，再回退查询参数。
- */
 function getProduct(id) {
   if (id == null) return Promise.reject(new Error('缺少商品 id'))
-  return request('/api/products/' + id)
-    .catch(function () {
-      return request('/api/product/detail', { data: { id: id } })
-    })
-    .then(function (data) {
-      return normalizeProduct(data)
-    })
+  return request.get('/client/products/' + id, {}, { silent: true })
+    .then(normalizeProduct)
 }
 
-/**
- * 轮播图。后端若没有此接口则返回空数组，前端会自动回退到本地 hero 图。
- */
 function getBanners() {
-  return request('/api/banners')
-    .catch(function () {
-      return request('/api/home/banners').catch(function () {
-        return []
-      })
-    })
-    .then(function (data) {
-      const list = Array.isArray(data) ? data : (data && data.list) || []
-      return list.map(normalizeBanner).filter(function (b) {
-        return b && b.image
-      })
-    })
+  return request.get('/client/banners', {}, { silent: true })
+    .then((data) => pickList(data).map(normalizeBanner).filter((b) => b && b.image))
+    .catch(() => [])
 }
 
-/**
- * 分类列表。可选；若后端未提供则返回空数组（页面用本地静态分类）。
- */
 function getCategories() {
-  return request('/api/categories')
-    .catch(function () {
-      return []
-    })
-    .then(function (data) {
-      const list = Array.isArray(data) ? data : (data && data.list) || []
-      return list
-    })
+  return request.get('/client/categories', {}, { silent: true }).catch(() => [])
 }
 
-module.exports = {
-  BASE_URL: BASE_URL,
-  resolveImageUrl: resolveImageUrl,
-  normalizeProduct: normalizeProduct,
-  normalizeBanner: normalizeBanner,
-  request: request,
-  getProducts: getProducts,
-  getProduct: getProduct,
-  getBanners: getBanners,
-  getCategories: getCategories,
-const request = require('./request.js')
-
-module.exports = {
+// ===== 新式对象式 API =====
+const api = {
+  BASE_URL: RESOURCE_BASE,
+  resolveImageUrl,
+  normalizeProduct,
+  normalizeBanner,
+  getProducts,
+  getProduct,
+  getBanners,
+  getCategories,
   auth: {
-    miniLogin: (code) => request.post('/client/auth/mini-login', { code }),
+    miniLogin: (code) => request.post('/client/auth/mini-login', { code }, { silent: true }),
     phoneLogin: (phone, code) => request.post('/client/auth/phone-login', { phone, code }),
     bindPhone: (phone) => request.post('/client/auth/bind-phone', { phone }),
   },
   user: {
-    profile: () => request.get('/client/user/profile'),
+    profile: () => request.get('/client/user/profile', {}, { silent: true }),
     updateProfile: (data) => request.patch('/client/user/profile', data),
   },
   category: {
-    tree: () => request.get('/client/categories/tree'),
-    list: () => request.get('/client/categories'),
+    tree: () => request.get('/client/categories/tree', {}, { silent: true }),
+    list: () => request.get('/client/categories', {}, { silent: true }),
   },
   brand: {
-    list: () => request.get('/client/brands'),
+    list: () => request.get('/client/brands', {}, { silent: true }),
   },
   product: {
-    list: (params) => request.get('/client/products', params),
-    recommend: (limit = 8) => request.get('/client/products/recommend', { limit }),
-    detail: (id) => request.get(`/client/products/${id}`),
+    list: (params) => request.get('/client/products', params, { silent: true }),
+    recommend: (limit = 8) => request.get('/client/products/recommend', { limit }, { silent: true }),
+    detail: (id) => request.get('/client/products/' + id, {}, { silent: true }),
   },
   address: {
     list: () => request.get('/client/addresses'),
-    detail: (id) => request.get(`/client/addresses/${id}`),
+    detail: (id) => request.get('/client/addresses/' + id),
     create: (data) => request.post('/client/addresses', data),
-    update: (id, data) => request.put(`/client/addresses/${id}`, data),
-    setDefault: (id) => request.patch(`/client/addresses/${id}/default`),
-    remove: (id) => request.delete(`/client/addresses/${id}`),
+    update: (id, data) => request.put('/client/addresses/' + id, data),
+    setDefault: (id) => request.patch('/client/addresses/' + id + '/default'),
+    remove: (id) => request.delete('/client/addresses/' + id),
   },
   order: {
     create: (data) => request.post('/client/orders', data),
     list: (params) => request.get('/client/orders', params),
-    counts: () => request.get('/client/orders/status-counts'),
-    detail: (id) => request.get(`/client/orders/${id}`),
-    cancel: (id) => request.patch(`/client/orders/${id}/cancel`),
-    confirm: (id) => request.patch(`/client/orders/${id}/confirm`),
+    counts: () => request.get('/client/orders/status-counts', {}, { silent: true }),
+    detail: (id) => request.get('/client/orders/' + id),
+    cancel: (id) => request.patch('/client/orders/' + id + '/cancel'),
+    confirm: (id) => request.patch('/client/orders/' + id + '/confirm'),
   },
   pay: {
-    order: (id) => request.post(`/client/pay/orders/${id}`),
+    order: (id) => request.post('/client/pay/orders/' + id),
   },
 }
+
+module.exports = api

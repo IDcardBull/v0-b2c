@@ -1,36 +1,32 @@
 // pages/profile/profile.js
 const app = getApp()
-const { products: fallbackProducts } = require('../../utils/data.js')
 const { chooseAndUpload } = require('../../utils/upload.js')
-const { getProducts } = require('../../utils/api.js')
 const api = require('../../utils/api.js')
 const adapter = require('../../utils/adapter.js')
-const { products } = require('../../utils/data.js')
+
+const guestUser = {
+  initial: '釉',
+  name: '未入席',
+  level: '点击登录',
+  motto: '一盏清茗，静听风声。',
+  collect: 0,
+  follow: 0,
+  points: 0,
+  avatar: '',
+  isGuest: true,
+}
 
 Page({
   data: {
     statusBarHeight: 20,
     navBarHeight: 44,
-    user: {
-      initial: '釉',
-      name: '无名氏',
-      level: '入席·甲',
-      motto: '一盏清茗，静听风声。',
-      collect: 12,
-      follow: 48,
-      points: 1680,
-      avatar: '', // 线上头像 URL
-      collect: 0,
-      follow: 0,
-      points: 0,
-    },
+    user: guestUser,
     orders: [
       { key: 'pending_pay', glyph: '款', label: '待付款', count: 0 },
       { key: 'pending_ship', glyph: '制', label: '待发货', count: 0 },
       { key: 'shipped', glyph: '途', label: '待收货', count: 0 },
       { key: 'completed', glyph: '成', label: '已完成', count: 0 },
     ],
-    collected: [],
     menu: [
       { key: 'address', glyph: '址', label: '地址簿', sub: '收件人·配送地址' },
       { key: 'coupon', glyph: '券', label: '我的券', sub: '手作券·典藏券' },
@@ -42,64 +38,113 @@ Page({
     ],
   },
   onLoad() {
-    const avatar = wx.getStorageSync('user_avatar') || ''
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
-      collected: fallbackProducts.slice(0, 5),
-      'user.avatar': avatar,
     })
-    // 后端商品有则替换雅藏展示
-    getProducts({ pageSize: 5 })
-      .then((list) => {
-        if (list && list.length > 0) this.setData({ collected: list.slice(0, 5) })
-      })
-      .catch(() => {})
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 })
     }
-    // 头像可能在他处更新
-    const avatar = wx.getStorageSync('user_avatar') || ''
-    if (avatar !== this.data.user.avatar) {
-      this.setData({ 'user.avatar': avatar })
+    this.bootstrap()
+  },
+  // 入口：未登录则静默走微信登录拿 token，再加载资料
+  bootstrap() {
+    const token = wx.getStorageSync('token') || app.globalData.token
+    if (token) {
+      this.loadProfile()
+    } else {
+      this.silentLogin().catch(() => {
+        // 登录失败保持游客态，等用户主动点头像或登录按钮
+      })
     }
   },
-  // 头像上传
+  silentLogin() {
+    if (!app.miniLogin) return Promise.reject(new Error('miniLogin 未注册'))
+    return app.miniLogin().then(() => this.loadProfile())
+  },
+  loadProfile() {
+    const cached = wx.getStorageSync('userInfo') || app.globalData.userInfo
+    if (cached) this.applyUser(cached)
+    return Promise.all([
+      api.user.profile().catch(() => null),
+      api.order.counts().catch(() => null),
+    ]).then(([profile, counts]) => {
+      if (profile) {
+        this.applyUser(profile)
+        wx.setStorageSync('userInfo', profile)
+        app.globalData.userInfo = profile
+      }
+      if (counts && typeof counts === 'object') {
+        const orders = this.data.orders.map((o) => ({ ...o, count: counts[o.key] || 0 }))
+        this.setData({ orders })
+      }
+    })
+  },
+  applyUser(raw) {
+    const u = adapter.normalizeUser(raw) || {}
+    const avatar = raw.avatar || raw.avatarUrl || wx.getStorageSync('user_avatar') || ''
+    const nickname = u.name && u.name !== '无名氏' ? u.name : raw.nickname || raw.nickName || '微信用户'
+    this.setData({
+      user: {
+        ...guestUser,
+        ...u,
+        name: nickname,
+        avatar: avatar,
+        level: u.level || '入席·甲',
+        collect: raw.collectCount || raw.favoriteCount || u.collect || 0,
+        follow: raw.followCount || raw.footprintCount || u.follow || 0,
+        points: raw.points || u.points || 0,
+        isGuest: false,
+      },
+    })
+  },
+  // 头像点击：未登录引导登录；已登录则上传头像
   onAvatarTap() {
-    const that = this
+    if (this.data.user.isGuest) {
+      this.doLogin()
+      return
+    }
     chooseAndUpload({ count: 1, sourceType: ['album', 'camera'] })
-      .then(function (urls) {
+      .then((urls) => {
         const url = urls[0]
         wx.setStorageSync('user_avatar', url)
-        that.setData({ 'user.avatar': url })
+        this.setData({ 'user.avatar': url })
+        // 同步到后端
+        api.user.updateProfile({ avatar: url }).catch(() => {})
         wx.showToast({ title: '头像已更新', icon: 'none' })
       })
-      .catch(function (err) {
-        if (err && err.message === 'CANCELLED') return
-        if (err && err.message === 'OVER_SIZE') return
+      .catch((err) => {
+        if (err && (err.message === 'CANCELLED' || err.message === 'OVER_SIZE')) return
         wx.showToast({ title: '上传失败', icon: 'none' })
       })
-    this.loadProfile()
   },
-  async loadProfile() {
-    if (!wx.getStorageSync('token')) return
-    try {
-      const [profile, counts] = await Promise.all([api.user.profile(), api.order.counts()])
-      const user = adapter.normalizeUser(profile)
-      const orders = this.data.orders.map((item) => ({ ...item, count: counts[item.key] || 0 }))
-      this.setData({ user, orders })
-    } catch (err) {}
+  doLogin() {
+    wx.showLoading({ title: '入席中', mask: true })
+    this.silentLogin()
+      .then(() => {
+        wx.hideLoading()
+        wx.showToast({ title: '已入席', icon: 'none' })
+      })
+      .catch(() => {
+        wx.hideLoading()
+        wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fprofile%2Fprofile' })
+      })
   },
   goSetting() {
+    if (this.data.user.isGuest) {
+      this.doLogin()
+      return
+    }
     wx.showActionSheet({
       itemList: ['账户设置', '通知偏好', '退出登录'],
       success: (res) => {
         if (res.tapIndex === 2) {
-          app.clearLogin()
+          if (app.clearLogin) app.clearLogin()
+          wx.removeStorageSync('user_avatar')
+          this.setData({ user: guestUser, orders: this.data.orders.map((o) => ({ ...o, count: 0 })) })
           wx.showToast({ title: '已退出', icon: 'none' })
-          this.setData({ user: adapter.normalizeUser(null) })
         } else {
           wx.showToast({ title: '设置即将开放', icon: 'none' })
         }
@@ -107,19 +152,18 @@ Page({
       fail: () => {},
     })
   },
+  ensureLoggedIn(redirect) {
+    if (!this.data.user.isGuest) return true
+    wx.navigateTo({ url: '/pages/login/login?redirect=' + encodeURIComponent(redirect || '/pages/profile/profile') })
+    return false
+  },
   goOrders() {
-    if (!wx.getStorageSync('token')) {
-      wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fprofile%2Fprofile' })
-      return
-    }
+    if (!this.ensureLoggedIn('/pages/orders/orders')) return
     wx.navigateTo({ url: '/pages/orders/orders' })
   },
   goOrderTab(e) {
     const key = e.currentTarget.dataset.key
-    if (!wx.getStorageSync('token')) {
-      wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fprofile%2Fprofile' })
-      return
-    }
+    if (!this.ensureLoggedIn('/pages/orders/orders')) return
     wx.navigateTo({ url: `/pages/orders/orders?status=${key}` })
   },
   onMenu(e) {
@@ -130,17 +174,13 @@ Page({
     }
     if (key === 'feedback') {
       wx.navigateTo({ url: '/pages/feedback/feedback' })
+      return
+    }
     if (key === 'address') {
-      if (!wx.getStorageSync('token')) {
-        wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Faddress%2Faddress' })
-        return
-      }
+      if (!this.ensureLoggedIn('/pages/address/address')) return
       wx.navigateTo({ url: '/pages/address/address' })
       return
     }
     wx.showToast({ title: `${key} 即将开放`, icon: 'none' })
-  },
-  goDetail(e) {
-    wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` })
   },
 })

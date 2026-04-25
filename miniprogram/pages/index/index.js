@@ -1,25 +1,18 @@
 // pages/index/index.js
 const app = getApp()
-const { categories, products: fallbackProducts } = require('../../utils/data.js')
-const { getProducts, getBanners } = require('../../utils/api.js')
+const fallback = require('../../utils/data.js')
 const api = require('../../utils/api.js')
 const adapter = require('../../utils/adapter.js')
-const fallback = require('../../utils/data.js')
-
-const HEIGHTS = [420, 520, 600, 480, 560, 440]
 
 Page({
   data: {
     statusBarHeight: 20,
     navBarHeight: 44,
-    categories,
+    categories: [], // 来自 /client/categories/tree 的真实顶级分类
     banners: [],
     bannerIdx: 0,
     list: [],
     loading: true,
-    categories: fallback.categories,
-    left: [],
-    right: [],
   },
   onLoad() {
     this.setData({
@@ -27,32 +20,6 @@ Page({
       navBarHeight: app.globalData.navBarHeight,
     })
     this.loadAll()
-    this.renderProducts(fallback.products)
-    this.loadHome()
-  },
-  async loadHome() {
-    try {
-      const [categories, products] = await Promise.all([
-        api.category.tree(),
-        api.product.recommend(8),
-      ])
-      const nextCategories = adapter.normalizeCategories(categories)
-      const nextProducts = adapter.normalizeProducts(products)
-      this.setData({ categories: nextCategories.length ? nextCategories : fallback.categories })
-      this.renderProducts(nextProducts.length ? nextProducts : fallback.products)
-    } catch (err) {
-      this.renderProducts(fallback.products)
-    }
-  },
-  renderProducts(products) {
-    const list = products.map((p, i) => ({
-      ...p,
-      h: HEIGHTS[i % HEIGHTS.length],
-    }))
-    const left = []
-    const right = []
-    list.forEach((p, i) => (i % 2 === 0 ? left.push(p) : right.push(p)))
-    this.setData({ left, right })
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -63,21 +30,52 @@ Page({
     this.loadAll().then(() => wx.stopPullDownRefresh())
   },
   loadAll() {
-    return Promise.all([this.loadProducts(), this.loadBanners()]).catch(() => {})
+    return Promise.all([
+      this.loadCategories(),
+      this.loadProducts(),
+      this.loadBanners(),
+    ]).catch(() => {})
+  },
+  loadCategories() {
+    return api.category.tree()
+      .then((data) => {
+        // 顶级分类（parentId 为 null），最多 4 个，按 sort 排序
+        const list = (Array.isArray(data) ? data : []).filter((c) => c.parentId == null && c.status !== 0)
+        list.sort((a, b) => (a.sort || 0) - (b.sort || 0))
+        const top = list.slice(0, 4).map((c) => ({
+          id: c.id,
+          code: c.code,
+          name: c.name,
+          icon: c.icon || '',
+        }))
+        if (top.length === 0) throw new Error('EMPTY')
+        this.setData({ categories: top })
+      })
+      .catch(() => {
+        // 兜底：本地静态分类
+        this.setData({
+          categories: fallback.categories.map((c) => ({
+            id: c.id,
+            code: c.id,
+            name: c.name,
+            icon: '',
+          })),
+        })
+      })
   },
   loadProducts() {
-    return getProducts({ pageSize: 60 })
+    return api.getProducts({ pageSize: 20 })
       .then((list) => {
         if (!list || list.length === 0) throw new Error('EMPTY')
         this.setData({ list })
       })
       .catch(() => {
-        this.setData({ list: fallbackProducts })
+        this.setData({ list: fallback.products })
       })
       .then(() => this.setData({ loading: false }))
   },
   loadBanners() {
-    return getBanners()
+    return api.getBanners()
       .then((list) => this.setData({ banners: list || [] }))
       .catch(() => this.setData({ banners: [] }))
   },

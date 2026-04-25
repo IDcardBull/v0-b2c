@@ -1,26 +1,19 @@
 // pages/category/category.js
 const app = getApp()
-const { categories, products: fallbackProducts } = require('../../utils/data.js')
-const { getProducts } = require('../../utils/api.js')
-
-// 前端固定品类与后端 categoryId 的软映射
-const CAT_TO_ID = { tea: 1, vase: 2, incense: 3, art: 4 }
-const api = require('../../utils/api.js')
-const adapter = require('../../utils/adapter.js')
 const fallback = require('../../utils/data.js')
+const api = require('../../utils/api.js')
 
 Page({
   data: {
     statusBarHeight: 20,
     navBarHeight: 44,
-    categories: fallback.categories,
-    current: 'tea',
+    categories: [],
+    current: null,
     currentMeta: {},
     list: [],
     loading: false,
     page: 1,
-    pageSize: 10,
-    loading: false,
+    pageSize: 20,
     finished: false,
   },
   onLoad() {
@@ -32,70 +25,87 @@ Page({
   },
   onShow() {
     const pending = app.globalData.pendingCategory
-    if (pending) {
-      this.select(pending)
+    if (pending && pending !== this.data.current) {
       app.globalData.pendingCategory = null
+      // 等分类加载完再切换
+      const wait = () => {
+        if (this.data.categories.length) this.select(pending)
+        else setTimeout(wait, 80)
+      }
+      wait()
     }
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 })
     }
   },
-  async loadCategories() {
-    try {
-      const data = await api.category.tree()
-      const categories = adapter.normalizeCategories(data)
-      const next = categories.length ? categories : fallback.categories
-      this.setData({ categories: next })
-      this.select(this.data.current || next[0].id)
-    } catch (err) {
-      this.setData({ categories: fallback.categories })
-      this.select(this.data.current)
-    }
+  loadCategories() {
+    return api.category.tree()
+      .then((data) => {
+        const list = (Array.isArray(data) ? data : []).filter(
+          (c) => c.parentId == null && c.status !== 0,
+        )
+        list.sort((a, b) => (a.sort || 0) - (b.sort || 0))
+        const cats = list.map((c) => ({
+          id: c.id,
+          code: c.code,
+          name: c.name,
+          sub: c.code ? c.code.toUpperCase() : '',
+          desc: c.description || '一器一境，器以载道',
+        }))
+        if (cats.length === 0) throw new Error('EMPTY')
+        this.setData({ categories: cats })
+        this.select(cats[0].id)
+      })
+      .catch(() => {
+        const cats = fallback.categories.map((c, i) => ({
+          id: i + 1,
+          code: c.id,
+          name: c.name,
+          sub: c.sub,
+          desc: c.desc,
+        }))
+        this.setData({ categories: cats })
+        this.select(cats[0].id)
+      })
   },
   onTapCat(e) {
     this.select(e.currentTarget.dataset.id)
   },
   select(id) {
-    const meta = categories.find((c) => c.id === id) || categories[0]
-    this.setData({ current: meta.id, currentMeta: meta, loading: true })
-    const categoryId = CAT_TO_ID[meta.id]
-    getProducts({ categoryId: categoryId, pageSize: 60 })
-      .then((list) => {
-        // 后端若不支持按 categoryId 过滤，则前端再过一遍
-        const filtered = list.filter(
-          (p) => !p.category || p.category === meta.id || p.categoryId === categoryId
-        )
-        if (filtered.length === 0) throw new Error('EMPTY')
-        this.setData({ list: filtered, loading: false })
+    const meta =
+      this.data.categories.find((c) => `${c.id}` === `${id}`) ||
+      this.data.categories[0]
+    if (!meta) return
+    this.setData({
+      current: meta.id,
+      currentMeta: meta,
+      page: 1,
+      list: [],
+      finished: false,
+    })
+    this.loadProducts(true)
+  },
+  loadProducts(reset) {
+    const { current, page, pageSize, loading, finished } = this.data
+    if (loading || (!reset && finished)) return Promise.resolve()
+    this.setData({ loading: true })
+    return api.product
+      .list({ categoryId: current, page, pageSize })
+      .then((data) => {
+        const raw = Array.isArray(data) ? data : (data && (data.list || data.items || data.records)) || []
+        const list = raw.map(api.normalizeProduct).filter(Boolean)
+        this.setData({
+          list: reset ? list : this.data.list.concat(list),
+          page: page + 1,
+          finished: list.length < pageSize,
+          loading: false,
+        })
       })
       .catch(() => {
-        const fb = fallbackProducts.filter((p) => p.category === meta.id)
-        this.setData({ list: fb, loading: false })
+        const meta = this.data.currentMeta || {}
+        const fb = fallback.products.filter((p) => p.category === meta.code || p.category === meta.id)
+        this.setData({ list: fb, loading: false, finished: true })
       })
-  async select(id) {
-    const meta = this.data.categories.find((c) => `${c.id}` === `${id}`) || this.data.categories[0]
-    if (!meta) return
-    this.setData({ current: meta.id, currentMeta: meta, page: 1, list: [], finished: false })
-    await this.loadProducts(true)
-  },
-  async loadProducts(reset) {
-    const { current, page, pageSize, loading, finished } = this.data
-    if (loading || (!reset && finished)) return
-    this.setData({ loading: true })
-    try {
-      const data = await api.product.list({ categoryId: current, page, pageSize })
-      const list = adapter.normalizeProducts(data)
-      this.setData({
-        list: reset ? list : this.data.list.concat(list),
-        page: page + 1,
-        finished: list.length < pageSize,
-        loading: false,
-      })
-    } catch (err) {
-      const meta = fallback.categories.find((c) => `${c.id}` === `${current}`) || fallback.categories[0]
-      const list = fallback.products.filter((p) => p.category === meta.id)
-      this.setData({ list, loading: false, finished: true })
-    }
   },
   goDetail(e) {
     wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` })

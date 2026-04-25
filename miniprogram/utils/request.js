@@ -1,4 +1,6 @@
-const BASE_URL = 'http://192.168.1.5:3001/api'
+// utils/request.js —— 与后端通信的统一入口
+// 服务器全局前缀为 /api，业务路径以 /client/... 开头
+const BASE_URL = 'http://124.221.2.61:3001/api'
 
 function goLogin() {
   const pages = getCurrentPages()
@@ -21,8 +23,10 @@ function request(options) {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.header || {}),
       },
+      timeout: options.timeout || 15000,
       success(res) {
-        const body = res.data || {}
+        const body = res.data
+        // 401 / 403 触发跳登录
         if (res.statusCode === 401 || res.statusCode === 403) {
           wx.removeStorageSync('token')
           wx.removeStorageSync('userInfo')
@@ -31,20 +35,32 @@ function request(options) {
             app.globalData.token = ''
             app.globalData.userInfo = null
           }
-          goLogin()
-          reject(new Error(body.message || '登录已过期'))
+          if (!options.silent) goLogin()
+          reject(new Error((body && body.message) || '登录已过期'))
           return
         }
-        if (body.code === 0) {
-          resolve(body.data)
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          const message = (body && body.message) || `HTTP ${res.statusCode}`
+          if (!options.silent) wx.showToast({ title: message, icon: 'none' })
+          reject(new Error(message))
           return
         }
-        const message = body.message || (res.statusCode >= 500 ? '服务器开小差' : '请求失败')
-        wx.showToast({ title: message, icon: 'none' })
-        reject(new Error(message))
+        // 常见包裹：{ code, data, message }
+        if (body && typeof body === 'object' && !Array.isArray(body) && 'code' in body) {
+          if (body.code === 0 || body.code === 200) {
+            resolve(body.data)
+            return
+          }
+          const message = body.message || '请求失败'
+          if (!options.silent) wx.showToast({ title: message, icon: 'none' })
+          reject(new Error(message))
+          return
+        }
+        // 其它情况：直接返回（数组 / 对象 / 字符串）
+        resolve(body)
       },
       fail(err) {
-        wx.showToast({ title: '网络错误', icon: 'none' })
+        if (!options.silent) wx.showToast({ title: '网络错误', icon: 'none' })
         reject(err)
       },
     })
@@ -54,9 +70,9 @@ function request(options) {
 module.exports = {
   BASE_URL,
   request,
-  get: (url, data) => request({ url, method: 'GET', data }),
-  post: (url, data) => request({ url, method: 'POST', data }),
-  put: (url, data) => request({ url, method: 'PUT', data }),
-  patch: (url, data) => request({ url, method: 'PATCH', data }),
-  delete: (url, data) => request({ url, method: 'DELETE', data }),
+  get: (url, data, opts) => request({ url, method: 'GET', data, ...(opts || {}) }),
+  post: (url, data, opts) => request({ url, method: 'POST', data, ...(opts || {}) }),
+  put: (url, data, opts) => request({ url, method: 'PUT', data, ...(opts || {}) }),
+  patch: (url, data, opts) => request({ url, method: 'PATCH', data, ...(opts || {}) }),
+  delete: (url, data, opts) => request({ url, method: 'DELETE', data, ...(opts || {}) }),
 }
