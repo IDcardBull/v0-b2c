@@ -81,7 +81,7 @@
           data-id="{{item.id}}"
           bindtap="goDetail"
         >
-          <image src="{{item.cover}}" mode="aspectFill" class="coll-img"></image>
+          <image src="{{item.mainImage}}" mode="aspectFill" class="coll-img"></image>
           <text class="coll-title">{{item.name}}</text>
           <text class="coll-price price"><text class="unit">¥</text>{{item.price}}</text>
         </view>

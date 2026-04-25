@@ -17,10 +17,43 @@
   </view>
 
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <!-- 画报 -->
+    <!-- 画报：后端有 banners 用轮播，否则单张兜底 -->
     <view class="hero">
-      <image class="hero-img" src="/images/hero-celadon.jpg" mode="aspectFill"></image>
-      <view class="hero-mask"></view>
+      <block wx:if="{{banners.length > 0}}">
+        <swiper
+          class="hero-swiper"
+          indicator-dots="{{false}}"
+          autoplay
+          circular
+          interval="4500"
+          duration="600"
+          current="{{bannerIdx}}"
+          bindchange="onBannerChange"
+        >
+          <swiper-item wx:for="{{banners}}" wx:key="id">
+            <image
+              class="hero-img"
+              src="{{item.image}}"
+              mode="aspectFill"
+              data-link="{{item.link}}"
+              bindtap="onBannerTap"
+            ></image>
+          </swiper-item>
+        </swiper>
+        <view class="hero-mask"></view>
+        <view class="hero-paginator" wx:if="{{banners.length > 1}}">
+          <view
+            wx:for="{{banners}}"
+            wx:key="id"
+            wx:for-index="bi"
+            class="hp-bar {{bi === bannerIdx ? 'hp-bar--on' : ''}}"
+          ></view>
+        </view>
+      </block>
+      <block wx:else>
+        <image class="hero-img" src="/images/hero-celadon.jpg" mode="aspectFill"></image>
+        <view class="hero-mask"></view>
+      </block>
       <view class="hero-copy">
         <view class="hero-vertical">
           <text>青</text><text>釉</text><text>映</text><text>月</text>
@@ -74,7 +107,7 @@
           data-id="{{item.id}}"
           bindtap="goDetail"
         >
-          <image class="card-img" src="{{item.cover}}" mode="aspectFill" style="height: {{item.h}}rpx;"></image>
+          <image class="card-img" src="{{item.mainImage}}" mode="aspectFill" style="height: {{item.h}}rpx;"></image>
           <view class="card-meta">
             <view class="card-title-row">
               <text class="card-title">{{item.name}}</text>
@@ -96,7 +129,7 @@
           data-id="{{item.id}}"
           bindtap="goDetail"
         >
-          <image class="card-img" src="{{item.cover}}" mode="aspectFill" style="height: {{item.h}}rpx;"></image>
+          <image class="card-img" src="{{item.mainImage}}" mode="aspectFill" style="height: {{item.h}}rpx;"></image>
           <view class="card-meta">
             <view class="card-title-row">
               <text class="card-title">{{item.name}}</text>

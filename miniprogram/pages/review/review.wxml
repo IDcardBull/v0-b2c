@@ -16,7 +16,7 @@
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <!-- 商品摘要 -->
     <view class="product">
-      <image class="product-img" src="{{item.cover}}" mode="aspectFill"></image>
+      <image class="product-img" src="{{item.mainImage}}" mode="aspectFill"></image>
       <view class="product-meta">
         <text class="p-name">{{item.name}}</text>
         <text class="p-sub">{{item.sub}}</text>

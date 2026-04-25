@@ -1,7 +1,8 @@
 // pages/profile/profile.js
 const app = getApp()
-const { products } = require('../../utils/data.js')
+const { products: fallbackProducts } = require('../../utils/data.js')
 const { chooseAndUpload } = require('../../utils/upload.js')
+const { getProducts } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -39,9 +40,15 @@ Page({
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
-      collected: products.slice(0, 5),
+      collected: fallbackProducts.slice(0, 5),
       'user.avatar': avatar,
     })
+    // 后端商品有则替换雅藏展示
+    getProducts({ pageSize: 5 })
+      .then((list) => {
+        if (list && list.length > 0) this.setData({ collected: list.slice(0, 5) })
+      })
+      .catch(() => {})
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {

@@ -61,6 +61,27 @@
   width: 100%;
   height: 100%;
 }
+.hero-swiper {
+  width: 100%;
+  height: 100%;
+}
+.hero-paginator {
+  position: absolute;
+  bottom: 28rpx;
+  left: 52rpx;
+  display: flex;
+  gap: 10rpx;
+  z-index: 3;
+}
+.hp-bar {
+  width: 28rpx;
+  height: 2rpx;
+  background: rgba(58, 58, 58, 0.25);
+}
+.hp-bar--on {
+  width: 56rpx;
+  background: var(--color-ink);
+}
 .hero-mask {
   position: absolute;
   inset: 0;
