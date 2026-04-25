@@ -1,8 +1,60 @@
 <view class="page">
-  <view class="result" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <view class="seal-lg">{{order && order.status !== 'pending_pay' ? '成' : '候'}}</view>
-    <text class="title">{{order ? order.statusText : '支付结果确认中'}}</text>
-    <text class="sub">{{order && order.status === 'pending_pay' ? '若已完成支付，请稍后刷新订单' : '感谢入藏央茗器物'}}</text>
-    <view class="actions"><view bindtap="goHome">继续选器</view><view bindtap="goOrder">查看订单</view></view>
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <view></view>
+      <view class="page-title">
+        <text class="t-cn">付 · 讫</text>
+        <text class="t-en">PAY RESULT</text>
+      </view>
+      <view></view>
+    </view>
+  </view>
+
+  <view class="wrap" style="padding-top: {{statusBarHeight + navBarHeight + 80}}px;">
+    <block wx:if="{{loading}}">
+      <view class="seal pending">候</view>
+      <text class="title">订单核验中</text>
+      <text class="sub">主理人正在确认收讫</text>
+    </block>
+
+    <block wx:elif="{{success}}">
+      <view class="seal ok">已 · 付</view>
+      <text class="title">付讫</text>
+      <text class="sub">主理人将于一日内为您备发</text>
+
+      <view wx:if="{{order}}" class="receipt">
+        <view class="receipt-row">
+          <text class="r-key">订单号</text>
+          <text class="r-val">{{order.orderNo}}</text>
+        </view>
+        <view class="receipt-row">
+          <text class="r-key">实付</text>
+          <text class="r-val price">
+            <text class="unit">¥</text>{{order.total}}
+          </text>
+        </view>
+        <view class="receipt-row" wx:if="{{order.address}}">
+          <text class="r-key">寄达</text>
+          <text class="r-val">
+            {{order.address.receiver}} · {{order.address.full}}
+          </text>
+        </view>
+      </view>
+
+      <view class="actions">
+        <view class="btn ghost" bindtap="goHome">回首页</view>
+        <view class="btn solid" bindtap="goOrder">查看订单</view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="seal warn">未</view>
+      <text class="title">尚未收讫</text>
+      <text class="sub">若您已支付，请稍候片刻</text>
+      <view class="actions">
+        <view class="btn ghost" bindtap="goOrders">订单列表</view>
+        <view class="btn solid" bindtap="goOrder">再去支付</view>
+      </view>
+    </block>
   </view>
 </view>

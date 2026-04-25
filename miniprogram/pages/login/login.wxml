@@ -11,9 +11,11 @@
   </view>
 
   <view class="login-wrap" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <view class="seal-lg">央 · 茗</view>
-    <text class="title">一器一境</text>
-    <text class="sub">登录后可下单、管理地址与查看订单</text>
+    <view class="seal-lg">釉 · 见</view>
+    <text class="brand-en">YOUJIAN · CERAMICS</text>
+    <view class="divider-line"></view>
+    <text class="title">一 器 一 境</text>
+    <text class="sub">入席后可下单、管理地址与查看订单</text>
     <view class="login-btn" bindtap="login">
       <text>{{loading ? '入席中…' : '微信一键入席'}}</text>
     </view>

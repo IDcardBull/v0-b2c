@@ -3,63 +3,164 @@
 const request = require('./request.js')
 const RESOURCE_BASE = 'http://124.221.2.61:3001'
 
-// 把后端返回的相对图片路径补全成绝对 URL
+// ============ 工具：图片地址补全 ============
 function resolveImageUrl(url) {
   if (!url || typeof url !== 'string') return ''
   if (/^(https?:|data:|wxfile:|cloud:|http:\/\/tmp\/)/i.test(url)) return url
   if (url.charAt(0) === '/') {
-    // 本地静态资源：以 /images 开头
-    if (url.indexOf('/images/') === 0) return url
+    if (url.indexOf('/images/') === 0) return url // 本地静态
     return RESOURCE_BASE + url
   }
   return RESOURCE_BASE + '/uploads/' + url
 }
 
-// 商品对象规范化
+// ============ JSON 字段安全解析 ============
+function safeJson(value, fallback) {
+  if (value == null) return fallback
+  if (typeof value !== 'string') return value
+  try { return JSON.parse(value) } catch (_) { return fallback }
+}
+
+// ============ SKU 归一化（对应 Prisma Sku 表）============
+function normalizeSku(raw) {
+  if (!raw || typeof raw !== 'object') return null
+  let specs = safeJson(raw.specs, raw.specs)
+  if (!specs || typeof specs !== 'object' || Array.isArray(specs)) specs = {}
+  const specText = Object.keys(specs).map((k) => specs[k]).filter(Boolean).join(' · ')
+  const retailPrice = Number(raw.retailPrice != null ? raw.retailPrice : (raw.price != null ? raw.price : 0))
+  const memberPrice = raw.memberPrice != null ? Number(raw.memberPrice) : null
+  const price = memberPrice != null && memberPrice > 0 ? memberPrice : retailPrice
+  return {
+    id: raw.id,
+    code: raw.code || '',
+    productId: raw.productId,
+    specs: specs,
+    specText: specText,
+    image: resolveImageUrl(raw.image || ''),
+    retailPrice: retailPrice,
+    memberPrice: memberPrice,
+    price: price,
+    stock: Number(raw.stock || 0),
+    weight: raw.weight != null ? Number(raw.weight) : null,
+    status: raw.status != null ? raw.status : 1,
+  }
+}
+
+// 由 SKU 列表反推规格选项 [{name:'颜色', values:['青','白']}, ...]
+function buildSpecOptions(skus) {
+  if (!skus || skus.length === 0) return []
+  const order = []
+  const map = {}
+  skus.forEach((sku) => {
+    const keys = Object.keys(sku.specs || {})
+    keys.forEach((key) => {
+      if (!map[key]) {
+        map[key] = []
+        order.push(key)
+      }
+      const val = sku.specs[key]
+      if (val != null && map[key].indexOf(val) === -1) map[key].push(val)
+    })
+  })
+  return order.map((name) => ({ name: name, values: map[name] }))
+}
+
+// 选中的规格组合 → SKU
+function findSkuBySelection(skus, selection) {
+  if (!skus || skus.length === 0) return null
+  const keys = Object.keys(selection || {})
+  if (keys.length === 0) return null
+  return skus.find((sku) => {
+    const sp = sku.specs || {}
+    return keys.every((k) => sp[k] === selection[k])
+  }) || null
+}
+
+// 默认选中的规格（首个有库存，否则首个）
+function defaultSelection(skus) {
+  if (!skus || skus.length === 0) return {}
+  const target = skus.find((s) => (s.stock || 0) > 0) || skus[0]
+  return Object.assign({}, target.specs || {})
+}
+
+// ============ 商品归一化（对应 Prisma Product 表）============
 function normalizeProduct(raw) {
   if (!raw || typeof raw !== 'object') return null
   const mainImage =
     raw.mainImage || raw.main_image || raw.image || raw.coverImage || raw.cover || ''
-  let images = raw.images || raw.gallery || raw.pictures || []
-  if (typeof images === 'string') {
-    try { images = JSON.parse(images) } catch (_) { images = images ? [images] : [] }
-  }
-  if (!Array.isArray(images)) images = []
+  let images = safeJson(raw.images, raw.images) || raw.gallery || raw.pictures || []
+  if (!Array.isArray(images)) images = images ? [images] : []
   if (images.length === 0 && mainImage) images = [mainImage]
-
   const resolvedMain = resolveImageUrl(mainImage)
   const resolvedGallery = images.map(resolveImageUrl).filter(Boolean)
 
-  let specs = raw.specs
-  if (typeof specs === 'string') {
-    try { specs = JSON.parse(specs) } catch (_) { specs = specs.split(/\n+/).filter(Boolean) }
-  }
-  if (!Array.isArray(specs)) specs = []
+  let tags = safeJson(raw.tags, raw.tags) || []
+  if (!Array.isArray(tags)) tags = tags ? [tags] : []
+
+  const rawSkus = Array.isArray(raw.skus) ? raw.skus : (Array.isArray(raw.skuList) ? raw.skuList : [])
+  const skus = rawSkus.map(normalizeSku).filter(Boolean)
+  const specOptions = buildSpecOptions(skus)
+
+  const brand = raw.brand && typeof raw.brand === 'object' ? raw.brand : null
+  const category = raw.category && typeof raw.category === 'object' ? raw.category : null
+
+  const retailPrice = Number(raw.retailPrice != null ? raw.retailPrice : (raw.price != null ? raw.price : 0))
+  const memberPrice = raw.memberPrice != null ? Number(raw.memberPrice) : null
+  // 显示价：首 SKU 的 price ，否则 memberPrice，再否则 retailPrice
+  let displayPrice = retailPrice
+  if (skus.length > 0 && skus[0].price > 0) displayPrice = skus[0].price
+  else if (memberPrice != null && memberPrice > 0) displayPrice = memberPrice
+
+  // 价格范围（多 SKU 时）
+  const skuPrices = skus.map((s) => s.price).filter((p) => p > 0)
+  const minPrice = skuPrices.length > 0 ? Math.min.apply(null, skuPrices) : displayPrice
+  const maxPrice = skuPrices.length > 0 ? Math.max.apply(null, skuPrices) : displayPrice
+
+  const sub =
+    (brand && brand.name) ||
+    (category && category.name) ||
+    raw.brandName ||
+    raw.categoryName ||
+    raw.material ||
+    raw.craft ||
+    ''
 
   return {
-    id: raw.id != null ? String(raw.id) : raw.code || '',
+    id: raw.id != null ? raw.id : (raw.code || ''),
     code: raw.code || '',
     name: raw.name || '',
-    sub: raw.sub || raw.brand || raw.brandName || raw.material || '',
-    price: typeof raw.price === 'number' ? raw.price : Number(raw.price) || 0,
+    sub: sub,
+    price: displayPrice,
+    minPrice: minPrice,
+    maxPrice: maxPrice,
+    retailPrice: retailPrice,
+    memberPrice: memberPrice,
     mainImage: resolvedMain,
     images: resolvedGallery,
-    cover: resolvedMain, // 兼容旧字段名
+    cover: resolvedMain,
     gallery: resolvedGallery,
-    category: raw.category || raw.categoryCode || '',
+    category: category,
     categoryId: raw.categoryId != null ? raw.categoryId : null,
-    tag: raw.tag || raw.label || (raw.isLimited ? '限量' : ''),
+    brand: brand,
+    brandId: raw.brandId != null ? raw.brandId : null,
+    tag: tags[0] || raw.tag || raw.label || (raw.isLimited ? '限量' : ''),
+    tags: tags,
     intro: raw.intro || raw.description || raw.detail || '',
-    specs: specs,
+    detail: raw.detail || '',
     craft: raw.craft || '',
     material: raw.material || '',
+    salesCount: Number(raw.salesCount || 0),
+    rating: Number(raw.rating || 0),
+    skus: skus,
+    specOptions: specOptions,
+    hasMultipleSkus: skus.length > 1,
+    stock: skus.reduce((sum, s) => sum + (s.stock || 0), 0),
   }
 }
 
 function normalizeBanner(raw) {
   if (!raw) return null
-  const image =
-    raw.image || raw.imageUrl || raw.cover || raw.mainImage || raw.url || ''
+  const image = raw.image || raw.imageUrl || raw.cover || raw.mainImage || raw.url || ''
   return {
     id: raw.id != null ? String(raw.id) : '',
     image: resolveImageUrl(image),
@@ -106,7 +207,12 @@ const api = {
   BASE_URL: RESOURCE_BASE,
   resolveImageUrl,
   normalizeProduct,
+  normalizeSku,
   normalizeBanner,
+  buildSpecOptions,
+  findSkuBySelection,
+  defaultSelection,
+  pickList,
   getProducts,
   getProduct,
   getBanners,

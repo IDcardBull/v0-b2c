@@ -8,7 +8,11 @@
   </view>
 
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <view wx:if="{{list.length === 0}}" class="empty"><view class="empty-seal">址</view><text>尚无收件地址</text></view>
+    <view wx:if="{{list.length === 0}}" class="empty">
+      <view class="empty-seal">址</view>
+      <text class="empty-text">尚无收件地址</text>
+      <view class="empty-btn" bindtap="add">新增地址</view>
+    </view>
     <view class="addr-list">
       <view wx:for="{{list}}" wx:key="id" class="addr-card" data-id="{{item.id}}" bindtap="choose">
         <view class="addr-head"><text class="receiver">{{item.receiver}}</text><text class="phone">{{item.phone}}</text><text wx:if="{{item.isDefault}}" class="seal">默认</text></view>
