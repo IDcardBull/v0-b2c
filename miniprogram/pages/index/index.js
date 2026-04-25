@@ -3,9 +3,6 @@ const app = getApp()
 const { categories, products: fallbackProducts } = require('../../utils/data.js')
 const { getProducts, getBanners } = require('../../utils/api.js')
 
-// 给瀑布流图卡随机分配高度，制造错落感
-const HEIGHTS = [420, 520, 600, 480, 560, 440]
-
 Page({
   data: {
     statusBarHeight: 20,
@@ -13,8 +10,7 @@ Page({
     categories,
     banners: [],
     bannerIdx: 0,
-    left: [],
-    right: [],
+    list: [],
     loading: true,
   },
   onLoad() {
@@ -39,23 +35,12 @@ Page({
     return getProducts({ pageSize: 60 })
       .then((list) => {
         if (!list || list.length === 0) throw new Error('EMPTY')
-        this.distribute(list)
+        this.setData({ list })
       })
       .catch(() => {
-        // 接口未就绪：用本地兜底
-        this.distribute(fallbackProducts)
+        this.setData({ list: fallbackProducts })
       })
       .then(() => this.setData({ loading: false }))
-  },
-  distribute(list) {
-    const withH = list.map((p, i) => ({
-      ...p,
-      h: HEIGHTS[i % HEIGHTS.length],
-    }))
-    const left = []
-    const right = []
-    withH.forEach((p, i) => (i % 2 === 0 ? left.push(p) : right.push(p)))
-    this.setData({ left, right })
   },
   loadBanners() {
     return getBanners()
