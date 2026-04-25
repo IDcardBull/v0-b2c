@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <text class="back" bindtap="back">‹</text>
+      <view class="page-title"><text class="t-cn">结算</text><text class="t-en">CHECKOUT</text></view>
+      <view></view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="section" bindtap="chooseAddress">
+      <view class="section-title">收 · 件</view>
+      <block wx:if="{{address}}">
+        <view class="addr-head"><text>{{address.receiver}}</text><text>{{address.phone}}</text></view>
+        <text class="addr-text">{{address.province}}{{address.city}}{{address.district}} {{address.detail}}</text>
+      </block>
+      <text wx:else class="placeholder">请选择收件地址 ›</text>
+    </view>
+
+    <view class="section">
+      <view class="section-title">器 · 物</view>
+      <view wx:for="{{items}}" wx:key="skuId" class="item">
+        <image class="item-img" src="{{item.cover}}" mode="aspectFill"></image>
+        <view class="item-meta"><text class="name">{{item.name}}</text><text class="sub">{{item.sub}}</text><view><text class="price"><text class="unit">¥</text>{{item.price}}</text><text class="qty"> × {{item.qty}}</text></view></view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">随 · 函</view>
+      <input value="{{remark}}" bindinput="onRemark" placeholder="给主理人留言（选填）" />
+    </view>
+    <view style="height: 220rpx;"></view>
+  </scroll-view>
+
+  <view class="bar safe-bottom">
+    <view class="sum">合计 <text class="price"><text class="unit">¥</text>{{total}}</text></view>
+    <view class="submit" bindtap="submit">{{submitting ? '提交中' : '提交订单'}}</view>
+  </view>
+</view>

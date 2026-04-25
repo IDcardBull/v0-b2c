@@ -1,0 +1,8 @@
+<view class="page">
+  <view class="result" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="seal-lg">{{order && order.status !== 'pending_pay' ? '成' : '候'}}</view>
+    <text class="title">{{order ? order.statusText : '支付结果确认中'}}</text>
+    <text class="sub">{{order && order.status === 'pending_pay' ? '若已完成支付，请稍后刷新订单' : '感谢入藏央茗器物'}}</text>
+    <view class="actions"><view bindtap="goHome">继续选器</view><view bindtap="goOrder">查看订单</view></view>
+  </view>
+</view>

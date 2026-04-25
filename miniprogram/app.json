@@ -4,7 +4,13 @@
     "pages/category/category",
     "pages/cart/cart",
     "pages/profile/profile",
-    "pages/detail/detail"
+    "pages/detail/detail",
+    "pages/login/login",
+    "pages/address/address",
+    "pages/checkout/checkout",
+    "pages/pay-result/pay-result",
+    "pages/orders/orders",
+    "pages/order-detail/order-detail"
   ],
   "window": {
     "navigationStyle": "custom",

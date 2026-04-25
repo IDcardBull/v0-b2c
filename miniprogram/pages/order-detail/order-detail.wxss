@@ -1,0 +1,20 @@
+.page { min-height: 100vh; background: var(--color-bg); }
+.scroll { height: 100vh; box-sizing: border-box; }
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: rgba(239,232,220,.9); }
+.navbar-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; }
+.back { font-size: 56rpx; color: var(--color-ink); }
+.page-title { display: flex; align-items: baseline; gap: 14rpx; }
+.t-cn { font-size: 32rpx; letter-spacing: 8rpx; color: var(--color-ink); }
+.t-en { font-size: 18rpx; color: var(--color-ink-faint); letter-spacing: 3rpx; }
+.hero { padding: 80rpx 32rpx 40rpx; display: flex; flex-direction: column; align-items: center; gap: 18rpx; }
+.seal-lg { width: 118rpx; height: 118rpx; border: 1rpx solid rgba(58,58,58,.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 44rpx; color: var(--color-ink); }
+.status { font-size: 34rpx; letter-spacing: 8rpx; color: var(--color-ink); }
+.order-no { font-size: 22rpx; color: var(--color-ink-faint); }
+.section { margin: 24rpx 32rpx 0; padding: 30rpx; background: var(--color-paper); border: 1rpx solid rgba(58,58,58,.08); }
+.section-title { font-size: 24rpx; letter-spacing: 8rpx; color: var(--color-ink-soft); margin-bottom: 18rpx; }
+.goods, .amount { display: flex; justify-content: space-between; font-size: 24rpx; color: var(--color-ink); padding: 8rpx 0; }
+.amount { justify-content: flex-end; color: var(--color-ink-soft); }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(239,232,220,.96); border-top: 1rpx solid rgba(58,58,58,.1); padding: 24rpx 32rpx; display: flex; justify-content: flex-end; gap: 20rpx; }
+.ghost, .primary { height: 78rpx; padding: 0 34rpx; display: flex; align-items: center; justify-content: center; font-family: "Songti SC", serif; letter-spacing: 6rpx; }
+.ghost { border: 1rpx solid rgba(58,58,58,.32); color: var(--color-ink); }
+.primary { background: var(--color-ink); color: var(--color-bg); }

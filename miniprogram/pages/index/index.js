@@ -1,15 +1,16 @@
 // pages/index/index.js
 const app = getApp()
-const { categories, products } = require('../../utils/data.js')
+const api = require('../../utils/api.js')
+const adapter = require('../../utils/adapter.js')
+const fallback = require('../../utils/data.js')
 
-// 给瀑布流图卡随机分配高度，制造错落感
 const HEIGHTS = [420, 520, 600, 480, 560, 440]
 
 Page({
   data: {
     statusBarHeight: 20,
     navBarHeight: 44,
-    categories,
+    categories: fallback.categories,
     left: [],
     right: [],
   },
@@ -18,6 +19,24 @@ Page({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
     })
+    this.renderProducts(fallback.products)
+    this.loadHome()
+  },
+  async loadHome() {
+    try {
+      const [categories, products] = await Promise.all([
+        api.category.tree(),
+        api.product.recommend(8),
+      ])
+      const nextCategories = adapter.normalizeCategories(categories)
+      const nextProducts = adapter.normalizeProducts(products)
+      this.setData({ categories: nextCategories.length ? nextCategories : fallback.categories })
+      this.renderProducts(nextProducts.length ? nextProducts : fallback.products)
+    } catch (err) {
+      this.renderProducts(fallback.products)
+    }
+  },
+  renderProducts(products) {
     const list = products.map((p, i) => ({
       ...p,
       h: HEIGHTS[i % HEIGHTS.length],
@@ -40,7 +59,6 @@ Page({
     wx.switchTab({
       url: '/pages/category/category',
       success: () => {
-        // 通过 eventChannel 不可用，用全局标记
         getApp().globalData.pendingCategory = id
       },
     })

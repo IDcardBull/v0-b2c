@@ -1,0 +1,22 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <view class="back" bindtap="back">‹</view>
+      <view class="page-title">
+        <text class="t-cn">入席</text>
+        <text class="t-en">LOGIN</text>
+      </view>
+      <view></view>
+    </view>
+  </view>
+
+  <view class="login-wrap" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="seal-lg">央 · 茗</view>
+    <text class="title">一器一境</text>
+    <text class="sub">登录后可下单、管理地址与查看订单</text>
+    <view class="login-btn" bindtap="login">
+      <text>{{loading ? '入席中…' : '微信一键入席'}}</text>
+    </view>
+    <text class="hint">授权仅用于识别您的零售端身份</text>
+  </view>
+</view>

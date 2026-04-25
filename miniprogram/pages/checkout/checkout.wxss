@@ -1,0 +1,20 @@
+.page { min-height: 100vh; background: var(--color-bg); }
+.scroll { height: 100vh; box-sizing: border-box; }
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: rgba(239,232,220,.9); backdrop-filter: blur(20rpx); }
+.navbar-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; }
+.back { font-size: 56rpx; color: var(--color-ink); }
+.page-title { display: flex; align-items: baseline; gap: 14rpx; }
+.t-cn { font-family: "Songti SC", serif; font-size: 32rpx; letter-spacing: 10rpx; color: var(--color-ink); }
+.t-en { font-size: 18rpx; letter-spacing: 3rpx; color: var(--color-ink-faint); }
+.section { margin: 28rpx 32rpx 0; padding: 32rpx; background: var(--color-paper); border: 1rpx solid rgba(58,58,58,.08); }
+.section-title { font-family: "Songti SC", serif; font-size: 24rpx; letter-spacing: 8rpx; color: var(--color-ink-soft); margin-bottom: 20rpx; }
+.addr-head { display: flex; gap: 20rpx; font-size: 28rpx; color: var(--color-ink); }
+.addr-text, .placeholder, .sub, .qty { font-size: 22rpx; color: var(--color-ink-faint); }
+.item { display: flex; gap: 20rpx; padding: 24rpx 0; border-bottom: 1rpx solid rgba(58,58,58,.08); }
+.item-img { width: 150rpx; height: 160rpx; background: var(--color-card); }
+.item-meta { flex: 1; display: flex; flex-direction: column; gap: 10rpx; }
+.name { font-family: "Songti SC", serif; font-size: 28rpx; color: var(--color-ink); letter-spacing: 3rpx; }
+.section input { height: 70rpx; font-size: 26rpx; color: var(--color-ink); }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(239,232,220,.96); border-top: 1rpx solid rgba(58,58,58,.1); padding: 24rpx 32rpx; display: flex; align-items: center; gap: 24rpx; }
+.sum { flex: 1; text-align: right; font-size: 24rpx; color: var(--color-ink-soft); }
+.submit { width: 260rpx; height: 82rpx; background: var(--color-ink); color: var(--color-bg); display: flex; align-items: center; justify-content: center; font-family: "Songti SC", serif; letter-spacing: 6rpx; }

@@ -1,0 +1,16 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;"><view class="navbar-inner" style="height: {{navBarHeight}}px;"><text class="back" bindtap="back">‹</text><view class="page-title"><text class="t-cn">订单详情</text><text class="t-en">DETAIL</text></view><view></view></view></view>
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <block wx:if="{{order}}">
+      <view class="hero"><view class="seal-lg">{{order.statusText.slice(0,1)}}</view><text class="status">{{order.statusText}}</text><text class="order-no">{{order.orderNo || order.id}}</text></view>
+      <view class="section"><view class="section-title">器 · 物</view><view wx:for="{{order.items}}" wx:for-item="goods" wx:key="id" class="goods"><text>{{goods.productName || goods.name || goods.skuName || '央茗器物'}}</text><text>× {{goods.qty || goods.quantity}}</text></view></view>
+      <view class="section"><view class="section-title">款 · 项</view><view class="amount">实付 <text class="price"><text class="unit">¥</text>{{order.amount}}</text></view></view>
+    </block>
+    <view style="height: 220rpx;"></view>
+  </scroll-view>
+  <view wx:if="{{order}}" class="bar safe-bottom">
+    <view wx:if="{{order.status === 'pending_pay'}}" class="ghost" bindtap="cancel">取消订单</view>
+    <view wx:if="{{order.status === 'pending_pay'}}" class="primary" bindtap="pay">去支付</view>
+    <view wx:if="{{order.status === 'shipped'}}" class="primary" bindtap="confirm">确认收货</view>
+  </view>
+</view>
