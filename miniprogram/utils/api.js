@@ -257,6 +257,14 @@ const api = {
   pay: {
     order: (id) => request.post('/client/pay/orders/' + id),
   },
+  review: {
+    create: (data) => request.post('/client/reviews', data),
+    listByProduct: (productId, params) =>
+      request.get('/client/reviews', Object.assign({ productId }, params || {}), { silent: true }),
+  },
+  feedback: {
+    create: (data) => request.post('/client/feedbacks', data),
+  },
 }
 
 module.exports = api

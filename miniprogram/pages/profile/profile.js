@@ -83,6 +83,7 @@ Page({
     })
   },
   applyUser(raw) {
+    if (!raw) return
     const u = adapter.normalizeUser(raw) || {}
     const avatar = raw.avatar || raw.avatarUrl || wx.getStorageSync('user_avatar') || ''
     const nickname = u.name && u.name !== '无名氏' ? u.name : raw.nickname || raw.nickName || '微信用户'
@@ -93,9 +94,10 @@ Page({
         name: nickname,
         avatar: avatar,
         level: u.level || '入席·甲',
-        collect: raw.collectCount || raw.favoriteCount || u.collect || 0,
-        follow: raw.followCount || raw.footprintCount || u.follow || 0,
-        points: raw.points || u.points || 0,
+        motto: u.motto || guestUser.motto,
+        collect: u.collect || 0,
+        follow: u.follow || 0,
+        points: u.points || 0,
         isGuest: false,
       },
     })

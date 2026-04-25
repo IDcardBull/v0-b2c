@@ -1,5 +1,6 @@
 // pages/feedback/feedback.js
 const app = getApp()
+const api = require('../../utils/api.js')
 const { chooseAndUpload } = require('../../utils/upload.js')
 
 Page({
@@ -106,11 +107,16 @@ Page({
       images: this.data.images,
     }
     this.setData({ submitting: true })
-    setTimeout(() => {
-      this.setData({ submitting: false })
-      wx.showToast({ title: '已请复', icon: 'none' })
-      setTimeout(() => this.back(), 600)
-      console.log('[feedback] submit payload =', payload)
-    }, 400)
+    api.feedback
+      .create(payload)
+      .then(() => {
+        this.setData({ submitting: false })
+        wx.showToast({ title: '已请复', icon: 'none' })
+        setTimeout(() => this.back(), 600)
+      })
+      .catch((err) => {
+        this.setData({ submitting: false })
+        wx.showToast({ title: (err && err.message) || '提交失败', icon: 'none' })
+      })
   },
 })
