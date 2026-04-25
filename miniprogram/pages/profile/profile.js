@@ -9,7 +9,7 @@ Page({
     statusBarHeight: 20,
     navBarHeight: 44,
     user: {
-      initial: '茗',
+      initial: '釉',
       name: '无名氏',
       level: '入席·甲',
       motto: '一盏清茗，静听风声。',
@@ -32,7 +32,7 @@ Page({
       { key: 'footprint', glyph: '迹', label: '足迹', sub: '近日所观之器' },
       { key: 'custom', glyph: '定', label: '定制订做', sub: '一器一议' },
       { key: 'feedback', glyph: '问', label: '客户服务', sub: '联系主理人·售后凭证' },
-      { key: 'about', glyph: '志', label: '关于央茗', sub: '品牌·匠人' },
+      { key: 'about', glyph: '志', label: '关于釉见', sub: '品牌·匠人' },
     ],
   },
   onLoad() {

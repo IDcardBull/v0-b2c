@@ -3,8 +3,8 @@
   <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
       <view class="brand">
-        <text class="brand-cn">央茗</text>
-        <text class="brand-en">YANGMING · CERAMICS</text>
+        <text class="brand-cn">釉见</text>
+        <text class="brand-en">YOUJIAN · CERAMICS</text>
       </view>
       <view class="search" bindtap="onSearch">
         <view class="search-icon">

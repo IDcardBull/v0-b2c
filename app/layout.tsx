@@ -16,7 +16,7 @@ const notoSans = Noto_Sans_SC({
 })
 
 export const metadata: Metadata = {
-  title: "央茗陶瓷 · 器以载道",
+  title: "釉见陶瓷 · 器以载道",
   description: "东方极简陶瓷艺术 — 茶器 花器 香炉 艺术品",
   generator: "v0.app",
 }

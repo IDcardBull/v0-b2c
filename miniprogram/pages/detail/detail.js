@@ -133,7 +133,7 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: `央茗 · ${this.data.item.name || ''}`,
+      title: `釉见 · ${this.data.item.name || ''}`,
       path: `/pages/detail/detail?id=${this.data.item.id || ''}`,
       imageUrl: this.data.item.mainImage || '',
     }
