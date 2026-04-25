@@ -89,7 +89,6 @@
               <text class="cat-cn">{{item.name}}</text>
             </view>
           </view>
-          <text class="cat-en">{{item.sub}}</text>
         </view>
       </view>
     </view>

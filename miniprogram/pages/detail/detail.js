@@ -1,10 +1,7 @@
 // pages/detail/detail.js
 const app = getApp()
 const { products: fallbackProducts } = require('../../utils/data.js')
-const { getProduct, getProducts } = require('../../utils/api.js')
 const api = require('../../utils/api.js')
-const adapter = require('../../utils/adapter.js')
-const { products } = require('../../utils/data.js')
 
 Page({
   data: {
@@ -21,61 +18,42 @@ Page({
   },
   onLoad(options) {
     const id = options.id
-    const fallbackItem = products.find((p) => `${p.id}` === `${id}`) || products[0]
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
     })
+    // 先用本地兜底兜一下，避免白屏
+    const fb = fallbackProducts.find((p) => `${p.id}` === `${id}`) || fallbackProducts[0]
+    if (fb) this.applyItem(fb)
     this.fetchDetail(id)
     this.fetchRelated(id)
-    this.renderDetail(fallbackItem, products.filter((p) => p.id !== fallbackItem.id).slice(0, 6))
-    this.loadDetail(id)
     this.refreshCartCount()
-  },
-  async loadDetail(id) {
-    try {
-      const data = await api.product.detail(id)
-      const item = adapter.normalizeProduct(data)
-      let related = []
-      try {
-        const rec = await api.product.recommend(6)
-        related = adapter.normalizeProducts(rec).filter((p) => `${p.id}` !== `${item.id}`)
-      } catch (err) {
-        related = products.filter((p) => `${p.id}` !== `${item.id}`).slice(0, 6)
-      }
-      this.renderDetail(item, related)
-    } catch (err) {}
-  },
-  renderDetail(item, related) {
-    const gallery = item.gallery && item.gallery.length ? item.gallery : [item.cover, '/images/hero-celadon.jpg', item.cover]
-    this.setData({ item, gallery, related })
   },
   onShow() {
     this.refreshCartCount()
   },
   fetchDetail(id) {
-    const fb = fallbackProducts.find((p) => p.id === id) || fallbackProducts[0]
-    return getProduct(id)
+    return api.getProduct(id)
       .then((item) => {
         if (!item) throw new Error('EMPTY')
         this.applyItem(item)
       })
       .catch(() => {
-        // 兜底
-        this.applyItem(fb)
+        // 兜底已在 onLoad 应用，这里仅关闭 loading
+        this.setData({ loading: false })
       })
   },
   applyItem(item) {
-    const gallery = (item.images && item.images.length > 0)
+    const gallery = item.images && item.images.length > 0
       ? item.images
       : item.mainImage ? [item.mainImage] : []
     this.setData({ item, gallery, loading: false })
   },
   fetchRelated(currentId) {
-    return getProducts({ pageSize: 8 })
+    return api.getProducts({ pageSize: 8 })
       .then((list) => {
         const arr = (list && list.length > 0 ? list : fallbackProducts).filter(
-          (p) => String(p.id) !== String(currentId)
+          (p) => String(p.id) !== String(currentId),
         )
         this.setData({ related: arr.slice(0, 6) })
       })
@@ -126,8 +104,6 @@ Page({
   addToCart() {
     const { item } = this.data
     if (!item || !item.id) return
-    const cart = app.globalData.cart || []
-    const exist = cart.find((i) => i.id === item.id)
     const cart = app.loadCart ? app.loadCart() : (app.globalData.cart || [])
     const skuId = item.skuId || item.id
     const exist = cart.find((i) => `${i.skuId || i.id}` === `${skuId}`)
@@ -136,12 +112,11 @@ Page({
     } else {
       cart.push({
         id: item.id,
-        productId: item.productId || item.id,
+        productId: item.id,
         skuId,
         name: item.name,
-        sub: item.skuSpec || item.sub,
+        sub: item.sub,
         price: item.price,
-        // 购物袋只需缩略图：取主图作为 cover 字段
         cover: item.mainImage,
         tag: item.tag,
         qty: 1,

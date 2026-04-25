@@ -65,29 +65,6 @@
       </view>
     </view>
 
-    <!-- 收藏·足迹 -->
-    <view class="block">
-      <view class="block-head">
-        <view class="head-left">
-          <text class="h-cn">雅 · 藏</text>
-          <text class="h-en">COLLECTION</text>
-        </view>
-      </view>
-      <scroll-view scroll-x enable-flex class="coll">
-        <view
-          wx:for="{{collected}}"
-          wx:key="id"
-          class="coll-item"
-          data-id="{{item.id}}"
-          bindtap="goDetail"
-        >
-          <image src="{{item.mainImage}}" mode="aspectFill" class="coll-img"></image>
-          <text class="coll-title">{{item.name}}</text>
-          <text class="coll-price price"><text class="unit">¥</text>{{item.price}}</text>
-        </view>
-      </scroll-view>
-    </view>
-
     <!-- 菜单列表 -->
     <view class="menu">
       <view
