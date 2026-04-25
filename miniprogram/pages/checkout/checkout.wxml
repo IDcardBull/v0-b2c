@@ -2,38 +2,92 @@
   <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
       <text class="back" bindtap="back">‹</text>
-      <view class="page-title"><text class="t-cn">结算</text><text class="t-en">CHECKOUT</text></view>
+      <view class="page-title">
+        <text class="t-cn">结算</text>
+        <text class="t-en">CHECKOUT</text>
+      </view>
       <view></view>
     </view>
   </view>
 
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <view class="section" bindtap="chooseAddress">
-      <view class="section-title">收 · 件</view>
-      <block wx:if="{{address}}">
-        <view class="addr-head"><text>{{address.receiver}}</text><text>{{address.phone}}</text></view>
-        <text class="addr-text">{{address.province}}{{address.city}}{{address.district}} {{address.detail}}</text>
-      </block>
-      <text wx:else class="placeholder">请选择收件地址 ›</text>
+    <!-- 收件地址 -->
+    <view class="addr-card" bindtap="chooseAddress">
+      <view class="addr-mark">收</view>
+      <view class="addr-body">
+        <block wx:if="{{address}}">
+          <view class="addr-head">
+            <text class="receiver">{{address.receiver}}</text>
+            <text class="phone">{{address.phone}}</text>
+            <text wx:if="{{address.tag}}" class="addr-tag">{{address.tag}}</text>
+          </view>
+          <text class="addr-text">{{address.province}} {{address.city}} {{address.district}} {{address.detail}}</text>
+        </block>
+        <text wx:else class="placeholder">请选择收件地址</text>
+      </view>
+      <text class="addr-arrow">›</text>
     </view>
 
+    <!-- 器物清单 -->
     <view class="section">
-      <view class="section-title">器 · 物</view>
+      <view class="section-title">
+        <text class="s-cn">器 · 物</text>
+        <text class="s-en">ITEMS</text>
+      </view>
       <view wx:for="{{items}}" wx:key="skuId" class="item">
         <image class="item-img" src="{{item.cover}}" mode="aspectFill"></image>
-        <view class="item-meta"><text class="name">{{item.name}}</text><text class="sub">{{item.sub}}</text><view><text class="price"><text class="unit">¥</text>{{item.price}}</text><text class="qty"> × {{item.qty}}</text></view></view>
+        <view class="item-meta">
+          <text class="item-name">{{item.name}}</text>
+          <text wx:if="{{item.skuSpec}}" class="item-spec">{{item.skuSpec}}</text>
+          <text wx:elif="{{item.sub}}" class="item-sub">{{item.sub}}</text>
+          <view class="item-bottom">
+            <view class="item-price"><text class="unit">¥</text>{{item.price}}</view>
+            <text class="item-qty">× {{item.qty}}</text>
+          </view>
+        </view>
       </view>
     </view>
 
+    <!-- 留言 -->
     <view class="section">
-      <view class="section-title">随 · 函</view>
-      <input value="{{remark}}" bindinput="onRemark" placeholder="给主理人留言（选填）" />
+      <view class="section-title">
+        <text class="s-cn">随 · 函</text>
+        <text class="s-en">NOTE</text>
+      </view>
+      <input class="remark-input" value="{{remark}}" bindinput="onRemark" placeholder="给主理人留言（选填）" placeholder-class="ph" />
     </view>
+
+    <!-- 金额明细 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="s-cn">款 · 项</text>
+        <text class="s-en">SUMMARY</text>
+      </view>
+      <view class="sum-row">
+        <text>器物小计</text>
+        <text class="sum-num"><text class="unit">¥</text>{{subtotal}}</text>
+      </view>
+      <view class="sum-row">
+        <text>邮 · 资</text>
+        <text class="sum-num">{{freight === 0 ? '包邮' : '¥' + freight}}</text>
+      </view>
+      <view wx:if="{{subtotal > 0 && subtotal < 199}}" class="sum-tip">满 ¥199 即可包邮</view>
+      <view class="sum-divider"></view>
+      <view class="sum-row total-row">
+        <text>合 计</text>
+        <text class="total-num"><text class="unit">¥</text>{{total}}</text>
+      </view>
+    </view>
+
+    <view class="end-text">— 一器一礼 ·  谨呈 —</view>
     <view style="height: 220rpx;"></view>
   </scroll-view>
 
   <view class="bar safe-bottom">
-    <view class="sum">合计 <text class="price"><text class="unit">¥</text>{{total}}</text></view>
-    <view class="submit" bindtap="submit">{{submitting ? '提交中' : '提交订单'}}</view>
+    <view class="sum-mini">
+      <text class="sum-label">合计</text>
+      <text class="sum-mini-price"><text class="unit">¥</text>{{total}}</text>
+    </view>
+    <view class="submit {{submitting ? 'submit--ing' : ''}}" bindtap="submit">{{submitting ? '提 交 中' : '提 交 订 单'}}</view>
   </view>
 </view>

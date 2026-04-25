@@ -1,6 +1,6 @@
 <view class="page">
   <!-- 自定义导航 -->
-  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+  <view class="navbar {{showTitle ? 'navbar--solid' : ''}}" style="padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
       <view class="back" bindtap="back">
         <text class="back-arrow">‹</text>
@@ -40,17 +40,36 @@
           <text class="collect-char">{{collected ? '藏' : '收'}}</text>
         </view>
       </view>
-      <text class="sub">{{item.sub}}</text>
+      <text wx:if="{{item.sub}}" class="sub">{{item.sub}}</text>
       <view class="price-row">
-        <view class="price"><text class="unit">¥</text>{{item.price}}</view>
+        <view wx:if="{{item.minPrice && item.maxPrice && item.minPrice !== item.maxPrice}}" class="price">
+          <text class="unit">¥</text>{{item.minPrice}} <text class="dash">—</text> {{item.maxPrice}}
+        </view>
+        <view wx:else class="price"><text class="unit">¥</text>{{item.price}}</view>
         <text class="price-note">含税 · 含精装木盒</text>
+      </view>
+      <view wx:if="{{item.salesCount > 0 || item.rating > 0}}" class="meta-row">
+        <text wx:if="{{item.rating > 0}}" class="meta-text">评 · {{item.rating}}</text>
+        <text wx:if="{{item.salesCount > 0}}" class="meta-text">已售 · {{item.salesCount}}</text>
+        <text wx:if="{{item.craft}}" class="meta-text">{{item.craft}}</text>
       </view>
     </view>
 
     <view class="hairline m-x"></view>
 
+    <!-- 规格入口（多 SKU 才展示） -->
+    <view wx:if="{{item.skus && item.skus.length > 0}}" class="spec-entry" data-action="cart" bindtap="openSheet">
+      <view class="spec-entry-left">
+        <text class="se-label">规格</text>
+        <text class="se-value">{{pickedSpecText || '请选择规格'}}</text>
+      </view>
+      <text class="se-arrow">›</text>
+    </view>
+
+    <view class="hairline m-x"></view>
+
     <!-- 款识 / 介绍 -->
-    <view class="section">
+    <view wx:if="{{item.intro}}" class="section">
       <view class="section-head">
         <text class="s-cn">款 · 识</text>
         <text class="s-en">INSCRIPTION</text>
@@ -59,27 +78,35 @@
         <text class="intro-text">{{item.intro}}</text>
         <view class="quote">
           <text>「素以为绚」</text>
-          <text class="quote-by">— 主理人 · 于</text>
+          <text class="quote-by">— 主理人 · 釉见</text>
         </view>
       </view>
     </view>
 
-    <!-- 规格 -->
-    <view class="section">
+    <!-- 工艺·材质 -->
+    <view wx:if="{{item.craft || item.material}}" class="section">
       <view class="section-head">
-        <text class="s-cn">规 · 格</text>
-        <text class="s-en">SPECIFICATION</text>
+        <text class="s-cn">工 · 艺</text>
+        <text class="s-en">CRAFT</text>
       </view>
       <view class="specs">
-        <view wx:for="{{item.specs}}" wx:key="*this" class="spec-row">
+        <view wx:if="{{item.craft}}" class="spec-row">
           <view class="spec-dot"></view>
-          <text class="spec-text">{{item}}</text>
+          <text class="spec-text">工艺 {{item.craft}}</text>
+        </view>
+        <view wx:if="{{item.material}}" class="spec-row">
+          <view class="spec-dot"></view>
+          <text class="spec-text">胎质 {{item.material}}</text>
+        </view>
+        <view wx:if="{{item.code}}" class="spec-row">
+          <view class="spec-dot"></view>
+          <text class="spec-text">款号 {{item.code}}</text>
         </view>
       </view>
     </view>
 
-    <!-- 匠人 -->
-    <view class="section">
+    <!-- 匠人 / 品牌 -->
+    <view wx:if="{{item.brand || item.category}}" class="section">
       <view class="section-head">
         <text class="s-cn">工 · 坊</text>
         <text class="s-en">THE MAKER</text>
@@ -87,8 +114,10 @@
       <view class="maker">
         <view class="maker-avatar"><text>作</text></view>
         <view class="maker-body">
-          <text class="maker-name">作坊 · 无尘斋</text>
-          <text class="maker-desc">手拉坯·柴烧；一年不过四窑，每窑不过数件。所制之器，皆亲刻名款。</text>
+          <text class="maker-name">{{item.brand.name || item.category.name || '釉见 · 作坊'}}</text>
+          <text wx:if="{{item.brand.story}}" class="maker-desc">{{item.brand.story}}</text>
+          <text wx:elif="{{item.brand.origin}}" class="maker-desc">产自 {{item.brand.origin}}</text>
+          <text wx:else class="maker-desc">手拉坯·柴烧；一年不过四窑，每窑不过数件。</text>
           <view class="maker-link" bindtap="viewMaker">
             <text>查看作坊</text>
             <text class="arrow">→</text>
@@ -98,7 +127,7 @@
     </view>
 
     <!-- 相似推荐 -->
-    <view class="section">
+    <view wx:if="{{related.length > 0}}" class="section">
       <view class="section-head">
         <text class="s-cn">同 · 堂</text>
         <text class="s-en">YOU MAY ALSO LIKE</text>
@@ -139,11 +168,61 @@
         <text class="ai-label">购物袋</text>
         <view wx:if="{{cartCount > 0}}" class="ai-badge">{{cartCount}}</view>
       </view>
-      <view class="action-btn secondary" bindtap="addToCart">
+      <view class="action-btn secondary" data-action="cart" bindtap="openSheet">
         <text>加入购物袋</text>
       </view>
-      <view class="action-btn primary" bindtap="buyNow">
+      <view class="action-btn primary" data-action="buy" bindtap="openSheet">
         <text>立 即 请 购</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 规格选择浮层 -->
+  <view wx:if="{{sheetVisible}}" class="sheet-mask" bindtap="closeSheet">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-head">
+        <image class="sheet-img" src="{{selectedSku.image || item.mainImage}}" mode="aspectFill"></image>
+        <view class="sheet-info">
+          <view class="sheet-price">
+            <text class="unit">¥</text>{{selectedSku ? selectedSku.price : item.price}}
+          </view>
+          <text wx:if="{{selectedSku}}" class="sheet-stock">库存 {{selectedSku.stock}}</text>
+          <text wx:else class="sheet-stock">请选择规格</text>
+          <text wx:if="{{pickedSpecText}}" class="sheet-pick">已选 · {{pickedSpecText}}</text>
+        </view>
+        <view class="sheet-close" bindtap="closeSheet">×</view>
+      </view>
+
+      <scroll-view scroll-y class="sheet-body">
+        <view wx:for="{{optionView}}" wx:for-item="opt" wx:key="name" class="spec-group">
+          <text class="spec-name">{{opt.name}}</text>
+          <view class="spec-values">
+            <view
+              wx:for="{{opt.values}}"
+              wx:for-item="val"
+              wx:key="value"
+              class="spec-chip {{val.selected ? 'spec-chip--on' : ''}}"
+              data-name="{{opt.name}}"
+              data-value="{{val.value}}"
+              bindtap="pickSpec"
+            >{{val.value}}</view>
+          </view>
+        </view>
+
+        <view class="qty-row">
+          <text class="qty-label">数量</text>
+          <view class="stepper">
+            <view class="step" bindtap="qtyMinus">−</view>
+            <text class="qty-num">{{qty}}</text>
+            <view class="step" bindtap="qtyPlus">+</view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="sheet-bottom safe-bottom">
+        <view class="sheet-btn" bindtap="confirmSheet">
+          <text>{{sheetAction === 'buy' ? '立 即 请 购' : '加 入 购 物 袋'}}</text>
+        </view>
       </view>
     </view>
   </view>

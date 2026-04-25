@@ -1,16 +1,150 @@
 <view class="page">
-  <view class="navbar" style="padding-top: {{statusBarHeight}}px;"><view class="navbar-inner" style="height: {{navBarHeight}}px;"><text class="back" bindtap="back">‹</text><view class="page-title"><text class="t-cn">订单详情</text><text class="t-en">DETAIL</text></view><view></view></view></view>
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <text class="back" bindtap="back">‹</text>
+      <view class="page-title">
+        <text class="t-cn">订单详情</text>
+        <text class="t-en">DETAIL</text>
+      </view>
+      <view></view>
+    </view>
+  </view>
+
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <block wx:if="{{order}}">
-      <view class="hero"><view class="seal-lg">{{order.statusText.slice(0,1)}}</view><text class="status">{{order.statusText}}</text><text class="order-no">{{order.orderNo || order.id}}</text></view>
-      <view class="section"><view class="section-title">器 · 物</view><view wx:for="{{order.items}}" wx:for-item="goods" wx:key="id" class="goods"><text>{{goods.productName || goods.name || goods.skuName || '央茗器物'}}</text><text>× {{goods.qty || goods.quantity}}</text></view></view>
-      <view class="section"><view class="section-title">款 · 项</view><view class="amount">实付 <text class="price"><text class="unit">¥</text>{{order.amount}}</text></view></view>
+      <!-- 状态印章 -->
+      <view class="hero">
+        <view class="seal-lg">{{order.statusText.length > 0 ? order.statusText[0] : '·'}}</view>
+        <text class="status">{{order.statusText}}</text>
+        <text class="order-no">{{order.orderNo || order.id}}</text>
+      </view>
+
+      <!-- 收件地址 -->
+      <view wx:if="{{order.receiverSnapshot || order.address}}" class="section">
+        <view class="section-title">
+          <text class="s-cn">收 · 件</text>
+          <text class="s-en">SHIPPING</text>
+        </view>
+        <view class="addr-head">
+          <text class="receiver">{{(order.receiverSnapshot && order.receiverSnapshot.receiver) || (order.address && order.address.receiver)}}</text>
+          <text class="phone">{{(order.receiverSnapshot && order.receiverSnapshot.phone) || (order.address && order.address.phone)}}</text>
+        </view>
+        <text class="addr-text">
+          {{(order.receiverSnapshot && order.receiverSnapshot.province) || (order.address && order.address.province)}}
+          {{(order.receiverSnapshot && order.receiverSnapshot.city) || (order.address && order.address.city)}}
+          {{(order.receiverSnapshot && order.receiverSnapshot.district) || (order.address && order.address.district)}}
+          {{(order.receiverSnapshot && order.receiverSnapshot.detail) || (order.address && order.address.detail)}}
+        </text>
+      </view>
+
+      <!-- 物流 -->
+      <view wx:if="{{order.trackingNo}}" class="section">
+        <view class="section-title">
+          <text class="s-cn">运 · 单</text>
+          <text class="s-en">TRACKING</text>
+        </view>
+        <view class="logi-row">
+          <text>{{order.logisticsCompany || '物流'}}</text>
+          <text class="track-no">{{order.trackingNo}}</text>
+        </view>
+      </view>
+
+      <!-- 器物 -->
+      <view class="section">
+        <view class="section-title">
+          <text class="s-cn">器 · 物</text>
+          <text class="s-en">ITEMS</text>
+        </view>
+        <view wx:for="{{order.items}}" wx:for-item="goods" wx:key="id" class="goods-row">
+          <image class="goods-img" src="{{goods.skuImage || goods.image || goods.cover}}" mode="aspectFill"></image>
+          <view class="goods-meta">
+            <text class="goods-name">{{goods.productName || goods.name || goods.skuName || '釉见器物'}}</text>
+            <text wx:if="{{goods.skuSpec}}" class="goods-spec">{{goods.skuSpec}}</text>
+            <view class="goods-bottom">
+              <text class="goods-price"><text class="unit">¥</text>{{goods.unitPrice || goods.price}}</text>
+              <text class="goods-qty">× {{goods.qty || goods.quantity}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 备注 -->
+      <view wx:if="{{order.remark}}" class="section">
+        <view class="section-title">
+          <text class="s-cn">随 · 函</text>
+          <text class="s-en">NOTE</text>
+        </view>
+        <text class="remark-text">{{order.remark}}</text>
+      </view>
+
+      <!-- 款项 -->
+      <view class="section">
+        <view class="section-title">
+          <text class="s-cn">款 · 项</text>
+          <text class="s-en">SUMMARY</text>
+        </view>
+        <view class="sum-row">
+          <text>器物小计</text>
+          <text class="sum-num"><text class="unit">¥</text>{{order.totalAmount || order.amount}}</text>
+        </view>
+        <view wx:if="{{order.freight}}" class="sum-row">
+          <text>邮 · 资</text>
+          <text class="sum-num">{{order.freight === 0 ? '包邮' : '¥' + order.freight}}</text>
+        </view>
+        <view wx:if="{{order.discountAmount > 0}}" class="sum-row">
+          <text>优 · 惠</text>
+          <text class="sum-num">- ¥{{order.discountAmount}}</text>
+        </view>
+        <view class="sum-divider"></view>
+        <view class="sum-row total-row">
+          <text>实 · 付</text>
+          <text class="total-num"><text class="unit">¥</text>{{order.amount || order.paidAmount}}</text>
+        </view>
+      </view>
+
+      <!-- 时间线 -->
+      <view class="section">
+        <view class="section-title">
+          <text class="s-cn">时 · 序</text>
+          <text class="s-en">TIMELINE</text>
+        </view>
+        <view wx:if="{{order.createdAt}}" class="time-row">
+          <text class="time-label">下单</text>
+          <text class="time-value">{{order.createdAt}}</text>
+        </view>
+        <view wx:if="{{order.paidAt}}" class="time-row">
+          <text class="time-label">支付</text>
+          <text class="time-value">{{order.paidAt}}</text>
+        </view>
+        <view wx:if="{{order.shippedAt}}" class="time-row">
+          <text class="time-label">发货</text>
+          <text class="time-value">{{order.shippedAt}}</text>
+        </view>
+        <view wx:if="{{order.completedAt}}" class="time-row">
+          <text class="time-label">完成</text>
+          <text class="time-value">{{order.completedAt}}</text>
+        </view>
+      </view>
+
+      <view class="end-text">— 一器一礼 · 谨呈 —</view>
+      <view style="height: 220rpx;"></view>
     </block>
-    <view style="height: 220rpx;"></view>
+
+    <view wx:else class="loading">
+      <text>加载中…</text>
+    </view>
   </scroll-view>
+
   <view wx:if="{{order}}" class="bar safe-bottom">
-    <view wx:if="{{order.status === 'pending_pay'}}" class="ghost" bindtap="cancel">取消订单</view>
-    <view wx:if="{{order.status === 'pending_pay'}}" class="primary" bindtap="pay">去支付</view>
-    <view wx:if="{{order.status === 'shipped'}}" class="primary" bindtap="confirm">确认收货</view>
+    <block wx:if="{{order.status === 'pending_pay'}}">
+      <view class="ghost" bindtap="cancel">取消订单</view>
+      <view class="primary" bindtap="pay">去 支 付</view>
+    </block>
+    <block wx:elif="{{order.status === 'shipped'}}">
+      <view class="primary" bindtap="confirm">确 认 收 货</view>
+    </block>
+    <block wx:else>
+      <view class="ghost" bindtap="back">返 回</view>
+    </block>
   </view>
 </view>

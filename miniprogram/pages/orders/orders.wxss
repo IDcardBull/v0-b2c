@@ -1,17 +1,219 @@
 .page { min-height: 100vh; background: var(--color-bg); }
 .scroll { height: 100vh; box-sizing: border-box; }
-.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: rgba(239,232,220,.9); }
-.navbar-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; }
-.back { font-size: 56rpx; color: var(--color-ink); }
+
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  background: rgba(239, 232, 220, 0.92);
+  backdrop-filter: blur(20rpx);
+}
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40rpx;
+}
+.back {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 56rpx;
+  width: 64rpx;
+  text-align: left;
+  color: var(--color-ink);
+  line-height: 1;
+}
 .page-title { display: flex; align-items: baseline; gap: 14rpx; }
-.t-cn { font-size: 32rpx; letter-spacing: 10rpx; color: var(--color-ink); }
-.t-en { font-size: 18rpx; color: var(--color-ink-faint); letter-spacing: 3rpx; }
-.tabs { position: fixed; left: 0; right: 0; z-index: 19; height: 86rpx; background: var(--color-bg); display: flex; padding: 0 24rpx; border-bottom: 1rpx solid rgba(58,58,58,.08); }
-.tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 24rpx; letter-spacing: 4rpx; color: var(--color-ink-faint); }
-.tab.on { color: var(--color-ink); }
-.card { margin: 24rpx 32rpx 0; padding: 30rpx; background: var(--color-paper); border: 1rpx solid rgba(58,58,58,.08); }
-.card-head, .goods, .amount { display: flex; justify-content: space-between; gap: 20rpx; }
-.card-head { font-size: 24rpx; color: var(--color-ink-soft); margin-bottom: 20rpx; }
-.goods { font-size: 24rpx; color: var(--color-ink); padding: 8rpx 0; }
-.amount { margin-top: 20rpx; justify-content: flex-end; font-size: 24rpx; color: var(--color-ink-soft); }
-.empty { padding-top: 220rpx; text-align: center; color: var(--color-ink-faint); letter-spacing: 6rpx; }
+.t-cn { font-family: "Songti SC", serif; font-size: 32rpx; letter-spacing: 10rpx; color: var(--color-ink); }
+.t-en { font-family: "PingFang SC", sans-serif; font-size: 18rpx; letter-spacing: 3rpx; color: var(--color-ink-faint); }
+
+/* Tabs */
+.tabs {
+  position: fixed;
+  left: 0; right: 0;
+  z-index: 19;
+  height: 86rpx;
+  background: rgba(239, 232, 220, 0.96);
+  backdrop-filter: blur(20rpx);
+  display: flex;
+  padding: 0 24rpx;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.08);
+}
+.tab {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-faint);
+}
+.tab--on { color: var(--color-ink); }
+.tab-line {
+  position: absolute;
+  bottom: 16rpx;
+  width: 32rpx;
+  height: 2rpx;
+  background: var(--color-ink);
+}
+
+/* Empty */
+.empty {
+  padding: 200rpx 0 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+}
+.empty-seal {
+  width: 110rpx;
+  height: 110rpx;
+  border: 1rpx solid rgba(58, 58, 58, 0.35);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Songti SC", serif;
+  font-size: 38rpx;
+  color: var(--color-ink);
+}
+.empty-cn {
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink);
+}
+.empty-en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-faint);
+}
+
+/* Cards */
+.card {
+  margin: 24rpx 32rpx 0;
+  padding: 0;
+  background: var(--color-paper);
+  border: 1rpx solid rgba(58, 58, 58, 0.08);
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.06);
+}
+.order-no {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 22rpx;
+  color: var(--color-ink-faint);
+  letter-spacing: 1rpx;
+}
+.status {
+  font-family: "Songti SC", serif;
+  font-size: 24rpx;
+  letter-spacing: 6rpx;
+  color: var(--color-ink);
+}
+
+.goods-list {
+  padding: 8rpx 28rpx;
+}
+.goods-row {
+  display: flex;
+  gap: 22rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.05);
+}
+.goods-row:last-child { border-bottom: none; }
+.goods-img {
+  width: 140rpx;
+  height: 160rpx;
+  background: var(--color-card);
+  flex-shrink: 0;
+}
+.goods-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+.goods-name {
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  letter-spacing: 3rpx;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.goods-spec {
+  align-self: flex-start;
+  font-family: "Songti SC", serif;
+  font-size: 20rpx;
+  letter-spacing: 2rpx;
+  color: var(--color-ink-soft);
+  background: rgba(58, 58, 58, 0.05);
+  padding: 4rpx 12rpx;
+}
+.goods-bottom {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.goods-price {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 26rpx;
+  color: var(--color-ink);
+  font-weight: 500;
+}
+.goods-price .unit { font-size: 20rpx; color: var(--color-ink-soft); margin-right: 2rpx; }
+.goods-qty {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 22rpx;
+  color: var(--color-ink-soft);
+}
+
+.card-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 22rpx 28rpx;
+  border-top: 1rpx solid rgba(58, 58, 58, 0.06);
+}
+.card-time {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  color: var(--color-ink-faint);
+}
+.amount {
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-soft);
+}
+.amount .price {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 30rpx;
+  color: var(--color-ink);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.amount .unit {
+  font-size: 20rpx;
+  color: var(--color-ink-soft);
+  margin-right: 2rpx;
+}
+
+.end-text {
+  text-align: center;
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  color: var(--color-ink-faint);
+  letter-spacing: 8rpx;
+  padding: 40rpx 0;
+}
