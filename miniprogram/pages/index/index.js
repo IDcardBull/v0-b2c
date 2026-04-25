@@ -2,6 +2,11 @@
 const app = getApp()
 const { categories, products: fallbackProducts } = require('../../utils/data.js')
 const { getProducts, getBanners } = require('../../utils/api.js')
+const api = require('../../utils/api.js')
+const adapter = require('../../utils/adapter.js')
+const fallback = require('../../utils/data.js')
+
+const HEIGHTS = [420, 520, 600, 480, 560, 440]
 
 Page({
   data: {
@@ -12,6 +17,9 @@ Page({
     bannerIdx: 0,
     list: [],
     loading: true,
+    categories: fallback.categories,
+    left: [],
+    right: [],
   },
   onLoad() {
     this.setData({
@@ -19,6 +27,32 @@ Page({
       navBarHeight: app.globalData.navBarHeight,
     })
     this.loadAll()
+    this.renderProducts(fallback.products)
+    this.loadHome()
+  },
+  async loadHome() {
+    try {
+      const [categories, products] = await Promise.all([
+        api.category.tree(),
+        api.product.recommend(8),
+      ])
+      const nextCategories = adapter.normalizeCategories(categories)
+      const nextProducts = adapter.normalizeProducts(products)
+      this.setData({ categories: nextCategories.length ? nextCategories : fallback.categories })
+      this.renderProducts(nextProducts.length ? nextProducts : fallback.products)
+    } catch (err) {
+      this.renderProducts(fallback.products)
+    }
+  },
+  renderProducts(products) {
+    const list = products.map((p, i) => ({
+      ...p,
+      h: HEIGHTS[i % HEIGHTS.length],
+    }))
+    const left = []
+    const right = []
+    list.forEach((p, i) => (i % 2 === 0 ? left.push(p) : right.push(p)))
+    this.setData({ left, right })
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {

@@ -2,6 +2,9 @@
 const app = getApp()
 const { products: fallbackProducts } = require('../../utils/data.js')
 const { getProduct, getProducts } = require('../../utils/api.js')
+const api = require('../../utils/api.js')
+const adapter = require('../../utils/adapter.js')
+const { products } = require('../../utils/data.js')
 
 Page({
   data: {
@@ -18,13 +21,34 @@ Page({
   },
   onLoad(options) {
     const id = options.id
+    const fallbackItem = products.find((p) => `${p.id}` === `${id}`) || products[0]
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
     })
     this.fetchDetail(id)
     this.fetchRelated(id)
+    this.renderDetail(fallbackItem, products.filter((p) => p.id !== fallbackItem.id).slice(0, 6))
+    this.loadDetail(id)
     this.refreshCartCount()
+  },
+  async loadDetail(id) {
+    try {
+      const data = await api.product.detail(id)
+      const item = adapter.normalizeProduct(data)
+      let related = []
+      try {
+        const rec = await api.product.recommend(6)
+        related = adapter.normalizeProducts(rec).filter((p) => `${p.id}` !== `${item.id}`)
+      } catch (err) {
+        related = products.filter((p) => `${p.id}` !== `${item.id}`).slice(0, 6)
+      }
+      this.renderDetail(item, related)
+    } catch (err) {}
+  },
+  renderDetail(item, related) {
+    const gallery = item.gallery && item.gallery.length ? item.gallery : [item.cover, '/images/hero-celadon.jpg', item.cover]
+    this.setData({ item, gallery, related })
   },
   onShow() {
     this.refreshCartCount()
@@ -61,7 +85,7 @@ Page({
       })
   },
   refreshCartCount() {
-    const cart = app.globalData.cart || []
+    const cart = app.loadCart ? app.loadCart() : (app.globalData.cart || [])
     const count = cart.reduce((s, i) => s + (i.qty || 0), 0)
     this.setData({ cartCount: count })
   },
@@ -104,13 +128,18 @@ Page({
     if (!item || !item.id) return
     const cart = app.globalData.cart || []
     const exist = cart.find((i) => i.id === item.id)
+    const cart = app.loadCart ? app.loadCart() : (app.globalData.cart || [])
+    const skuId = item.skuId || item.id
+    const exist = cart.find((i) => `${i.skuId || i.id}` === `${skuId}`)
     if (exist) {
       exist.qty += 1
     } else {
       cart.push({
         id: item.id,
+        productId: item.productId || item.id,
+        skuId,
         name: item.name,
-        sub: item.sub,
+        sub: item.skuSpec || item.sub,
         price: item.price,
         // 购物袋只需缩略图：取主图作为 cover 字段
         cover: item.mainImage,
@@ -119,7 +148,8 @@ Page({
         checked: true,
       })
     }
-    app.globalData.cart = cart
+    if (app.saveCart) app.saveCart(cart)
+    else app.globalData.cart = cart
     this.refreshCartCount()
     wx.showToast({ title: '已入袋', icon: 'none' })
   },

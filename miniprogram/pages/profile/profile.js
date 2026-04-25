@@ -3,6 +3,9 @@ const app = getApp()
 const { products: fallbackProducts } = require('../../utils/data.js')
 const { chooseAndUpload } = require('../../utils/upload.js')
 const { getProducts } = require('../../utils/api.js')
+const api = require('../../utils/api.js')
+const adapter = require('../../utils/adapter.js')
+const { products } = require('../../utils/data.js')
 
 Page({
   data: {
@@ -17,12 +20,15 @@ Page({
       follow: 48,
       points: 1680,
       avatar: '', // 线上头像 URL
+      collect: 0,
+      follow: 0,
+      points: 0,
     },
     orders: [
-      { key: 'unpaid', glyph: '款', label: '待付款', count: 1 },
-      { key: 'unship', glyph: '制', label: '待发货', count: 0 },
-      { key: 'shipped', glyph: '途', label: '待收货', count: 2 },
-      { key: 'done', glyph: '成', label: '已完成', count: 0 },
+      { key: 'pending_pay', glyph: '款', label: '待付款', count: 0 },
+      { key: 'pending_ship', glyph: '制', label: '待发货', count: 0 },
+      { key: 'shipped', glyph: '途', label: '待收货', count: 0 },
+      { key: 'completed', glyph: '成', label: '已完成', count: 0 },
     ],
     collected: [],
     menu: [
@@ -75,20 +81,46 @@ Page({
         if (err && err.message === 'OVER_SIZE') return
         wx.showToast({ title: '上传失败', icon: 'none' })
       })
+    this.loadProfile()
+  },
+  async loadProfile() {
+    if (!wx.getStorageSync('token')) return
+    try {
+      const [profile, counts] = await Promise.all([api.user.profile(), api.order.counts()])
+      const user = adapter.normalizeUser(profile)
+      const orders = this.data.orders.map((item) => ({ ...item, count: counts[item.key] || 0 }))
+      this.setData({ user, orders })
+    } catch (err) {}
   },
   goSetting() {
     wx.showActionSheet({
       itemList: ['账户设置', '通知偏好', '退出登录'],
-      success: () => wx.showToast({ title: '设置即将开放', icon: 'none' }),
+      success: (res) => {
+        if (res.tapIndex === 2) {
+          app.clearLogin()
+          wx.showToast({ title: '已退出', icon: 'none' })
+          this.setData({ user: adapter.normalizeUser(null) })
+        } else {
+          wx.showToast({ title: '设置即将开放', icon: 'none' })
+        }
+      },
       fail: () => {},
     })
   },
   goOrders() {
-    wx.showToast({ title: '订单中心即将开放', icon: 'none' })
+    if (!wx.getStorageSync('token')) {
+      wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fprofile%2Fprofile' })
+      return
+    }
+    wx.navigateTo({ url: '/pages/orders/orders' })
   },
   goOrderTab(e) {
     const key = e.currentTarget.dataset.key
-    wx.showToast({ title: `进入 ${key}`, icon: 'none' })
+    if (!wx.getStorageSync('token')) {
+      wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fprofile%2Fprofile' })
+      return
+    }
+    wx.navigateTo({ url: `/pages/orders/orders?status=${key}` })
   },
   onMenu(e) {
     const key = e.currentTarget.dataset.key
@@ -98,6 +130,12 @@ Page({
     }
     if (key === 'feedback') {
       wx.navigateTo({ url: '/pages/feedback/feedback' })
+    if (key === 'address') {
+      if (!wx.getStorageSync('token')) {
+        wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Faddress%2Faddress' })
+        return
+      }
+      wx.navigateTo({ url: '/pages/address/address' })
       return
     }
     wx.showToast({ title: `${key} 即将开放`, icon: 'none' })

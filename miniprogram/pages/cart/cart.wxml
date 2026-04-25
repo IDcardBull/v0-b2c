@@ -30,7 +30,7 @@
           class="row"
         >
           <view class="check {{item.checked ? 'check--on' : ''}}"
-            data-id="{{item.id}}"
+            data-id="{{item.skuId || item.id}}"
             bindtap="toggleCheck"
           >
             <view wx:if="{{item.checked}}" class="check-dot"></view>
@@ -47,11 +47,11 @@
                 <text class="unit">¥</text>{{item.price}}
               </view>
               <view wx:if="{{!editing}}" class="stepper">
-                <view class="step" data-id="{{item.id}}" bindtap="dec">−</view>
+                <view class="step" data-id="{{item.skuId || item.id}}" bindtap="dec">−</view>
                 <text class="qty">{{item.qty}}</text>
-                <view class="step" data-id="{{item.id}}" bindtap="inc">+</view>
+                <view class="step" data-id="{{item.skuId || item.id}}" bindtap="inc">+</view>
               </view>
-              <view wx:else class="remove" data-id="{{item.id}}" bindtap="remove">移除</view>
+              <view wx:else class="remove" data-id="{{item.skuId || item.id}}" bindtap="remove">移除</view>
             </view>
           </view>
         </view>

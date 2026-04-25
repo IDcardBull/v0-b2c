@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;"><view class="navbar-inner" style="height: {{navBarHeight}}px;"><text class="back" bindtap="back">‹</text><view class="page-title"><text class="t-cn">订单</text><text class="t-en">ORDERS</text></view><view></view></view></view>
+  <view class="tabs" style="top: {{statusBarHeight + navBarHeight}}px;"><view wx:for="{{tabs}}" wx:key="key" class="tab {{current === item.key ? 'on' : ''}}" data-key="{{item.key}}" bindtap="tapTab">{{item.label}}</view></view>
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight + 86}}px;" bindscrolltolower="loadList">
+    <view wx:if="{{list.length === 0}}" class="empty">暂无订单</view>
+    <view wx:for="{{list}}" wx:key="id" class="card" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="card-head"><text>{{item.orderNo || item.id}}</text><text>{{item.statusText}}</text></view>
+      <view wx:for="{{item.items}}" wx:for-item="goods" wx:key="id" class="goods"><text>{{goods.productName || goods.name || goods.skuName || '央茗器物'}}</text><text>× {{goods.qty || goods.quantity}}</text></view>
+      <view class="amount">合计 <text class="price"><text class="unit">¥</text>{{item.amount}}</text></view>
+    </view>
+    <view style="height: 160rpx;"></view>
+  </scroll-view>
+</view>

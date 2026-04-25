@@ -26,7 +26,7 @@ Page({
     }
   },
   syncFromGlobal() {
-    const raw = app.globalData.cart || []
+    const raw = app.loadCart ? app.loadCart() : (wx.getStorageSync('cart') || [])
     const list = raw.map((i) => ({ ...i, checked: i.checked !== false }))
     this.setData({ list }, () => this.recalc())
   },
@@ -37,8 +37,8 @@ Page({
     let allChecked = list.length > 0
     list.forEach((i) => {
       if (i.checked) {
-        total += i.price * i.qty
-        selectedCount += i.qty
+        total += Number(i.price || 0) * Number(i.qty || 0)
+        selectedCount += i.qty || 0
       } else {
         allChecked = false
       }
@@ -47,7 +47,12 @@ Page({
     this.writeBack()
   },
   writeBack() {
-    app.globalData.cart = this.data.list.map(({ h, ...rest }) => rest)
+    const cart = this.data.list.map(({ h, ...rest }) => rest)
+    if (app.saveCart) app.saveCart(cart)
+    else {
+      app.globalData.cart = cart
+      wx.setStorageSync('cart', cart)
+    }
   },
   toggleEdit() {
     this.setData({ editing: !this.data.editing })
@@ -55,7 +60,7 @@ Page({
   toggleCheck(e) {
     const id = e.currentTarget.dataset.id
     const list = this.data.list.map((i) =>
-      i.id === id ? { ...i, checked: !i.checked } : i
+      `${i.skuId || i.id}` === `${id}` ? { ...i, checked: !i.checked } : i
     )
     this.setData({ list }, () => this.recalc())
   },
@@ -67,14 +72,14 @@ Page({
   inc(e) {
     const id = e.currentTarget.dataset.id
     const list = this.data.list.map((i) =>
-      i.id === id ? { ...i, qty: Math.min(99, i.qty + 1) } : i
+      `${i.skuId || i.id}` === `${id}` ? { ...i, qty: Math.min(99, i.qty + 1) } : i
     )
     this.setData({ list }, () => this.recalc())
   },
   dec(e) {
     const id = e.currentTarget.dataset.id
     const list = this.data.list.map((i) =>
-      i.id === id ? { ...i, qty: Math.max(1, i.qty - 1) } : i
+      `${i.skuId || i.id}` === `${id}` ? { ...i, qty: Math.max(1, i.qty - 1) } : i
     )
     this.setData({ list }, () => this.recalc())
   },
@@ -87,7 +92,7 @@ Page({
       confirmText: '移除',
       success: (res) => {
         if (res.confirm) {
-          const list = this.data.list.filter((i) => i.id !== id)
+          const list = this.data.list.filter((i) => `${i.skuId || i.id}` !== `${id}`)
           this.setData({ list }, () => this.recalc())
         }
       },
@@ -103,7 +108,7 @@ Page({
     wx.switchTab({ url: '/pages/index/index' })
   },
   checkout() {
-    const { list, total } = this.data
+    const { list, total, note } = this.data
     const chosen = list.filter((i) => i.checked)
     if (chosen.length === 0) {
       wx.showToast({ title: '请选择器物', icon: 'none' })
@@ -116,7 +121,9 @@ Page({
       confirmText: '前往付款',
       success: (res) => {
         if (res.confirm) {
-          wx.showToast({ title: '订单已生成', icon: 'none' })
+          wx.setStorageSync('checkoutItems', chosen)
+          wx.setStorageSync('checkoutNote', note)
+          wx.navigateTo({ url: '/pages/checkout/checkout' })
         }
       },
     })
