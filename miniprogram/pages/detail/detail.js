@@ -70,7 +70,7 @@ Page({
     wx.switchTab({ url: '/pages/cart/cart' })
   },
   goService() {
-    wx.showToast({ title: '主理人 · 稍候即达', icon: 'none' })
+    wx.navigateTo({ url: '/pages/feedback/feedback?type=consult' })
   },
   viewMaker() {
     wx.showToast({ title: '作坊志即将开放', icon: 'none' })

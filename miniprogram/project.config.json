@@ -4,7 +4,7 @@
   "description": "央茗陶瓷 · 东方极简陶瓷美学零售小程序",
   "appid": "touristappid",
   "setting": {
-    "urlCheck": true,
+    "urlCheck": false,
     "es6": true,
     "enhance": true,
     "postcss": true,

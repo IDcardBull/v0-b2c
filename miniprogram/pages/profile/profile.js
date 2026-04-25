@@ -1,6 +1,7 @@
 // pages/profile/profile.js
 const app = getApp()
 const { products } = require('../../utils/data.js')
+const { chooseAndUpload } = require('../../utils/upload.js')
 
 Page({
   data: {
@@ -14,6 +15,7 @@ Page({
       collect: 12,
       follow: 48,
       points: 1680,
+      avatar: '', // 线上头像 URL
     },
     orders: [
       { key: 'unpaid', glyph: '款', label: '待付款', count: 1 },
@@ -25,23 +27,47 @@ Page({
     menu: [
       { key: 'address', glyph: '址', label: '地址簿', sub: '收件人·配送地址' },
       { key: 'coupon', glyph: '券', label: '我的券', sub: '手作券·典藏券' },
+      { key: 'review', glyph: '评', label: '晒图评价', sub: '一器一感·一图一字' },
       { key: 'footprint', glyph: '迹', label: '足迹', sub: '近日所观之器' },
       { key: 'custom', glyph: '定', label: '定制订做', sub: '一器一议' },
-      { key: 'service', glyph: '问', label: '客户服务', sub: '联系主理人' },
+      { key: 'feedback', glyph: '问', label: '客户服务', sub: '联系主理人·售后凭证' },
       { key: 'about', glyph: '志', label: '关于央茗', sub: '品牌·匠人' },
     ],
   },
   onLoad() {
+    const avatar = wx.getStorageSync('user_avatar') || ''
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
       collected: products.slice(0, 5),
+      'user.avatar': avatar,
     })
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 })
     }
+    // 头像可能在他处更新
+    const avatar = wx.getStorageSync('user_avatar') || ''
+    if (avatar !== this.data.user.avatar) {
+      this.setData({ 'user.avatar': avatar })
+    }
+  },
+  // 头像上传
+  onAvatarTap() {
+    const that = this
+    chooseAndUpload({ count: 1, sourceType: ['album', 'camera'] })
+      .then(function (urls) {
+        const url = urls[0]
+        wx.setStorageSync('user_avatar', url)
+        that.setData({ 'user.avatar': url })
+        wx.showToast({ title: '头像已更新', icon: 'none' })
+      })
+      .catch(function (err) {
+        if (err && err.message === 'CANCELLED') return
+        if (err && err.message === 'OVER_SIZE') return
+        wx.showToast({ title: '上传失败', icon: 'none' })
+      })
   },
   goSetting() {
     wx.showActionSheet({
@@ -59,6 +85,14 @@ Page({
   },
   onMenu(e) {
     const key = e.currentTarget.dataset.key
+    if (key === 'review') {
+      wx.navigateTo({ url: '/pages/review/review' })
+      return
+    }
+    if (key === 'feedback') {
+      wx.navigateTo({ url: '/pages/feedback/feedback' })
+      return
+    }
     wx.showToast({ title: `${key} 即将开放`, icon: 'none' })
   },
   goDetail(e) {

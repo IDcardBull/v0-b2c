@@ -16,8 +16,15 @@
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <!-- 个人信息 -->
     <view class="hero-card">
-      <view class="avatar">
-        <text class="avatar-char">{{user.initial}}</text>
+      <view class="avatar" bindtap="onAvatarTap">
+        <image
+          wx:if="{{user.avatar}}"
+          class="avatar-img"
+          src="{{user.avatar}}"
+          mode="aspectFill"
+        ></image>
+        <text wx:else class="avatar-char">{{user.initial}}</text>
+        <view class="avatar-edit"><text>{{user.avatar ? '换' : '入'}}</text></view>
       </view>
       <view class="user">
         <view class="user-name-row">

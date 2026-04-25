@@ -1,0 +1,286 @@
+.page { min-height: 100vh; background: var(--color-bg); }
+.scroll { height: 100vh; box-sizing: border-box; }
+
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  background: rgba(239, 232, 220, 0.92);
+  backdrop-filter: blur(20rpx);
+}
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30rpx;
+}
+.back {
+  width: 64rpx; height: 64rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.back-arrow {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 40rpx;
+  color: var(--color-ink);
+  line-height: 1;
+}
+.page-title { display: flex; align-items: baseline; gap: 12rpx; }
+.t-cn {
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink);
+}
+.t-en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 18rpx;
+  letter-spacing: 3rpx;
+  color: var(--color-ink-faint);
+}
+
+/* 商品摘要 */
+.product {
+  margin: 24rpx 32rpx 0;
+  padding: 28rpx 28rpx;
+  display: flex;
+  gap: 24rpx;
+  background: var(--color-paper);
+  border: 1rpx solid rgba(58, 58, 58, 0.06);
+}
+.product-img {
+  width: 144rpx;
+  height: 180rpx;
+  background: var(--color-bg);
+}
+.product-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  justify-content: center;
+}
+.p-name {
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink);
+}
+.p-sub {
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: var(--color-ink-soft);
+}
+.p-line {
+  margin-top: 6rpx;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  letter-spacing: 2rpx;
+  color: var(--color-ink-faint);
+}
+
+.hairline {
+  height: 1rpx;
+  background: rgba(58, 58, 58, 0.08);
+  margin: 40rpx 32rpx 0;
+}
+
+/* 区块 */
+.section {
+  padding: 36rpx 40rpx 0;
+}
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+.s-cn {
+  font-family: "Songti SC", serif;
+  font-size: 28rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink);
+}
+.s-en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 18rpx;
+  letter-spacing: 3rpx;
+  color: var(--color-ink-faint);
+}
+.counter {
+  margin-left: auto;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  color: var(--color-ink-faint);
+}
+
+/* 评分 */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 8rpx 0 0;
+}
+.rating-cell {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(58, 58, 58, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rating-cell--on {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+.r-char {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 22rpx;
+  color: var(--color-ink-faint);
+}
+.rating-cell--on .r-char {
+  color: var(--color-bg);
+}
+.rating-text {
+  margin-left: 12rpx;
+  font-family: "Songti SC", serif;
+  font-size: 24rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-soft);
+}
+
+/* 文本框 */
+.textarea {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 24rpx;
+  background: var(--color-paper);
+  border: 1rpx solid rgba(58, 58, 58, 0.08);
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  line-height: 1.8;
+  letter-spacing: 2rpx;
+  color: var(--color-ink);
+  box-sizing: border-box;
+}
+.ph {
+  color: var(--color-ink-faint);
+  font-family: "Songti SC", serif;
+  letter-spacing: 2rpx;
+}
+
+/* 晒图 */
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.img-cell {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  background: var(--color-paper);
+  border: 1rpx solid rgba(58, 58, 58, 0.08);
+}
+.img {
+  width: 100%;
+  height: 100%;
+}
+.img-del {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 36rpx; height: 36rpx;
+  border-radius: 50%;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 26rpx;
+  line-height: 1;
+}
+.img-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  border: 1rpx dashed rgba(58, 58, 58, 0.3);
+}
+.img-add--loading {
+  background: rgba(184, 207, 200, 0.2);
+}
+.add-cross {
+  width: 56rpx; height: 56rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(58, 58, 58, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 30rpx;
+  color: var(--color-ink);
+}
+.add-text {
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-soft);
+}
+
+/* 匿名 */
+.anon {
+  margin-top: 36rpx;
+  padding: 32rpx 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.anon-label {
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink);
+}
+
+/* 底栏 */
+.action {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(239, 232, 220, 0.96);
+  backdrop-filter: blur(20rpx);
+  z-index: 30;
+}
+.action-line {
+  height: 1rpx;
+  background: rgba(58, 58, 58, 0.1);
+  margin: 0 32rpx;
+}
+.action-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 24rpx 32rpx;
+}
+.hint {
+  font-family: "Songti SC", serif;
+  font-size: 24rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink-faint);
+}
+.submit {
+  flex: 1;
+  max-width: 360rpx;
+  padding: 22rpx 0;
+  text-align: center;
+  background: rgba(58, 58, 58, 0.4);
+  color: var(--color-bg);
+  font-family: "Songti SC", serif;
+  font-size: 28rpx;
+  letter-spacing: 10rpx;
+}
+.submit--on {
+  background: var(--color-ink);
+}

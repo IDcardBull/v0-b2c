@@ -1,0 +1,126 @@
+<view class="page">
+  <!-- 自定义导航 -->
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <view class="back" bindtap="back">
+        <text class="back-arrow">‹</text>
+      </view>
+      <view class="page-title">
+        <text class="t-cn">评 · 鉴</text>
+        <text class="t-en">REVIEW</text>
+      </view>
+      <view class="back" style="visibility: hidden;"></view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <!-- 商品摘要 -->
+    <view class="product">
+      <image class="product-img" src="{{item.cover}}" mode="aspectFill"></image>
+      <view class="product-meta">
+        <text class="p-name">{{item.name}}</text>
+        <text class="p-sub">{{item.sub}}</text>
+        <text class="p-line">订单 · {{orderCode}}</text>
+      </view>
+    </view>
+
+    <view class="hairline"></view>
+
+    <!-- 评分 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">品 · 鉴</text>
+        <text class="s-en">RATING</text>
+      </view>
+      <view class="rating">
+        <view
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:key="*this"
+          class="rating-cell {{item <= rating ? 'rating-cell--on' : ''}}"
+          data-i="{{item}}"
+          bindtap="onRate"
+        >
+          <text class="r-char">{{item <= rating ? '●' : '○'}}</text>
+        </view>
+        <text class="rating-text">{{ratingText}}</text>
+      </view>
+    </view>
+
+    <!-- 文字 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">题 · 跋</text>
+        <text class="s-en">YOUR WORDS</text>
+        <text class="counter">{{content.length}}/300</text>
+      </view>
+      <textarea
+        class="textarea"
+        placeholder="写下您与这件器物的故事…"
+        placeholder-class="ph"
+        maxlength="300"
+        value="{{content}}"
+        bindinput="onContent"
+        auto-height
+      />
+    </view>
+
+    <!-- 晒图 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">晒 · 图</text>
+        <text class="s-en">PHOTOS</text>
+        <text class="counter">{{images.length}}/9</text>
+      </view>
+      <view class="images">
+        <view
+          wx:for="{{images}}"
+          wx:key="*this"
+          class="img-cell"
+        >
+          <image
+            class="img"
+            src="{{item}}"
+            mode="aspectFill"
+            data-i="{{index}}"
+            bindtap="previewImage"
+          ></image>
+          <view class="img-del" data-i="{{index}}" catchtap="removeImage">
+            <text>×</text>
+          </view>
+        </view>
+        <view
+          wx:if="{{images.length < 9}}"
+          class="img-cell img-add {{uploading ? 'img-add--loading' : ''}}"
+          bindtap="addImage"
+        >
+          <view wx:if="{{!uploading}}" class="add-cross"><text>+</text></view>
+          <text wx:if="{{!uploading}}" class="add-text">添图</text>
+          <text wx:if="{{uploading}}" class="add-text">上传中…</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 匿名 -->
+    <view class="section anon">
+      <text class="anon-label">匿名留鉴</text>
+      <switch
+        checked="{{anonymous}}"
+        bindchange="onAnon"
+        color="#3A3A3A"
+      />
+    </view>
+
+    <view style="height: 240rpx;"></view>
+  </scroll-view>
+
+  <!-- 底栏 -->
+  <view class="action safe-bottom">
+    <view class="action-line"></view>
+    <view class="action-inner">
+      <view class="hint">题 · 跋 · 留 · 鉴</view>
+      <view class="submit {{canSubmit ? 'submit--on' : ''}}" bindtap="submit">
+        <text>{{submitting ? '留鉴中…' : '留 · 鉴'}}</text>
+      </view>
+    </view>
+  </view>
+</view>
