@@ -15,12 +15,19 @@
 
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <!-- 商品摘要 -->
-    <view class="product">
+    <view wx:if="{{item}}" class="product">
       <image class="product-img" src="{{item.mainImage}}" mode="aspectFill"></image>
       <view class="product-meta">
         <text class="p-name">{{item.name}}</text>
-        <text class="p-sub">{{item.sub}}</text>
-        <text class="p-line">订单 · {{orderCode}}</text>
+        <text wx:if="{{item.sub}}" class="p-sub">{{item.sub}}</text>
+        <text wx:if="{{orderCode}}" class="p-line">订单 · {{orderCode}}</text>
+      </view>
+    </view>
+    <view wx:elif="{{!loading}}" class="product product--empty">
+      <view class="product-empty-seal">器</view>
+      <view class="product-meta">
+        <text class="p-name">尚未选择器物</text>
+        <text class="p-sub">请从已购订单中选取需评鉴的器物</text>
       </view>
     </view>
 

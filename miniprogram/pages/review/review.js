@@ -1,6 +1,6 @@
 // pages/review/review.js
 const app = getApp()
-const { products } = require('../../utils/data.js')
+const api = require('../../utils/api.js')
 const { chooseAndUpload } = require('../../utils/upload.js')
 
 const RATING_TEXT = ['', '尚可', '良', '佳', '甚好', '极品']
@@ -9,29 +9,69 @@ Page({
   data: {
     statusBarHeight: 20,
     navBarHeight: 44,
-    item: {},
-    orderCode: 'YM-20260418-0007',
+    item: null,
+    orderCode: '',
+    orderId: '',
     rating: 5,
     ratingText: RATING_TEXT[5],
     content: '',
-    images: [], // 上传后的线上 URL
+    images: [],
     anonymous: false,
     uploading: false,
     submitting: false,
     canSubmit: false,
+    loading: true,
   },
   onLoad(options) {
-    const id = options.id
-    const item = (id && products.find((p) => p.id === id)) || products[0]
-    if (options.order) {
-      this.setData({ orderCode: options.order })
-    }
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
-      item,
+      orderCode: options.order || options.orderNo || '',
+      orderId: options.orderId || '',
     })
-    this.recomputeCanSubmit()
+    if (options.id) {
+      this.loadProduct(options.id)
+    } else if (options.orderId) {
+      this.loadFromOrder(options.orderId)
+    } else {
+      this.setData({ loading: false })
+    }
+  },
+  loadProduct(id) {
+    api.product
+      .detail(id)
+      .then((raw) => {
+        const item = api.normalizeProduct(raw)
+        this.setData({ item, loading: false })
+      })
+      .catch(() => {
+        this.setData({ loading: false })
+        wx.showToast({ title: '器物未找到', icon: 'none' })
+      })
+  },
+  loadFromOrder(orderId) {
+    api.order
+      .detail(orderId)
+      .then((order) => {
+        const items = (order && order.items) || []
+        const first = items[0]
+        if (first) {
+          const item = {
+            id: first.productId || first.id,
+            name: first.productName || first.name || '雅器',
+            mainImage: first.image || first.productImage || '',
+            sub: first.skuSpec || first.specText || '',
+          }
+          this.setData({
+            item,
+            orderCode: order.orderNo || order.orderNumber || this.data.orderCode,
+            loading: false,
+          })
+        } else {
+          this.setData({ loading: false })
+        }
+      })
+      .catch(() => this.setData({ loading: false }))
   },
   back() {
     const pages = getCurrentPages()
@@ -54,7 +94,6 @@ Page({
     const ok = this.data.rating > 0 && this.data.content.trim().length > 0
     this.setData({ canSubmit: ok })
   },
-  // 选择并上传
   addImage() {
     if (this.data.uploading) return
     const that = this
@@ -62,16 +101,15 @@ Page({
     if (remain <= 0) return
     this.setData({ uploading: true })
     chooseAndUpload({ count: remain, sourceType: ['album', 'camera'] })
-      .then(function (urls) {
+      .then((urls) => {
         that.setData({
           images: that.data.images.concat(urls),
           uploading: false,
         })
       })
-      .catch(function (err) {
+      .catch((err) => {
         that.setData({ uploading: false })
-        if (err && err.message === 'CANCELLED') return
-        if (err && err.message === 'OVER_SIZE') return
+        if (err && (err.message === 'CANCELLED' || err.message === 'OVER_SIZE')) return
         wx.showToast({ title: '上传失败', icon: 'none' })
       })
   },
@@ -95,21 +133,30 @@ Page({
       }
       return
     }
+    if (!this.data.item || !this.data.item.id) {
+      wx.showToast({ title: '尚未选择器物', icon: 'none' })
+      return
+    }
     const payload = {
       productId: this.data.item.id,
-      orderCode: this.data.orderCode,
+      orderId: this.data.orderId || undefined,
+      orderNo: this.data.orderCode || undefined,
       rating: this.data.rating,
       content: this.data.content.trim(),
       images: this.data.images,
       anonymous: this.data.anonymous,
     }
     this.setData({ submitting: true })
-    // 此处接入后端评价提交接口（如有），目前以提示模拟
-    setTimeout(() => {
-      this.setData({ submitting: false })
-      wx.showToast({ title: '已留鉴', icon: 'none' })
-      setTimeout(() => this.back(), 600)
-      console.log('[review] submit payload =', payload)
-    }, 400)
+    api.review
+      .create(payload)
+      .then(() => {
+        this.setData({ submitting: false })
+        wx.showToast({ title: '已留鉴', icon: 'none' })
+        setTimeout(() => this.back(), 600)
+      })
+      .catch((err) => {
+        this.setData({ submitting: false })
+        wx.showToast({ title: (err && err.message) || '提交失败', icon: 'none' })
+      })
   },
 })

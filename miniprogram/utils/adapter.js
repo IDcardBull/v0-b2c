@@ -115,14 +115,17 @@ function normalizeProducts(payload) {
 function normalizeUser(user) {
   const nickname = user && (user.nickname || user.name || user.phone)
   const level = user && (user.levelName || (user.level && user.level.name))
+  const motto = user && (user.motto || user.signature || user.bio || user.intro)
+  const collect = user && (user.collectCount || user.favoriteCount || user.collect)
+  const follow = user && (user.followCount || user.footprintCount || user.follow)
   return {
     initial: nickname ? nickname.slice(0, 1) : '釉',
     name: nickname || '无名氏',
     level: level || '入席·甲',
-    motto: '一盏清茗，静听风声。',
-    collect: 0,
-    follow: 0,
-    points: (user && user.points) || 0,
+    motto: motto || '一盏清茗，静听风声。',
+    collect: Number(collect || 0),
+    follow: Number(follow || 0),
+    points: Number((user && user.points) || 0),
     raw: user || null,
   }
 }
