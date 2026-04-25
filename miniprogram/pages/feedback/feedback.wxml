@@ -1,0 +1,137 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <view class="back" bindtap="back">
+        <text class="back-arrow">‹</text>
+      </view>
+      <view class="page-title">
+        <text class="t-cn">客 · 服</text>
+        <text class="t-en">SERVICE</text>
+      </view>
+      <view class="back" style="visibility: hidden;"></view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="hero">
+      <text class="hero-quote">「器有破，意未破；事有难，缘未尽。」</text>
+      <text class="hero-by">主理人 · 复</text>
+    </view>
+
+    <!-- 类型 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">类 · 别</text>
+        <text class="s-en">TYPE</text>
+      </view>
+      <view class="types">
+        <view
+          wx:for="{{types}}"
+          wx:key="key"
+          class="type {{type === item.key ? 'type--on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onType"
+        >
+          <text class="type-cn">{{item.cn}}</text>
+          <text class="type-sub">{{item.sub}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单（可选） -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">订 · 单</text>
+        <text class="s-en">ORDER · OPTIONAL</text>
+      </view>
+      <input
+        class="input"
+        placeholder="可填写订单编号，如 YM-20260418-0007"
+        placeholder-class="ph"
+        value="{{orderCode}}"
+        bindinput="onOrder"
+      />
+    </view>
+
+    <!-- 描述 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">详 · 述</text>
+        <text class="s-en">DESCRIPTION</text>
+        <text class="counter">{{content.length}}/500</text>
+      </view>
+      <textarea
+        class="textarea"
+        placeholder="请详细描述您遇到的问题，便于主理人为您处理…"
+        placeholder-class="ph"
+        maxlength="500"
+        value="{{content}}"
+        bindinput="onContent"
+        auto-height
+      />
+    </view>
+
+    <!-- 凭证图 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">凭 · 证</text>
+        <text class="s-en">EVIDENCE</text>
+        <text class="counter">{{images.length}}/6</text>
+      </view>
+      <view class="images">
+        <view
+          wx:for="{{images}}"
+          wx:key="*this"
+          class="img-cell"
+        >
+          <image
+            class="img"
+            src="{{item}}"
+            mode="aspectFill"
+            data-i="{{index}}"
+            bindtap="previewImage"
+          ></image>
+          <view class="img-del" data-i="{{index}}" catchtap="removeImage">
+            <text>×</text>
+          </view>
+        </view>
+        <view
+          wx:if="{{images.length < 6}}"
+          class="img-cell img-add {{uploading ? 'img-add--loading' : ''}}"
+          bindtap="addImage"
+        >
+          <view wx:if="{{!uploading}}" class="add-cross"><text>+</text></view>
+          <text class="add-text">{{uploading ? '上传中…' : '凭 证'}}</text>
+        </view>
+      </view>
+      <text class="hint-line">破损 / 包装 / 物流单号 / 错发漏发，皆可为证。</text>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="s-cn">联 · 络</text>
+        <text class="s-en">CONTACT</text>
+      </view>
+      <input
+        class="input"
+        placeholder="手机号或微信号"
+        placeholder-class="ph"
+        value="{{contact}}"
+        bindinput="onContact"
+      />
+    </view>
+
+    <view style="height: 240rpx;"></view>
+  </scroll-view>
+
+  <view class="action safe-bottom">
+    <view class="action-line"></view>
+    <view class="action-inner">
+      <view class="hint">主 · 理 · 人 · 回 · 复</view>
+      <view class="submit {{canSubmit ? 'submit--on' : ''}}" bindtap="submit">
+        <text>{{submitting ? '提交中…' : '请 · 复'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

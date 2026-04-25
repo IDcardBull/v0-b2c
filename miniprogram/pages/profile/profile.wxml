@@ -16,8 +16,15 @@
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <!-- 个人信息 -->
     <view class="hero-card">
-      <view class="avatar">
-        <text class="avatar-char">{{user.initial}}</text>
+      <view class="avatar" bindtap="onAvatarTap">
+        <image
+          wx:if="{{user.avatar}}"
+          class="avatar-img"
+          src="{{user.avatar}}"
+          mode="aspectFill"
+        ></image>
+        <text wx:else class="avatar-char">{{user.initial}}</text>
+        <view class="avatar-edit"><text>{{user.avatar ? '换' : '入'}}</text></view>
       </view>
       <view class="user">
         <view class="user-name-row">
@@ -74,7 +81,7 @@
           data-id="{{item.id}}"
           bindtap="goDetail"
         >
-          <image src="{{item.cover}}" mode="aspectFill" class="coll-img"></image>
+          <image src="{{item.mainImage}}" mode="aspectFill" class="coll-img"></image>
           <text class="coll-title">{{item.name}}</text>
           <text class="coll-price price"><text class="unit">¥</text>{{item.price}}</text>
         </view>
@@ -102,9 +109,9 @@
     </view>
 
     <view class="footer">
-      <view class="footer-seal">央 · 茗</view>
+      <view class="footer-seal">釉 · 见</view>
       <text class="footer-line">器 · 以 · 载 · 道</text>
-      <text class="footer-en">YANGMING CERAMICS · est. 2016</text>
+      <text class="footer-en">YOUJIAN CERAMICS · est. 2016</text>
     </view>
 
     <view style="height: 200rpx;"></view>

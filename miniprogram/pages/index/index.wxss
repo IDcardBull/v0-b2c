@@ -61,6 +61,27 @@
   width: 100%;
   height: 100%;
 }
+.hero-swiper {
+  width: 100%;
+  height: 100%;
+}
+.hero-paginator {
+  position: absolute;
+  bottom: 28rpx;
+  left: 52rpx;
+  display: flex;
+  gap: 10rpx;
+  z-index: 3;
+}
+.hp-bar {
+  width: 28rpx;
+  height: 2rpx;
+  background: rgba(58, 58, 58, 0.25);
+}
+.hp-bar--on {
+  width: 56rpx;
+  background: var(--color-ink);
+}
 .hero-mask {
   position: absolute;
   inset: 0;
@@ -188,36 +209,32 @@
   color: var(--color-ink-faint);
 }
 
-/* 瀑布流 */
+/* 商品宫格：严格双列等宽等高 */
 .grid {
   padding: 0 32rpx;
   display: flex;
-  gap: 16rpx;
-}
-.col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 40rpx;
-}
-.spacer {
-  height: 60rpx;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 56rpx;
 }
 .card {
+  width: 48%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
 }
 .card-img {
   width: 100%;
+  height: 460rpx;
   background: var(--color-paper);
   border-radius: 4rpx;
+  margin-bottom: 18rpx;
 }
 .card-meta {
-  padding: 0 6rpx;
+  padding: 0 4rpx;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 6rpx;
 }
 .card-title-row {
   display: flex;
@@ -226,10 +243,14 @@
   gap: 10rpx;
 }
 .card-title {
+  flex: 1;
   font-family: "Songti SC", serif;
   font-size: 26rpx;
   letter-spacing: 2rpx;
   color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .seal {
   flex-shrink: 0;
@@ -245,6 +266,9 @@
   font-size: 20rpx;
   letter-spacing: 2rpx;
   color: var(--color-ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card-price {
   font-size: 26rpx;

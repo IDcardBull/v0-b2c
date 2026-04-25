@@ -5,6 +5,8 @@
     "pages/cart/cart",
     "pages/profile/profile",
     "pages/detail/detail",
+    "pages/review/review",
+    "pages/feedback/feedback"
     "pages/login/login",
     "pages/address/address",
     "pages/checkout/checkout",

@@ -111,7 +111,7 @@
           data-id="{{item.id}}"
           bindtap="goOther"
         >
-          <image src="{{item.cover}}" mode="aspectFill" class="related-img"></image>
+          <image src="{{item.mainImage}}" mode="aspectFill" class="related-img"></image>
           <text class="related-title">{{item.name}}</text>
           <text class="related-price price"><text class="unit">¥</text>{{item.price}}</text>
         </view>

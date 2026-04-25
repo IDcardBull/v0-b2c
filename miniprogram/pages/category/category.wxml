@@ -49,7 +49,7 @@
           data-id="{{item.id}}"
           bindtap="goDetail"
         >
-          <image class="item-img" src="{{item.cover}}" mode="aspectFill"></image>
+          <image class="item-img" src="{{item.mainImage}}" mode="aspectFill"></image>
           <view class="item-meta">
             <view class="item-title-row">
               <text class="item-title">{{item.name}}</text>

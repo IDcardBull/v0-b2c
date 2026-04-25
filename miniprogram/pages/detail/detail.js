@@ -1,5 +1,7 @@
 // pages/detail/detail.js
 const app = getApp()
+const { products: fallbackProducts } = require('../../utils/data.js')
+const { getProduct, getProducts } = require('../../utils/api.js')
 const api = require('../../utils/api.js')
 const adapter = require('../../utils/adapter.js')
 const { products } = require('../../utils/data.js')
@@ -15,6 +17,7 @@ Page({
     collected: false,
     showTitle: false,
     cartCount: 0,
+    loading: true,
   },
   onLoad(options) {
     const id = options.id
@@ -23,6 +26,8 @@ Page({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
     })
+    this.fetchDetail(id)
+    this.fetchRelated(id)
     this.renderDetail(fallbackItem, products.filter((p) => p.id !== fallbackItem.id).slice(0, 6))
     this.loadDetail(id)
     this.refreshCartCount()
@@ -47,6 +52,37 @@ Page({
   },
   onShow() {
     this.refreshCartCount()
+  },
+  fetchDetail(id) {
+    const fb = fallbackProducts.find((p) => p.id === id) || fallbackProducts[0]
+    return getProduct(id)
+      .then((item) => {
+        if (!item) throw new Error('EMPTY')
+        this.applyItem(item)
+      })
+      .catch(() => {
+        // 兜底
+        this.applyItem(fb)
+      })
+  },
+  applyItem(item) {
+    const gallery = (item.images && item.images.length > 0)
+      ? item.images
+      : item.mainImage ? [item.mainImage] : []
+    this.setData({ item, gallery, loading: false })
+  },
+  fetchRelated(currentId) {
+    return getProducts({ pageSize: 8 })
+      .then((list) => {
+        const arr = (list && list.length > 0 ? list : fallbackProducts).filter(
+          (p) => String(p.id) !== String(currentId)
+        )
+        this.setData({ related: arr.slice(0, 6) })
+      })
+      .catch(() => {
+        const arr = fallbackProducts.filter((p) => String(p.id) !== String(currentId))
+        this.setData({ related: arr.slice(0, 6) })
+      })
   },
   refreshCartCount() {
     const cart = app.loadCart ? app.loadCart() : (app.globalData.cart || [])
@@ -82,7 +118,7 @@ Page({
     wx.switchTab({ url: '/pages/cart/cart' })
   },
   goService() {
-    wx.showToast({ title: '主理人 · 稍候即达', icon: 'none' })
+    wx.navigateTo({ url: '/pages/feedback/feedback?type=consult' })
   },
   viewMaker() {
     wx.showToast({ title: '作坊志即将开放', icon: 'none' })
@@ -90,6 +126,8 @@ Page({
   addToCart() {
     const { item } = this.data
     if (!item || !item.id) return
+    const cart = app.globalData.cart || []
+    const exist = cart.find((i) => i.id === item.id)
     const cart = app.loadCart ? app.loadCart() : (app.globalData.cart || [])
     const skuId = item.skuId || item.id
     const exist = cart.find((i) => `${i.skuId || i.id}` === `${skuId}`)
@@ -103,7 +141,8 @@ Page({
         name: item.name,
         sub: item.skuSpec || item.sub,
         price: item.price,
-        cover: item.cover,
+        // 购物袋只需缩略图：取主图作为 cover 字段
+        cover: item.mainImage,
         tag: item.tag,
         qty: 1,
         checked: true,
@@ -124,8 +163,9 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: `央茗 · ${this.data.item.name}`,
-      path: `/pages/detail/detail?id=${this.data.item.id}`,
+      title: `釉见 · ${this.data.item.name || ''}`,
+      path: `/pages/detail/detail?id=${this.data.item.id || ''}`,
+      imageUrl: this.data.item.mainImage || '',
     }
   },
 })

@@ -1,5 +1,10 @@
 // pages/category/category.js
 const app = getApp()
+const { categories, products: fallbackProducts } = require('../../utils/data.js')
+const { getProducts } = require('../../utils/api.js')
+
+// 前端固定品类与后端 categoryId 的软映射
+const CAT_TO_ID = { tea: 1, vase: 2, incense: 3, art: 4 }
 const api = require('../../utils/api.js')
 const adapter = require('../../utils/adapter.js')
 const fallback = require('../../utils/data.js')
@@ -12,6 +17,7 @@ Page({
     current: 'tea',
     currentMeta: {},
     list: [],
+    loading: false,
     page: 1,
     pageSize: 10,
     loading: false,
@@ -49,6 +55,23 @@ Page({
   onTapCat(e) {
     this.select(e.currentTarget.dataset.id)
   },
+  select(id) {
+    const meta = categories.find((c) => c.id === id) || categories[0]
+    this.setData({ current: meta.id, currentMeta: meta, loading: true })
+    const categoryId = CAT_TO_ID[meta.id]
+    getProducts({ categoryId: categoryId, pageSize: 60 })
+      .then((list) => {
+        // 后端若不支持按 categoryId 过滤，则前端再过一遍
+        const filtered = list.filter(
+          (p) => !p.category || p.category === meta.id || p.categoryId === categoryId
+        )
+        if (filtered.length === 0) throw new Error('EMPTY')
+        this.setData({ list: filtered, loading: false })
+      })
+      .catch(() => {
+        const fb = fallbackProducts.filter((p) => p.category === meta.id)
+        this.setData({ list: fb, loading: false })
+      })
   async select(id) {
     const meta = this.data.categories.find((c) => `${c.id}` === `${id}`) || this.data.categories[0]
     if (!meta) return
