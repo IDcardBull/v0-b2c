@@ -95,7 +95,16 @@ Page({
     const pages = getCurrentPages()
     const prev = pages[pages.length - 2]
     const item = this.data.list.find((addr) => `${addr.id}` === `${id}`)
-    if (prev && prev.route === 'pages/checkout/checkout' && item) {
+    if (!prev || !item) return
+    // 结算页：直接写入并返回
+    if (prev.route === 'pages/checkout/checkout') {
+      prev.setData({ address: item })
+      wx.navigateBack()
+      return
+    }
+    // 购物袋：缓存并返回
+    if (prev.route === 'pages/cart/cart') {
+      wx.setStorageSync('cart_address', item)
       prev.setData({ address: item })
       wx.navigateBack()
     }

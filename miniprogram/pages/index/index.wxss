@@ -32,14 +32,14 @@
 }
 .brand-cn {
   font-family: "Songti SC", serif;
-  font-size: 34rpx;
-  letter-spacing: 8rpx;
+  font-size: var(--fs-h2);
+  letter-spacing: 12rpx;
   color: var(--color-ink);
 }
 .brand-en {
   font-family: "PingFang SC", sans-serif;
-  font-size: 18rpx;
-  letter-spacing: 3rpx;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
   color: var(--color-ink-faint);
 }
 
@@ -156,14 +156,14 @@
 }
 .section-cn {
   font-family: "Songti SC", serif;
-  font-size: 30rpx;
-  letter-spacing: 10rpx;
+  font-size: 32rpx;
+  letter-spacing: 12rpx;
   color: var(--color-ink);
 }
 .section-en {
   font-family: "PingFang SC", sans-serif;
-  font-size: 18rpx;
-  letter-spacing: 3rpx;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
   color: var(--color-ink-faint);
 }
 .cats-row {
@@ -198,14 +198,14 @@
 }
 .cat-cn {
   font-family: "Songti SC", serif;
-  font-size: 28rpx;
-  letter-spacing: 4rpx;
+  font-size: 30rpx;
+  letter-spacing: 6rpx;
   color: var(--color-ink);
 }
 .cat-en {
   font-family: "PingFang SC", sans-serif;
-  font-size: 18rpx;
-  letter-spacing: 2rpx;
+  font-size: 20rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink-faint);
 }
 
@@ -245,8 +245,8 @@
 .card-title {
   flex: 1;
   font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  letter-spacing: 2rpx;
+  font-size: 28rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
@@ -255,15 +255,15 @@
 .seal {
   flex-shrink: 0;
   font-family: "Songti SC", serif;
-  font-size: 18rpx;
-  letter-spacing: 2rpx;
+  font-size: 20rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink-soft);
-  padding: 2rpx 10rpx;
+  padding: 4rpx 12rpx;
   border: 1rpx solid rgba(58, 58, 58, 0.18);
 }
 .card-sub {
   font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
+  font-size: 22rpx;
   letter-spacing: 2rpx;
   color: var(--color-ink-faint);
   white-space: nowrap;
@@ -271,8 +271,8 @@
   text-overflow: ellipsis;
 }
 .card-price {
-  font-size: 26rpx;
-  padding-top: 4rpx;
+  font-size: 30rpx;
+  padding-top: 6rpx;
 }
 
 /* 结尾 */

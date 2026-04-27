@@ -24,14 +24,14 @@
 }
 .t-cn {
   font-family: "Songti SC", serif;
-  font-size: 30rpx;
-  letter-spacing: 12rpx;
+  font-size: var(--fs-h2);
+  letter-spacing: 14rpx;
   color: var(--color-ink);
-  padding-left: 12rpx;
+  padding-left: 14rpx;
 }
 .t-en {
   font-family: "PingFang SC", sans-serif;
-  font-size: 16rpx;
+  font-size: 18rpx;
   letter-spacing: 4rpx;
   color: var(--color-ink-faint);
 }

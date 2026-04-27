@@ -1,5 +1,6 @@
 // pages/cart/cart.js
 const app = getApp()
+const api = require('../../utils/api.js')
 
 Page({
   data: {
@@ -11,6 +12,7 @@ Page({
     allChecked: false,
     total: 0,
     selectedCount: 0,
+    address: {},
   },
   onLoad() {
     this.setData({
@@ -20,10 +22,44 @@ Page({
   },
   onShow() {
     this.syncFromGlobal()
+    this.loadAddress()
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2 })
+      this.getTabBar().setData({ selected: 2, hidden: true })
       this.getTabBar().refreshCount()
     }
+  },
+  onHide() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ hidden: false })
+    }
+  },
+  onUnload() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ hidden: false })
+    }
+  },
+  loadAddress() {
+    // 优先用购物袋已选地址
+    const cached = wx.getStorageSync('cart_address')
+    if (cached && cached.id) {
+      this.setData({ address: cached })
+      return
+    }
+    // 否则取默认地址
+    api.address
+      .list()
+      .then((list) => {
+        const arr = Array.isArray(list) ? list : []
+        const def = arr.find((a) => a.isDefault) || arr[0]
+        if (def) {
+          this.setData({ address: def })
+          wx.setStorageSync('cart_address', def)
+        }
+      })
+      .catch(() => {})
+  },
+  chooseAddress() {
+    wx.navigateTo({ url: '/pages/address/address?from=cart' })
   },
   syncFromGlobal() {
     const raw = app.loadCart ? app.loadCart() : (wx.getStorageSync('cart') || [])
@@ -108,24 +144,27 @@ Page({
     wx.switchTab({ url: '/pages/index/index' })
   },
   checkout() {
-    const { list, total, note } = this.data
+    const { list, total, note, address } = this.data
     const chosen = list.filter((i) => i.checked)
     if (chosen.length === 0) {
       wx.showToast({ title: '请选择器物', icon: 'none' })
       return
     }
-    wx.showModal({
-      title: '结 · 算',
-      content: `共 ${chosen.length} 件器物，合计 ¥${total}。`,
-      cancelText: '再想想',
-      confirmText: '前往付款',
-      success: (res) => {
-        if (res.confirm) {
-          wx.setStorageSync('checkoutItems', chosen)
-          wx.setStorageSync('checkoutNote', note)
-          wx.navigateTo({ url: '/pages/checkout/checkout' })
-        }
-      },
-    })
+    if (!address || !address.id) {
+      wx.showModal({
+        title: '尚无寄达地址',
+        content: '请先选择或新增收件地址，方可结算。',
+        cancelText: '稍后',
+        confirmText: '去添加',
+        success: (res) => {
+          if (res.confirm) this.chooseAddress()
+        },
+      })
+      return
+    }
+    wx.setStorageSync('checkoutItems', chosen)
+    wx.setStorageSync('checkoutNote', note)
+    wx.setStorageSync('checkoutAddress', address)
+    wx.navigateTo({ url: '/pages/checkout/checkout' })
   },
 })

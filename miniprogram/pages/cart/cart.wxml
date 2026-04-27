@@ -6,7 +6,7 @@
         <text class="t-cn">购物袋</text>
         <text class="t-en">BAG</text>
       </view>
-      <text class="edit" bindtap="toggleEdit">{{editing ? '完成' : '管理'}}</text>
+      <text wx:if="{{list.length > 0}}" class="edit" bindtap="toggleEdit">{{editing ? '完成' : '管理'}}</text>
     </view>
   </view>
 
@@ -23,6 +23,26 @@
 
     <!-- 列表 -->
     <block wx:else>
+      <!-- 地址条 -->
+      <view class="addr-bar" bindtap="chooseAddress">
+        <view class="addr-icon"><text>寄</text></view>
+        <view wx:if="{{address.id}}" class="addr-content">
+          <view class="addr-line-1">
+            <text class="addr-name">{{address.receiver}}</text>
+            <text class="addr-phone">{{address.phone}}</text>
+            <text wx:if="{{address.isDefault}}" class="seal">默认</text>
+          </view>
+          <text class="addr-line-2">{{address.province}}{{address.city}}{{address.district}} {{address.detail}}</text>
+        </view>
+        <view wx:else class="addr-content">
+          <view class="addr-line-1">
+            <text class="addr-name">点此选择寄达地址</text>
+          </view>
+          <text class="addr-line-2 addr-line-2--empty">添加或选择一处收件地址，方可结算</text>
+        </view>
+        <view class="addr-arrow">›</view>
+      </view>
+
       <view class="list">
         <view
           wx:for="{{list}}"
@@ -66,13 +86,12 @@
       </view>
 
       <view class="end-text">— 止 —</view>
-      <view style="height: 260rpx;"></view>
+      <view style="height: 240rpx;"></view>
     </block>
   </scroll-view>
 
   <!-- 结算栏 -->
-  <view wx:if="{{list.length > 0}}" class="checkout safe-bottom">
-    <view class="checkout-line"></view>
+  <view wx:if="{{list.length > 0}}" class="checkout">
     <view class="checkout-inner">
       <view class="all {{allChecked ? 'all--on' : ''}}" bindtap="toggleAll">
         <view class="check {{allChecked ? 'check--on' : ''}}">
@@ -89,5 +108,6 @@
         <text wx:if="{{selectedCount > 0}}" class="pay-count">({{selectedCount}})</text>
       </view>
     </view>
+    <view class="safe-bar"></view>
   </view>
 </view>

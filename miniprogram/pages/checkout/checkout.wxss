@@ -25,14 +25,14 @@
 .page-title { display: flex; align-items: baseline; gap: 14rpx; }
 .t-cn {
   font-family: "Songti SC", serif;
-  font-size: 32rpx;
-  letter-spacing: 10rpx;
+  font-size: var(--fs-h2);
+  letter-spacing: 12rpx;
   color: var(--color-ink);
 }
 .t-en {
   font-family: "PingFang SC", sans-serif;
-  font-size: 18rpx;
-  letter-spacing: 3rpx;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
   color: var(--color-ink-faint);
 }
 
