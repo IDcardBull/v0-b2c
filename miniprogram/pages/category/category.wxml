@@ -19,19 +19,33 @@
   <view class="body" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <!-- 左侧分类 -->
     <scroll-view scroll-y class="rail">
-      <view
-        wx:for="{{categories}}"
-        wx:key="id"
-        class="rail-item {{current === item.id ? 'rail-item--on' : ''}}"
-        data-id="{{item.id}}"
-        bindtap="onTapCat"
-      >
-        <view class="rail-bar"></view>
-        <view class="rail-text">
-          <text class="rail-cn">{{item.name}}</text>
-          <text class="rail-en">{{item.sub}}</text>
+      <block wx:for="{{categories}}" wx:key="id">
+        <view
+          class="rail-item rail-item--parent {{current === item.id ? 'rail-item--on' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onTapCat"
+        >
+          <view class="rail-bar"></view>
+          <view class="rail-text">
+            <text class="rail-cn">{{item.name}}</text>
+            <text class="rail-en">{{item.sub}}</text>
+          </view>
         </view>
-      </view>
+        <view
+          wx:for="{{item.children}}"
+          wx:for-item="child"
+          wx:key="id"
+          class="rail-item rail-item--child {{current === child.id ? 'rail-item--on' : ''}}"
+          data-id="{{child.id}}"
+          bindtap="onTapCat"
+        >
+          <view class="rail-bar"></view>
+          <view class="rail-text">
+            <text class="rail-cn">{{child.name}}</text>
+            <text class="rail-en">{{child.sub}}</text>
+          </view>
+        </view>
+      </block>
     </scroll-view>
 
     <!-- 右侧商品 -->

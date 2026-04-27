@@ -93,8 +93,18 @@
 .rail-item {
   display: flex;
   align-items: stretch;
-  padding: 28rpx 0 28rpx 30rpx;
-  gap: 16rpx;
+  padding: 26rpx 0 26rpx 24rpx;
+  gap: 14rpx;
+}
+.rail-item--child {
+  padding: 18rpx 0 18rpx 54rpx;
+}
+.rail-item--child .rail-cn {
+  font-size: 23rpx;
+  letter-spacing: 3rpx;
+}
+.rail-item--child .rail-en {
+  font-size: 16rpx;
 }
 .rail-bar {
   width: 2rpx;

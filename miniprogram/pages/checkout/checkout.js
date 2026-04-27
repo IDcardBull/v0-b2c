@@ -78,6 +78,8 @@ Page({
     this.setData({ submitting: true })
     try {
       const order = await api.order.create({
+        channel: 'retail',
+        source: 'miniprogram_a',
         items,
         addressId: this.data.address.id,
         remark: this.data.remark,

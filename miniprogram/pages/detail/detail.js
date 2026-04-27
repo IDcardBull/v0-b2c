@@ -44,6 +44,12 @@ Page({
   fetchDetail(id) {
     return api.product.detail(id)
       .then((raw) => {
+        const raw = data
+        if (!raw || raw.retailEnabled !== true) {
+          wx.showToast({ title: '商品已下架', icon: 'none' })
+          this.setData({ loading: false })
+          return
+        }
         const item = api.normalizeProduct(raw)
         if (!item) throw new Error('EMPTY')
         this.applyItem(item)
@@ -89,7 +95,7 @@ Page({
     this.setData({ optionView })
   },
   fetchRelated(currentId) {
-    return api.getProducts({ pageSize: 8 })
+    return api.getProducts({ pageSize: 8, channel: 'retail' })
       .then((list) => {
         const arr = (list && list.length > 0 ? list : fallback.products).filter(
           (p) => String(p.id) !== String(currentId),
@@ -182,6 +188,11 @@ Page({
     }
     if ((selectedSku.stock || 0) < qty) {
       wx.showToast({ title: '库存不足', icon: 'none' })
+      return
+    }
+    if (item.retailEnabled !== true) {
+      wx.showToast({ title: '商品暂不支持零售购买', icon: 'none' })
+      this.setData({ sheetVisible: false })
       return
     }
     const cart = app.loadCart ? app.loadCart() : (app.globalData.cart || [])
