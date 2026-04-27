@@ -1,4 +1,4 @@
-<view class="tabbar safe-bottom">
+<view class="tabbar safe-bottom {{hidden ? 'tabbar--hidden' : ''}}">
   <view class="tabbar-line"></view>
   <view class="tabbar-row">
     <view

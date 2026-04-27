@@ -23,8 +23,8 @@
   line-height: 1;
 }
 .page-title { display: flex; align-items: baseline; gap: 14rpx; }
-.t-cn { font-family: "Songti SC", serif; font-size: 32rpx; letter-spacing: 10rpx; color: var(--color-ink); }
-.t-en { font-family: "PingFang SC", sans-serif; font-size: 18rpx; letter-spacing: 3rpx; color: var(--color-ink-faint); }
+.t-cn { font-family: "Songti SC", serif; font-size: var(--fs-h2); letter-spacing: 12rpx; color: var(--color-ink); }
+.t-en { font-family: "PingFang SC", sans-serif; font-size: 20rpx; letter-spacing: 4rpx; color: var(--color-ink-faint); }
 
 /* Tabs */
 .tabs {
@@ -45,8 +45,8 @@
   align-items: center;
   justify-content: center;
   font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  letter-spacing: 4rpx;
+  font-size: 28rpx;
+  letter-spacing: 6rpx;
   color: var(--color-ink-faint);
 }
 .tab--on { color: var(--color-ink); }
@@ -129,8 +129,8 @@
 }
 .goods-row:last-child { border-bottom: none; }
 .goods-img {
-  width: 140rpx;
-  height: 160rpx;
+  width: 160rpx;
+  height: 180rpx;
   background: var(--color-card);
   flex-shrink: 0;
 }
@@ -143,8 +143,8 @@
 }
 .goods-name {
   font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  letter-spacing: 3rpx;
+  font-size: 28rpx;
+  letter-spacing: 4rpx;
   color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
@@ -153,11 +153,11 @@
 .goods-spec {
   align-self: flex-start;
   font-family: "Songti SC", serif;
-  font-size: 20rpx;
-  letter-spacing: 2rpx;
+  font-size: 22rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink-soft);
   background: rgba(58, 58, 58, 0.05);
-  padding: 4rpx 12rpx;
+  padding: 6rpx 14rpx;
 }
 .goods-bottom {
   margin-top: auto;

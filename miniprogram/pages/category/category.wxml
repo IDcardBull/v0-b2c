@@ -27,10 +27,7 @@
         bindtap="onTapCat"
       >
         <view class="rail-bar"></view>
-        <view class="rail-text">
-          <text class="rail-cn">{{item.name}}</text>
-          <text class="rail-en">{{item.sub}}</text>
-        </view>
+        <text class="rail-cn">{{item.name}}</text>
       </view>
     </scroll-view>
 

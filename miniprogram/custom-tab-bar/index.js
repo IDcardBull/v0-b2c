@@ -5,6 +5,7 @@ Component({
   data: {
     selected: 0,
     cartCount: 0,
+    hidden: false,
     list: [
       { pagePath: '/pages/index/index', text: '首页' },
       { pagePath: '/pages/category/category', text: '分类' },

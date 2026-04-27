@@ -6,6 +6,12 @@
   background: #EFE8DC;
   padding-top: 12rpx;
   z-index: 99;
+  transform: translateY(0);
+  transition: transform 0.25s ease;
+}
+.tabbar--hidden {
+  transform: translateY(120%);
+  pointer-events: none;
 }
 
 .tabbar-line {
@@ -48,10 +54,10 @@
 
 .tab-label {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 24rpx;
-  letter-spacing: 6rpx;
+  font-size: 26rpx;
+  letter-spacing: 8rpx;
   color: #A69F92;
-  padding-left: 6rpx;
+  padding-left: 8rpx;
 }
 
 .tab--on .tab-label {
