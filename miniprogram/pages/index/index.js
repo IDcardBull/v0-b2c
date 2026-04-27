@@ -2,7 +2,6 @@
 const app = getApp()
 const fallback = require('../../utils/data.js')
 const api = require('../../utils/api.js')
-const adapter = require('../../utils/adapter.js')
 
 Page({
   data: {
@@ -64,13 +63,13 @@ Page({
       })
   },
   loadProducts() {
-    return api.getProducts({ pageSize: 20 })
+    return api.getProducts({ page: 1, pageSize: 20, channel: 'retail' })
       .then((list) => {
-        if (!list || list.length === 0) throw new Error('EMPTY')
-        this.setData({ list })
+        this.setData({ list: list || [] })
       })
       .catch(() => {
-        this.setData({ list: fallback.products })
+        this.setData({ list: [] })
+        wx.showToast({ title: '商品接口获取失败', icon: 'none' })
       })
       .then(() => this.setData({ loading: false }))
   },

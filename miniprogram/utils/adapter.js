@@ -71,16 +71,19 @@ function normalizeCategories(payload) {
   return pickList(payload).map((item, index) => normalizeCategory(item, index))
 }
 
+function isRetailProduct(product) {
+  return product && product.retailEnabled === true
+}
+
+function filterRetailProducts(products) {
+  return (products || []).filter(isRetailProduct)
+}
+
 function normalizeProduct(product, index = 0) {
   const sku = firstSku(product) || {}
   const images = product.images || product.imageList || product.gallery || product.pictures || []
-  const cover = pickImage(
-    product.cover || product.coverUrl || product.image || product.mainImage || images,
-    index,
-  )
-  const gallery = (Array.isArray(images) ? images : [images])
-    .map((img, i) => pickImage(img, i))
-    .filter(Boolean)
+  const cover = pickImage(product.cover || product.coverUrl || product.image || product.mainImage || images, index)
+  const gallery = (Array.isArray(images) ? images : [images]).map((img, i) => pickImage(img, i)).filter(Boolean)
   const specs = []
   const skuLabel = skuText(sku)
   if (skuLabel) specs.push(`规格 ${skuLabel}`)
@@ -105,11 +108,17 @@ function normalizeProduct(product, index = 0) {
     intro: product.intro || product.description || product.detail || '此器暂未题款，待主理人补录。',
     specs: product.specs || specs,
     rawSkus: product.skus || product.skuList || [],
+    retailEnabled: product.retailEnabled === true,
+    wholesaleEnabled: product.wholesaleEnabled === true,
   }
 }
 
 function normalizeProducts(payload) {
   return pickList(payload).map((item, index) => normalizeProduct(item, index))
+}
+
+function normalizeRetailProducts(payload) {
+  return filterRetailProducts(pickList(payload)).map((item, index) => normalizeProduct(item, index))
 }
 
 function normalizeUser(user) {
@@ -159,16 +168,7 @@ function normalizeOrderStatus(status) {
 function normalizeOrderItem(item, index = 0) {
   const product = item.product || {}
   const skuObj = item.sku || {}
-  const image = pickImage(
-    item.image ||
-      item.productImage ||
-      item.cover ||
-      product.cover ||
-      product.mainImage ||
-      product.image ||
-      skuObj.image,
-    index,
-  )
+  const image = pickImage(item.image || item.productImage || item.cover || product.cover || product.mainImage || product.image || skuObj.image, index)
   return {
     id: item.id,
     productId: item.productId || product.id,
@@ -206,11 +206,7 @@ function normalizeOrder(order) {
   const status = order.status || 'pending_pay'
   const items = (order.items || order.orderItems || []).map((it, i) => normalizeOrderItem(it, i))
   const totalQty = items.reduce((s, x) => s + (x.quantity || 0), 0)
-  const subtotal = Number(
-    order.subtotal ||
-      order.itemsTotal ||
-      items.reduce((s, x) => s + x.price * x.quantity, 0),
-  )
+  const subtotal = Number(order.subtotal || order.itemsTotal || items.reduce((s, x) => s + x.price * x.quantity, 0))
   const freight = Number(order.freight || order.shippingFee || 0)
   const discount = Number(order.discount || order.discountAmount || 0)
   const total = Number(order.totalAmount || order.total || order.payAmount || 0)
@@ -243,6 +239,9 @@ function normalizeOrder(order) {
 module.exports = {
   pickList,
   pickImage,
+  isRetailProduct,
+  filterRetailProducts,
+  normalizeRetailProducts,
   normalizeCategories,
   normalizeCategory,
   normalizeProducts,

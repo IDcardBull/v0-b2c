@@ -94,9 +94,19 @@
 .rail-item {
   position: relative;
   display: flex;
-  align-items: center;
-  padding: 36rpx 0 36rpx 28rpx;
+  align-items: stretch;
+  padding: 26rpx 0 26rpx 24rpx;
   gap: 14rpx;
+}
+.rail-item--child {
+  padding: 18rpx 0 18rpx 54rpx;
+}
+.rail-item--child .rail-cn {
+  font-size: 23rpx;
+  letter-spacing: 3rpx;
+}
+.rail-item--child .rail-en {
+  font-size: 16rpx;
 }
 .rail-bar {
   width: 3rpx;
