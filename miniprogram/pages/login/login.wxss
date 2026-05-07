@@ -1,7 +1,7 @@
 .page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(255,255,255,.38) 0, rgba(255,255,255,0) 34%),
+    radial-gradient(circle at top left, rgba(255,255,255,.42) 0, rgba(255,255,255,0) 34%),
     linear-gradient(180deg, #f4ede2 0%, #efe8dc 52%, #ece3d6 100%);
   position: relative;
   overflow: hidden;
@@ -9,21 +9,21 @@
 .bg-orb {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255,255,255,.24);
-  filter: blur(10rpx);
+  filter: blur(16rpx);
 }
 .bg-orb--1 {
-  width: 280rpx;
-  height: 280rpx;
-  top: 140rpx;
-  right: -80rpx;
+  width: 320rpx;
+  height: 320rpx;
+  top: 120rpx;
+  right: -100rpx;
+  background: rgba(184, 207, 200, .18);
 }
 .bg-orb--2 {
-  width: 220rpx;
-  height: 220rpx;
-  bottom: 200rpx;
-  left: -70rpx;
-  background: rgba(214, 226, 220, .24);
+  width: 260rpx;
+  height: 260rpx;
+  bottom: 180rpx;
+  left: -80rpx;
+  background: rgba(200, 168, 130, .12);
 }
 .navbar {
   position: fixed;
@@ -31,8 +31,9 @@
   left: 0;
   right: 0;
   z-index: 20;
-  background: rgba(239,232,220,.62);
-  backdrop-filter: blur(24rpx);
+  background: rgba(239,232,220,.65);
+  backdrop-filter: saturate(180%) blur(24rpx);
+  -webkit-backdrop-filter: saturate(180%) blur(24rpx);
 }
 .navbar-inner {
   display: flex;
@@ -51,6 +52,10 @@
   font-size: 52rpx;
   color: var(--color-ink);
   font-family: "PingFang SC", sans-serif;
+  transition: transform 0.2s ease;
+}
+.back:active {
+  transform: scale(0.85);
 }
 .page-title {
   display: flex;
@@ -62,12 +67,14 @@
   font-size: var(--fs-h2);
   letter-spacing: 12rpx;
   color: var(--color-ink);
+  font-weight: 600;
 }
 .t-en {
   font-family: "PingFang SC", sans-serif;
   font-size: 20rpx;
   letter-spacing: 4rpx;
   color: var(--color-ink-faint);
+  opacity: 0.7;
 }
 .login-wrap {
   min-height: 100vh;
@@ -80,10 +87,12 @@
 }
 .hero-card {
   width: 100%;
-  padding: 40rpx 30rpx 34rpx;
-  background: rgba(246, 241, 230, 0.94);
-  border: 1rpx solid rgba(58,58,58,.07);
-  box-shadow: 0 20rpx 60rpx rgba(58,58,58,.08);
+  padding: 44rpx 32rpx 38rpx;
+  background: rgba(246, 241, 230, 0.95);
+  border: 1rpx solid rgba(58,58,58,.05);
+  box-shadow: 0 24rpx 72rpx rgba(58,58,58,.1), 0 8rpx 24rpx rgba(58,58,58,.04);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8rpx);
 }
 .hero-top {
   display: flex;
@@ -95,13 +104,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
+  gap: 14rpx;
   flex-shrink: 0;
 }
 .seal-lg {
-  width: 132rpx;
-  height: 132rpx;
-  border: 1rpx solid rgba(58,58,58,.3);
+  width: 136rpx;
+  height: 136rpx;
+  border: 1.5rpx solid rgba(58,58,58,.2);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,7 +119,9 @@
   font-size: 30rpx;
   letter-spacing: 4rpx;
   color: var(--color-ink);
-  background: rgba(255,255,255,.42);
+  background: rgba(255,255,255,.5);
+  box-shadow: var(--shadow-sm);
+  transform: rotate(-2deg);
 }
 .brand-en {
   font-family: "PingFang SC", sans-serif;
@@ -118,12 +130,13 @@
   letter-spacing: 4rpx;
   color: var(--color-ink-faint);
   text-align: center;
+  opacity: 0.8;
 }
 .hero-copy {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 12rpx;
   padding-top: 8rpx;
 }
 .eyebrow {
@@ -138,6 +151,7 @@
   letter-spacing: 14rpx;
   color: var(--color-ink);
   padding-left: 14rpx;
+  font-weight: 600;
 }
 .sub {
   font-size: 22rpx;
@@ -148,13 +162,14 @@
 }
 .divider {
   height: 1rpx;
-  background: rgba(58,58,58,.08);
-  margin: 28rpx 0;
+  background: linear-gradient(90deg, transparent, rgba(58,58,58,.08), transparent);
+  margin: 32rpx 0;
 }
 .auth-card {
-  padding: 28rpx 24rpx;
-  background: rgba(255,255,255,.28);
-  border: 1rpx solid rgba(58,58,58,.06);
+  padding: 32rpx 28rpx;
+  background: rgba(255,255,255,.32);
+  border: 1rpx solid rgba(58,58,58,.04);
+  border-radius: var(--radius-md);
 }
 .auth-head {
   display: flex;
@@ -167,6 +182,7 @@
   font-size: 28rpx;
   letter-spacing: 8rpx;
   color: var(--color-ink);
+  font-weight: 500;
 }
 .auth-tip {
   font-family: "PingFang SC", sans-serif;
@@ -186,13 +202,18 @@
   height: 132rpx;
   padding: 0;
   border-radius: 50%;
-  background: var(--color-paper);
-  border: none;
+  background: linear-gradient(135deg, var(--color-celadon-light), var(--color-celadon));
+  border: 2rpx solid rgba(255, 255, 255, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
+  box-shadow: 0 4rpx 16rpx rgba(138, 175, 166, 0.2);
+  transition: transform 0.2s ease;
+}
+.avatar-picker:active {
+  transform: scale(0.92);
 }
 .avatar-picker::after {
   border: none;
@@ -210,7 +231,7 @@
 .avatar-empty-char {
   font-family: "Songti SC", serif;
   font-size: 34rpx;
-  color: var(--color-ink-soft);
+  color: var(--color-ink);
 }
 .avatar-copy {
   flex: 1;
@@ -233,21 +254,27 @@
 }
 .avatar-action {
   align-self: flex-start;
-  padding: 8rpx 16rpx;
-  background: rgba(58,58,58,.06);
+  padding: 8rpx 18rpx;
+  background: rgba(58,58,58,.05);
+  border-radius: var(--radius-full);
   font-family: "Songti SC", serif;
   font-size: 20rpx;
   letter-spacing: 4rpx;
   color: var(--color-ink-soft);
+  transition: background 0.2s ease;
+}
+.avatar-action:active {
+  background: rgba(58,58,58,.1);
 }
 .nick-field {
   margin-top: 28rpx;
   padding: 18rpx 22rpx 0;
-  background: rgba(246,241,230,.76);
-  border: none;
+  background: rgba(246,241,230,.8);
+  border: 1rpx solid rgba(58, 58, 58, 0.04);
+  border-radius: var(--radius-sm);
 }
 .nick-field--filled {
-  border-color: transparent;
+  border-color: var(--color-celadon);
 }
 .field-label {
   display: block;
@@ -265,7 +292,7 @@
   color: var(--color-ink);
 }
 .hint-row {
-  margin-top: 18rpx;
+  margin-top: 20rpx;
   display: flex;
   align-items: flex-start;
   gap: 10rpx;
@@ -274,7 +301,7 @@
   width: 8rpx;
   height: 8rpx;
   border-radius: 50%;
-  background: var(--color-ink-faint);
+  background: var(--color-celadon-deep);
   margin-top: 12rpx;
   flex-shrink: 0;
 }
@@ -287,7 +314,7 @@
   font-family: "Songti SC", serif;
 }
 .login-btn {
-  margin-top: 28rpx;
+  margin-top: 32rpx;
   width: 100%;
   min-height: 104rpx;
   background: linear-gradient(180deg, #484848 0%, #343434 100%);
@@ -297,13 +324,19 @@
   align-items: center;
   justify-content: center;
   gap: 4rpx;
-  transition: opacity .2s ease;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 6rpx 24rpx rgba(58, 58, 58, 0.2);
+  transition: transform 0.2s ease, opacity .2s ease;
+}
+.login-btn:active {
+  transform: scale(0.97);
 }
 .login-btn--disabled {
-  opacity: .45;
+  opacity: .4;
+  pointer-events: none;
 }
 .login-btn--loading {
-  opacity: .72;
+  opacity: .7;
 }
 .login-btn-main {
   font-family: "Songti SC", serif;
@@ -317,13 +350,14 @@
   color: rgba(239,232,220,.72);
 }
 .bottom-copy {
-  margin-top: 18rpx;
+  margin-top: 20rpx;
   font-size: 22rpx;
   line-height: 1.8;
   letter-spacing: 3rpx;
   color: var(--color-ink-faint);
   font-family: "Songti SC", serif;
   text-align: center;
+  opacity: 0.8;
 }
 .ph {
   color: var(--color-ink-faint);

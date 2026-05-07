@@ -1,5 +1,5 @@
 <view class="tabbar safe-bottom {{hidden ? 'tabbar--hidden' : ''}}">
-  <view class="tabbar-line"></view>
+  <view class="tabbar-bg"></view>
   <view class="tabbar-row">
     <view
       wx:for="{{list}}"
@@ -9,7 +9,9 @@
       data-path="{{item.pagePath}}"
       bindtap="switchTab"
     >
-      <view class="dot"></view>
+      <view class="tab-icon">
+        <view class="dot"></view>
+      </view>
       <view class="tab-label">{{item.text}}</view>
       <view wx:if="{{item.text === '购物袋' && cartCount > 0}}" class="badge">{{cartCount}}</view>
     </view>
