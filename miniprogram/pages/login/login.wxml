@@ -1,82 +1,84 @@
 <view class="page">
-  <view class="bg-orb bg-orb--1"></view>
-  <view class="bg-orb bg-orb--2"></view>
+  <!-- 背景装饰 -->
+  <view class="bg-layer">
+    <view class="bg-circle bg-circle--1"></view>
+    <view class="bg-circle bg-circle--2"></view>
+    <view class="bg-circle bg-circle--3"></view>
+  </view>
 
+  <!-- 自定义导航栏 -->
   <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
-      <view class="back-wrap" bindtap="back">
-        <text class="back">‹</text>
+      <view class="back-btn" bindtap="back">
+        <text class="back-icon">‹</text>
       </view>
-      <view class="page-title">
-        <text class="t-cn">入席</text>
-        <text class="t-en">LOGIN</text>
-      </view>
-      <view class="nav-placeholder"></view>
     </view>
   </view>
 
-  <view class="login-wrap" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <view class="hero-card">
-      <view class="hero-top">
-        <view class="seal-col">
-          <view class="seal-lg">釉 · 见</view>
-          <text class="brand-en">YOUJIAN CERAMICS</text>
-        </view>
+  <!-- 主内容区 -->
+  <view class="content" style="padding-top: {{statusBarHeight + navBarHeight + 20}}px;">
+    <!-- 品牌区域 -->
+    <view class="brand-section">
+      <view class="brand-seal">
+        <text class="seal-char">釉</text>
+        <view class="seal-dot"></view>
+        <text class="seal-char">见</text>
+      </view>
+      <view class="brand-info">
+        <text class="brand-slogan">一器一境 · 以瓷会友</text>
+      </view>
+    </view>
 
-        <view class="hero-copy">
-          <text class="eyebrow">CERAMIC RETAIL MINI PROGRAM</text>
-          <text class="title">一 器 一 境</text>
-          <text class="sub">轻授权头像与昵称后，即可进入零售端选购、下单、管理地址与查看订单。</text>
-        </view>
+    <!-- 登录卡片 -->
+    <view class="login-card">
+      <view class="card-header">
+        <text class="card-title">{{isReturningUser ? '欢迎回来' : '开始体验'}}</text>
+        <text class="card-subtitle">授权头像与昵称，即可开启选购之旅</text>
       </view>
 
-      <view class="divider"></view>
-
-      <view class="auth-card">
-        <view class="auth-head">
-          <text class="auth-title">身份识别</text>
-          <text class="auth-tip">AUTH PROFILE</text>
-        </view>
-
-        <view class="avatar-row">
-          <button class="avatar-picker" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-            <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
-            <view wx:else class="avatar-empty">
-              <text class="avatar-empty-char">像</text>
-            </view>
-          </button>
-
-          <view class="avatar-copy">
-            <text class="avatar-title">微信头像</text>
-            <text class="avatar-desc">点击圆形头像区域，授权你的微信头像用于个人资料展示。</text>
-            <view class="avatar-action">{{avatarUrl ? '已选择头像' : '点击授权头像'}}</view>
+      <!-- 头像选择 -->
+      <view class="avatar-section">
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill"></image>
+          <view wx:else class="avatar-placeholder">
+            <text class="avatar-plus">+</text>
           </view>
-        </view>
+        </button>
+        <text class="avatar-status">{{avatarUrl ? '已选择头像' : '点击选择头像'}}</text>
+      </view>
 
-        <view class="nick-field {{nickName ? 'nick-field--filled' : ''}}">
-          <text class="field-label">昵称</text>
+      <!-- 昵称输入 -->
+      <view class="input-group">
+        <view class="input-wrapper {{nickName ? 'input-wrapper--active' : ''}}">
+          <text class="input-label">昵称</text>
           <input
             class="nick-input"
             type="nickname"
             value="{{nickName}}"
             bindinput="onNickInput"
-            placeholder="请输入微信昵称"
-            placeholder-class="ph"
+            placeholder="请输入您的昵称"
+            placeholder-class="input-ph"
           />
         </view>
-
-        <view class="hint-row">
-          <view class="hint-dot"></view>
-          <text class="hint">仅用于展示头像和昵称，不会公开手机号等敏感信息。</text>
-        </view>
       </view>
 
-      <view class="login-btn {{canSubmit ? '' : 'login-btn--disabled'}} {{loading ? 'login-btn--loading' : ''}}" bindtap="login">
-        <text class="login-btn-main">{{loading ? '入席中…' : (isReturningUser ? '继续入席' : '授权并入席')}}</text>
-        <text class="login-btn-sub">{{isReturningUser ? 'WELCOME BACK' : 'START YOUR JOURNEY'}}</text>
+      <!-- 提交按钮 -->
+      <view
+        class="submit-btn {{canSubmit ? 'submit-btn--active' : ''}} {{loading ? 'submit-btn--loading' : ''}}"
+        bindtap="login"
+      >
+        <text class="submit-text">{{loading ? '登录中...' : (isReturningUser ? '继续入席' : '授权并入席')}}</text>
       </view>
 
-      <text class="bottom-copy">{{isReturningUser ? '欢迎回来，继续选购今日好器。' : '首次入席后，将为你建立专属零售档案。'}}</text>
+      <!-- 隐私提示 -->
+      <view class="privacy-hint">
+        <text class="privacy-text">仅用于展示头像和昵称，不会收集敏感信息</text>
+      </view>
+    </view>
+
+    <!-- 底部装饰 -->
+    <view class="footer">
+      <text class="footer-text">YOUJIAN CERAMICS</text>
     </view>
   </view>
 </view>
