@@ -29,16 +29,24 @@
 
   <view wx:if="{{showForm}}" class="mask" bindtap="closeForm">
     <view class="panel" catchtap="noop">
-      <view class="panel-title">{{editingId ? '修订地址' : '新增地址'}}</view>
-      <input placeholder="收件人" value="{{form.receiver}}" data-key="receiver" bindinput="onInput" />
-      <input placeholder="手机号" value="{{form.phone}}" data-key="phone" bindinput="onInput" />
-      <input placeholder="省份" value="{{form.province}}" data-key="province" bindinput="onInput" />
-      <input placeholder="城市" value="{{form.city}}" data-key="city" bindinput="onInput" />
-      <input placeholder="区县" value="{{form.district}}" data-key="district" bindinput="onInput" />
-      <input placeholder="详细地址" value="{{form.detail}}" data-key="detail" bindinput="onInput" />
-      <input placeholder="标签，如 家 / 公司" value="{{form.tag}}" data-key="tag" bindinput="onInput" />
+      <view class="panel-head">
+        <text class="panel-title">{{editingId ? '修订地址' : '新增地址'}}</text>
+        <text class="panel-sub">DELIVERY ADDRESS</text>
+      </view>
+      <input class="field-input" placeholder="收件人" value="{{form.receiver}}" data-key="receiver" bindinput="onInput" placeholder-class="ph" />
+      <input class="field-input" placeholder="手机号" value="{{form.phone}}" data-key="phone" bindinput="onInput" type="number" maxlength="11" placeholder-class="ph" />
+
+      <picker mode="region" value="{{[form.province, form.city, form.district]}}" bindchange="onRegionChange">
+        <view class="region-trigger">
+          <text class="region-label">所在地区</text>
+          <text class="region-value">{{form.province}} {{form.city}} {{form.district}}</text>
+        </view>
+      </picker>
+
+      <input class="field-input" placeholder="详细地址" value="{{form.detail}}" data-key="detail" bindinput="onInput" placeholder-class="ph" />
+      <input class="field-input" placeholder="标签，如 家 / 公司" value="{{form.tag}}" data-key="tag" bindinput="onInput" placeholder-class="ph" />
       <view class="default-row {{form.isDefault ? 'on' : ''}}" bindtap="onDefault">设为默认地址</view>
-      <view class="submit" bindtap="submit">保 存</view>
+      <view class="submit {{saving ? 'submit--loading' : ''}}" bindtap="submit">{{saving ? '保存中…' : '保 存'}}</view>
     </view>
   </view>
 </view>

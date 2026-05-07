@@ -8,11 +8,23 @@ const fallbackImages = [
   '/images/product-vase2.jpg',
 ]
 
+const RESOURCE_BASE = 'http://127.0.0.1:3001'
+
+function resolveImageUrl(url) {
+  if (!url || typeof url !== 'string') return ''
+  if (/^(https?:|data:|wxfile:|cloud:|http:\/\/tmp\/)/i.test(url)) return url
+  if (url.charAt(0) === '/') {
+    if (url.indexOf('/images/') === 0) return url
+    return RESOURCE_BASE + url
+  }
+  return RESOURCE_BASE + '/uploads/' + url
+}
+
 function pickImage(value, index = 0) {
   if (!value) return fallbackImages[index % fallbackImages.length]
   if (Array.isArray(value)) return pickImage(value[0], index)
   if (typeof value === 'object') return pickImage(value.url || value.path || value.src, index)
-  return value
+  return resolveImageUrl(value)
 }
 
 function pickList(payload) {
@@ -29,6 +41,25 @@ function firstSku(product) {
   const skus = product.skus || product.skuList || product.sku || []
   if (!Array.isArray(skus)) return skus || null
   return skus.find((s) => s.status !== 0 && s.enabled !== false) || skus[0] || null
+}
+
+function formatSpecText(raw) {
+  if (!raw) return ''
+  if (typeof raw === 'object') {
+    return Object.keys(raw).map((k) => raw[k]).filter(Boolean).join(' · ')
+  }
+  const text = String(raw).trim()
+  if (!text) return ''
+  if (text.charAt(0) === '{' || text.charAt(0) === '[') {
+    try {
+      const obj = JSON.parse(text)
+      if (Array.isArray(obj)) return obj.map((v) => (typeof v === 'object' ? Object.values(v).join(' · ') : String(v))).join(' · ')
+      if (obj && typeof obj === 'object') return Object.keys(obj).map((k) => obj[k]).filter(Boolean).join(' · ')
+    } catch (err) {
+      return text
+    }
+  }
+  return text
 }
 
 function skuText(sku) {
@@ -165,19 +196,58 @@ function normalizeOrderStatus(status) {
   return STATUS_LABEL[status] || '处 · 理'
 }
 
-function normalizeOrderItem(item, index = 0) {
+function getOrderSnapshots() {
+  try {
+    return wx.getStorageSync('orderItemSnapshots') || {}
+  } catch (err) {
+    return {}
+  }
+}
+
+function getMockPaidOrders() {
+  try {
+    return wx.getStorageSync('mockPaidOrders') || {}
+  } catch (err) {
+    return {}
+  }
+}
+
+function getEffectiveOrderStatus(order) {
+  if (!order) return 'pending_pay'
+  const mockPaidOrders = getMockPaidOrders()
+  const orderId = `${order.id}`
+  const rawStatus = order.status || 'pending_pay'
+  if (rawStatus === 'pending_pay' && mockPaidOrders[orderId]) return 'pending_ship'
+  return rawStatus
+}
+
+function normalizeOrderItem(item, index = 0, snapshot = null) {
   const product = item.product || {}
   const skuObj = item.sku || {}
-  const image = pickImage(item.image || item.productImage || item.cover || product.cover || product.mainImage || product.image || skuObj.image, index)
+  const image = pickImage(
+    (snapshot && (snapshot.skuImage || snapshot.image || snapshot.cover)) ||
+      item.skuImage ||
+      item.image ||
+      item.productImage ||
+      item.cover ||
+      product.cover ||
+      product.mainImage ||
+      product.image ||
+      skuObj.image,
+    index,
+  )
   return {
-    id: item.id,
-    productId: item.productId || product.id,
-    skuId: item.skuId || skuObj.id,
-    name: item.productName || item.name || product.name || '雅器',
+    id: item.id || (snapshot && snapshot.skuId) || `${index}`,
+    productId: item.productId || product.id || (snapshot && snapshot.productId),
+    skuId: item.skuId || skuObj.id || (snapshot && snapshot.skuId),
+    name: item.productName || item.name || product.name || (snapshot && snapshot.name) || '雅器',
     image,
-    spec: item.skuSpec || item.specText || skuText(skuObj) || '',
-    price: Number(item.price || item.unitPrice || skuObj.retailPrice || 0),
-    quantity: Number(item.quantity || item.qty || 1),
+    skuImage: image,
+    cover: image,
+    skuSpec: formatSpecText(item.skuSpec || item.specText || skuText(skuObj) || (snapshot && (snapshot.skuSpec || snapshot.spec)) || ''),
+    spec: formatSpecText(item.skuSpec || item.specText || skuText(skuObj) || (snapshot && (snapshot.skuSpec || snapshot.spec)) || ''),
+    price: Number(item.price || item.unitPrice || skuObj.retailPrice || (snapshot && snapshot.price) || 0),
+    quantity: Number(item.quantity || item.qty || (snapshot && (snapshot.quantity || snapshot.qty)) || 1),
   }
 }
 
@@ -203,13 +273,19 @@ function normalizeAddress(addr) {
 
 function normalizeOrder(order) {
   if (!order) return null
-  const status = order.status || 'pending_pay'
-  const items = (order.items || order.orderItems || []).map((it, i) => normalizeOrderItem(it, i))
+  const mockPaidOrders = getMockPaidOrders()
+  const snapshots = getOrderSnapshots()
+  const orderId = `${order.id}`
+  const status = getEffectiveOrderStatus(order)
+  const sourceItems = order.items || order.orderItems || snapshots[orderId] || []
+  const snapshotItems = snapshots[orderId] || []
+  const items = sourceItems.map((it, i) => normalizeOrderItem(it, i, snapshotItems[i] || null))
   const totalQty = items.reduce((s, x) => s + (x.quantity || 0), 0)
   const subtotal = Number(order.subtotal || order.itemsTotal || items.reduce((s, x) => s + x.price * x.quantity, 0))
   const freight = Number(order.freight || order.shippingFee || 0)
   const discount = Number(order.discount || order.discountAmount || 0)
-  const total = Number(order.totalAmount || order.total || order.payAmount || 0)
+  const totalSource = order.totalAmount || order.total || order.payAmount
+  const total = Number(totalSource != null && totalSource !== '' ? totalSource : subtotal + freight - discount)
   return {
     ...order,
     id: order.id,
@@ -217,6 +293,7 @@ function normalizeOrder(order) {
     status,
     statusLabel: normalizeOrderStatus(status),
     statusHero: normalizeOrderStatus(status),
+    statusText: normalizeOrderStatus(status),
     statusNote: STATUS_NOTE[status] || '',
     statusKey: status,
     address: normalizeAddress(order.address || order.shippingAddress),
@@ -226,11 +303,14 @@ function normalizeOrder(order) {
     subtotal,
     freight,
     discount,
+    discountAmount: discount,
     total,
+    totalAmount: total,
     amount: total,
+    paidAmount: total,
     remark: order.remark || order.note || '',
     createdAt: order.createdAt || '',
-    paidAt: order.paidAt || '',
+    paidAt: order.paidAt || (mockPaidOrders[orderId] ? order.updatedAt || order.createdAt || '' : ''),
     shippedAt: order.shippedAt || '',
     completedAt: order.completedAt || '',
   }
@@ -250,4 +330,5 @@ module.exports = {
   normalizeOrder,
   normalizeOrderStatus,
   normalizeAddress,
+  getEffectiveOrderStatus,
 }

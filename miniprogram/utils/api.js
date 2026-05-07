@@ -15,7 +15,7 @@ function resolveImageUrl(url) {
 function safeJson(value, fallback) {
   if (value == null) return fallback
   if (typeof value !== 'string') return value
-  try { return JSON.parse(value) } catch (err) { return fallback }
+  try { return JSON.parse(value) } catch (err) { return err ? fallback : fallback }
 }
 
 function normalizeSku(raw) {
@@ -100,6 +100,7 @@ function normalizeProduct(raw) {
   const specOptions = buildSpecOptions(skus)
   const brand = raw.brand && typeof raw.brand === 'object' ? raw.brand : null
   const category = raw.category && typeof raw.category === 'object' ? raw.category : null
+  const status = raw.status == null ? 1 : Number(raw.status)
   const retailPrice = Number(raw.retailPrice != null ? raw.retailPrice : (raw.price != null ? raw.price : 0))
   const memberPrice = raw.memberPrice != null ? Number(raw.memberPrice) : null
   let displayPrice = retailPrice
@@ -139,13 +140,14 @@ function normalizeProduct(raw) {
     specOptions,
     hasMultipleSkus: skus.length > 1,
     stock: skus.reduce((sum, s) => sum + (s.stock || 0), 0),
+    status,
     retailEnabled: raw.retailEnabled === true,
     wholesaleEnabled: raw.wholesaleEnabled === true,
   }
 }
 
 function filterRetailProducts(list) {
-  return (list || []).filter((item) => item && item.retailEnabled === true)
+  return (list || []).filter((item) => item && item.retailEnabled === true && (item.status == null || Number(item.status) === 1))
 }
 
 function normalizeRetailProducts(data) {
@@ -177,9 +179,10 @@ function getProducts(params) {
 
 function getProduct(id) {
   if (id == null) return Promise.reject(new Error('缺少商品 id'))
-  return request.get('/client/products/' + id, { channel: 'retail' }, { silent: true })
+  return request.get('/client/product/' + id, { channel: 'retail' }, { silent: true })
+    .catch(() => request.get('/client/products/' + id, { channel: 'retail' }, { silent: true }))
     .then((data) => {
-      if (!data || data.retailEnabled !== true) return null
+      if (!data || data.retailEnabled !== true || (data.status != null && Number(data.status) !== 1)) return null
       return normalizeProduct(data)
     })
 }
@@ -211,7 +214,7 @@ const api = {
   getBanners,
   getCategories,
   auth: {
-    miniLogin: (code) => request.post('/client/auth/mini-login', { code }, { silent: true }),
+    miniLogin: (code) => request.post('/client/auth/mini-login', { code }, { silent: true, noAuth: true }),
     phoneLogin: (phone, code) => request.post('/client/auth/phone-login', { phone, code }),
     bindPhone: (phone) => request.post('/client/auth/bind-phone', { phone }),
   },
@@ -233,7 +236,7 @@ const api = {
         .catch(() => request.get('/client/products', query, { silent: true }))
     },
     recommend: (limit = 8) => request.get('/client/products/recommend', { limit, channel: 'retail' }, { silent: true }),
-    detail: (id) => request.get('/client/products/' + id, { channel: 'retail' }, { silent: true }),
+    detail: (id) => getProduct(id),
   },
   address: {
     list: () => request.get('/client/addresses'),
@@ -250,6 +253,13 @@ const api = {
     detail: (id) => request.get('/client/orders/' + id),
     cancel: (id) => request.patch('/client/orders/' + id + '/cancel'),
     confirm: (id) => request.patch('/client/orders/' + id + '/confirm'),
+    updateAddress: (id, addressId) => request.patch('/client/orders/' + id + '/address', { addressId })
+      .catch(() => request.put('/client/orders/' + id + '/address', { addressId }))
+      .catch(() => request.patch('/client/order/' + id + '/address', { addressId }))
+      .catch(() => request.post('/client/orders/' + id + '/update-address', { addressId })),
+    logistics: (id) => request.get('/client/orders/' + id + '/logistics', {}, { silent: true })
+      .catch(() => request.get('/client/order/' + id + '/logistics', {}, { silent: true }))
+      .catch(() => request.get('/client/logistics/' + id, {}, { silent: true })),
   },
   pay: {
     order: (id) => request.post('/client/pay/orders/' + id),

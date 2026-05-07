@@ -13,7 +13,7 @@ function goLogin() {
 
 function request(options) {
   return new Promise((resolve, reject) => {
-    const token = wx.getStorageSync('token')
+    const token = options.noAuth ? '' : wx.getStorageSync('token')
     wx.request({
       url: BASE_URL + options.url,
       method: options.method || 'GET',

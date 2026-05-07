@@ -12,14 +12,12 @@
 
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
     <block wx:if="{{order}}">
-      <!-- 状态印章 -->
       <view class="hero">
         <view class="seal-lg">{{order.statusText.length > 0 ? order.statusText[0] : '·'}}</view>
         <text class="status">{{order.statusText}}</text>
         <text class="order-no">{{order.orderNo || order.id}}</text>
       </view>
 
-      <!-- 收件地址 -->
       <view wx:if="{{order.receiverSnapshot || order.address}}" class="section">
         <view class="section-title">
           <text class="s-cn">收 · 件</text>
@@ -35,9 +33,9 @@
           {{(order.receiverSnapshot && order.receiverSnapshot.district) || (order.address && order.address.district)}}
           {{(order.receiverSnapshot && order.receiverSnapshot.detail) || (order.address && order.address.detail)}}
         </text>
+        <view wx:if="{{order.status === 'pending_pay' || order.status === 'pending_ship'}}" class="addr-edit-btn" bindtap="editAddress">发货前修改地址</view>
       </view>
 
-      <!-- 物流 -->
       <view wx:if="{{order.trackingNo}}" class="section">
         <view class="section-title">
           <text class="s-cn">运 · 单</text>
@@ -47,9 +45,9 @@
           <text>{{order.logisticsCompany || '物流'}}</text>
           <text class="track-no">{{order.trackingNo}}</text>
         </view>
+        <view class="track-btn" bindtap="viewLogistics">查看物流轨迹</view>
       </view>
 
-      <!-- 器物 -->
       <view class="section">
         <view class="section-title">
           <text class="s-cn">器 · 物</text>
@@ -59,7 +57,7 @@
           <image class="goods-img" src="{{goods.skuImage || goods.image || goods.cover}}" mode="aspectFill"></image>
           <view class="goods-meta">
             <text class="goods-name">{{goods.productName || goods.name || goods.skuName || '釉见器物'}}</text>
-            <text wx:if="{{goods.skuSpec}}" class="goods-spec">{{goods.skuSpec}}</text>
+            <text wx:if="{{goods.skuSpec || goods.spec}}" class="goods-spec">{{goods.skuSpec || goods.spec}}</text>
             <view class="goods-bottom">
               <text class="goods-price"><text class="unit">¥</text>{{goods.unitPrice || goods.price}}</text>
               <text class="goods-qty">× {{goods.qty || goods.quantity}}</text>
@@ -68,7 +66,6 @@
         </view>
       </view>
 
-      <!-- 备注 -->
       <view wx:if="{{order.remark}}" class="section">
         <view class="section-title">
           <text class="s-cn">随 · 函</text>
@@ -77,7 +74,6 @@
         <text class="remark-text">{{order.remark}}</text>
       </view>
 
-      <!-- 款项 -->
       <view class="section">
         <view class="section-title">
           <text class="s-cn">款 · 项</text>
@@ -102,7 +98,6 @@
         </view>
       </view>
 
-      <!-- 时间线 -->
       <view class="section">
         <view class="section-title">
           <text class="s-cn">时 · 序</text>
@@ -141,9 +136,11 @@
       <view class="primary" bindtap="pay">去 支 付</view>
     </block>
     <block wx:elif="{{order.status === 'shipped'}}">
+      <view class="ghost" wx:if="{{order.trackingNo}}" bindtap="viewLogistics">查看物流</view>
       <view class="primary" bindtap="confirm">确 认 收 货</view>
     </block>
     <block wx:else>
+      <view class="ghost" wx:if="{{order.trackingNo}}" bindtap="viewLogistics">查看物流</view>
       <view class="ghost" bindtap="back">返 回</view>
     </block>
   </view>

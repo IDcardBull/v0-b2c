@@ -43,14 +43,13 @@ Page({
   },
   fetchDetail(id) {
     return api.product.detail(id)
-      .then((raw) => {
-        const raw = data
-        if (!raw || raw.retailEnabled !== true) {
+      .then((data) => {
+        if (!data || data.retailEnabled !== true || (data.status != null && Number(data.status) !== 1)) {
           wx.showToast({ title: '商品已下架', icon: 'none' })
           this.setData({ loading: false })
           return
         }
-        const item = api.normalizeProduct(raw)
+        const item = api.normalizeProduct(data)
         if (!item) throw new Error('EMPTY')
         this.applyItem(item)
       })
@@ -190,7 +189,7 @@ Page({
       wx.showToast({ title: '库存不足', icon: 'none' })
       return
     }
-    if (item.retailEnabled !== true) {
+    if (item.retailEnabled !== true || (item.status != null && Number(item.status) !== 1)) {
       wx.showToast({ title: '商品暂不支持零售购买', icon: 'none' })
       this.setData({ sheetVisible: false })
       return
@@ -224,7 +223,7 @@ Page({
     this.setData({ sheetVisible: false })
 
     if (sheetAction === 'buy') {
-      const checkoutItem = { ...entry, qty: qty } // 立即请购仅结算本次数量
+      const checkoutItem = { ...entry, qty: qty }
       wx.setStorageSync('checkoutItems', [checkoutItem])
       wx.setStorageSync('checkoutNote', '')
       wx.navigateTo({ url: '/pages/checkout/checkout' })

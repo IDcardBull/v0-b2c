@@ -181,7 +181,7 @@
   <view wx:if="{{sheetVisible}}" class="sheet-mask" bindtap="closeSheet">
     <view class="sheet" catchtap="noop">
       <view class="sheet-head">
-        <image class="sheet-img" src="{{selectedSku.image || item.mainImage}}" mode="aspectFill"></image>
+        <image class="sheet-img" src="{{selectedSku.image || item.mainImage}}" mode="aspectFit"></image>
         <view class="sheet-info">
           <view class="sheet-price">
             <text class="unit">¥</text>{{selectedSku ? selectedSku.price : item.price}}

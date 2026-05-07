@@ -32,6 +32,7 @@
           <text class="vip">{{user.level}}</text>
         </view>
         <text class="user-motto">{{user.motto}}</text>
+        <view class="profile-edit-btn" bindtap="openProfileEditor">编辑资料</view>
         <view class="stats">
           <view class="stat"><text class="stat-num">{{user.collect}}</text><text class="stat-label">收藏</text></view>
           <view class="vbar"></view>
@@ -93,4 +94,28 @@
 
     <view style="height: 200rpx;"></view>
   </scroll-view>
+
+  <view wx:if="{{profileEditorVisible}}" class="edit-mask" bindtap="closeProfileEditor">
+    <view class="edit-panel" catchtap="noop">
+      <view class="edit-head">
+        <view>
+          <text class="edit-title">修 · 录</text>
+          <text class="edit-sub">EDIT PROFILE</text>
+        </view>
+        <view class="edit-close" bindtap="closeProfileEditor">×</view>
+      </view>
+      <view class="edit-field">
+        <text class="edit-label">昵称</text>
+        <input class="edit-input" value="{{profileForm.nickname}}" data-key="nickname" bindinput="onProfileInput" placeholder="请输入昵称" placeholder-class="ph" />
+      </view>
+      <view class="edit-field">
+        <text class="edit-label">签名</text>
+        <textarea class="edit-textarea" value="{{profileForm.motto}}" data-key="motto" bindinput="onProfileInput" placeholder="写一句个人签名" placeholder-class="ph" maxlength="80" />
+      </view>
+      <view class="edit-actions">
+        <view class="edit-cancel" bindtap="closeProfileEditor">取消</view>
+        <view class="edit-save" bindtap="saveProfile">保存</view>
+      </view>
+    </view>
+  </view>
 </view>

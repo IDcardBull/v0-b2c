@@ -1,4 +1,3 @@
-// pages/cart/cart.js
 const app = getApp()
 const api = require('../../utils/api.js')
 
@@ -23,29 +22,21 @@ Page({
   onShow() {
     this.syncFromGlobal()
     this.loadAddress()
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2, hidden: true })
-      this.getTabBar().refreshCount()
-    }
-  },
-  onHide() {
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ hidden: false })
-    }
-  },
-  onUnload() {
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ hidden: false })
+    if (typeof this.getTabBar === 'function') {
+      const tabBar = this.getTabBar()
+      if (tabBar) {
+        tabBar.setData({ selected: 2 })
+        tabBar.refreshCount()
+      }
     }
   },
   loadAddress() {
-    // 优先用购物袋已选地址
+    if (!wx.getStorageSync('token')) return
     const cached = wx.getStorageSync('cart_address')
     if (cached && cached.id) {
       this.setData({ address: cached })
       return
     }
-    // 否则取默认地址
     api.address
       .list()
       .then((list) => {
@@ -59,6 +50,10 @@ Page({
       .catch(() => {})
   },
   chooseAddress() {
+    if (!wx.getStorageSync('token')) {
+      wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fcart%2Fcart' })
+      return
+    }
     wx.navigateTo({ url: '/pages/address/address?from=cart' })
   },
   syncFromGlobal() {
@@ -83,7 +78,11 @@ Page({
     this.writeBack()
   },
   writeBack() {
-    const cart = this.data.list.map(({ h, ...rest }) => rest)
+    const cart = this.data.list.map((item) => {
+      const next = { ...item }
+      delete next.h
+      return next
+    })
     if (app.saveCart) app.saveCart(cart)
     else {
       app.globalData.cart = cart
@@ -95,9 +94,7 @@ Page({
   },
   toggleCheck(e) {
     const id = e.currentTarget.dataset.id
-    const list = this.data.list.map((i) =>
-      `${i.skuId || i.id}` === `${id}` ? { ...i, checked: !i.checked } : i
-    )
+    const list = this.data.list.map((i) => `${i.skuId || i.id}` === `${id}` ? { ...i, checked: !i.checked } : i)
     this.setData({ list }, () => this.recalc())
   },
   toggleAll() {
@@ -107,16 +104,12 @@ Page({
   },
   inc(e) {
     const id = e.currentTarget.dataset.id
-    const list = this.data.list.map((i) =>
-      `${i.skuId || i.id}` === `${id}` ? { ...i, qty: Math.min(99, i.qty + 1) } : i
-    )
+    const list = this.data.list.map((i) => `${i.skuId || i.id}` === `${id}` ? { ...i, qty: Math.min(99, i.qty + 1) } : i)
     this.setData({ list }, () => this.recalc())
   },
   dec(e) {
     const id = e.currentTarget.dataset.id
-    const list = this.data.list.map((i) =>
-      `${i.skuId || i.id}` === `${id}` ? { ...i, qty: Math.max(1, i.qty - 1) } : i
-    )
+    const list = this.data.list.map((i) => `${i.skuId || i.id}` === `${id}` ? { ...i, qty: Math.max(1, i.qty - 1) } : i)
     this.setData({ list }, () => this.recalc())
   },
   remove(e) {
@@ -138,16 +131,22 @@ Page({
     this.setData({ note: e.detail.value })
   },
   goDetail(e) {
-    wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` })
+    const id = e.currentTarget.dataset.id
+    if (!id) return
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` })
   },
   goHome() {
     wx.switchTab({ url: '/pages/index/index' })
   },
   checkout() {
-    const { list, total, note, address } = this.data
+    const { list, note, address } = this.data
     const chosen = list.filter((i) => i.checked)
     if (chosen.length === 0) {
       wx.showToast({ title: '请选择器物', icon: 'none' })
+      return
+    }
+    if (!wx.getStorageSync('token')) {
+      wx.navigateTo({ url: '/pages/login/login?redirect=%2Fpages%2Fcart%2Fcart' })
       return
     }
     if (!address || !address.id) {

@@ -1,0 +1,30 @@
+.page { min-height: 100vh; background: var(--color-bg); }
+.scroll { height: 100vh; box-sizing: border-box; }
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: rgba(239, 232, 220, 0.92); backdrop-filter: blur(20rpx); }
+.navbar-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; }
+.back { font-family: "PingFang SC", sans-serif; font-size: 56rpx; color: var(--color-ink); width: 64rpx; text-align: left; line-height: 1; }
+.page-title { display: flex; align-items: baseline; gap: 14rpx; }
+.t-cn { font-family: "Songti SC", serif; font-size: var(--fs-h2); letter-spacing: 12rpx; color: var(--color-ink); }
+.t-en { font-family: "PingFang SC", sans-serif; font-size: 20rpx; letter-spacing: 4rpx; color: var(--color-ink-faint); }
+.hero-card { margin: 24rpx 32rpx 0; padding: 32rpx; background: var(--color-paper); border: 1rpx solid rgba(58,58,58,.08); }
+.hero-head { display: flex; align-items: center; gap: 22rpx; }
+.seal { width: 90rpx; height: 90rpx; border-radius: 50%; border: 1rpx solid rgba(58,58,58,.26); display: flex; align-items: center; justify-content: center; font-family: "Songti SC", serif; font-size: 32rpx; color: var(--color-ink); }
+.hero-copy { flex: 1; display: flex; flex-direction: column; gap: 8rpx; min-width: 0; }
+.hero-title { font-family: "Songti SC", serif; font-size: 30rpx; letter-spacing: 6rpx; color: var(--color-ink); }
+.hero-no { font-family: "PingFang SC", sans-serif; font-size: 22rpx; color: var(--color-ink-faint); word-break: break-all; }
+.copy-btn { margin-top: 24rpx; height: 80rpx; display: flex; align-items: center; justify-content: center; border: 1rpx solid rgba(58,58,58,.22); color: var(--color-ink-soft); font-family: "Songti SC", serif; font-size: 24rpx; letter-spacing: 6rpx; }
+.empty-state { padding: 180rpx 40rpx 0; display: flex; flex-direction: column; align-items: center; gap: 16rpx; }
+.empty-text { font-family: "Songti SC", serif; font-size: 28rpx; letter-spacing: 6rpx; color: var(--color-ink-soft); }
+.empty-sub { font-family: "PingFang SC", sans-serif; font-size: 20rpx; color: var(--color-ink-faint); }
+.timeline { margin: 24rpx 32rpx 0; padding: 10rpx 32rpx 0; background: var(--color-paper); border: 1rpx solid rgba(58,58,58,.08); }
+.trace-item { display: flex; gap: 20rpx; }
+.trace-axis { width: 28rpx; display: flex; flex-direction: column; align-items: center; }
+.trace-dot { width: 16rpx; height: 16rpx; margin-top: 18rpx; border-radius: 50%; background: rgba(58,58,58,.24); }
+.trace-line { width: 2rpx; flex: 1; background: rgba(58,58,58,.12); margin-top: 8rpx; }
+.trace-main { flex: 1; padding: 14rpx 0 26rpx; border-bottom: 1rpx solid rgba(58,58,58,.06); display: flex; flex-direction: column; gap: 10rpx; }
+.trace-item:last-child .trace-main { border-bottom: none; }
+.trace-item--latest .trace-dot { background: var(--color-ink); }
+.trace-item--latest .trace-status { color: var(--color-ink); }
+.trace-status { font-family: "Songti SC", serif; font-size: 28rpx; line-height: 1.7; letter-spacing: 3rpx; color: var(--color-ink-soft); }
+.trace-location, .trace-time { font-family: "PingFang SC", sans-serif; font-size: 22rpx; color: var(--color-ink-faint); }
+.track-btn { margin-top: 20rpx; width: 220rpx; height: 72rpx; display: flex; align-items: center; justify-content: center; border: 1rpx solid rgba(58,58,58,.22); font-family: "Songti SC", serif; font-size: 22rpx; letter-spacing: 6rpx; color: var(--color-ink-soft); }

@@ -36,6 +36,12 @@ Page({
       { key: 'feedback', glyph: '问', label: '客户服务', sub: '联系主理人·售后凭证' },
       { key: 'about', glyph: '志', label: '关于釉见', sub: '品牌·匠人' },
     ],
+    profileEditorVisible: false,
+    profileSaving: false,
+    profileForm: {
+      nickname: '',
+      motto: '',
+    },
   },
   onLoad() {
     this.setData({
@@ -49,15 +55,12 @@ Page({
     }
     this.bootstrap()
   },
-  // 入口：未登录则静默走微信登录拿 token，再加载资料
   bootstrap() {
     const token = wx.getStorageSync('token') || app.globalData.token
     if (token) {
       this.loadProfile()
     } else {
-      this.silentLogin().catch(() => {
-        // 登录失败保持游客态，等用户主动点头像或登录按钮
-      })
+      this.silentLogin().catch(() => {})
     }
   },
   silentLogin() {
@@ -69,17 +72,22 @@ Page({
     if (cached) this.applyUser(cached)
     return Promise.all([
       api.user.profile().catch(() => null),
-      api.order.counts().catch(() => null),
-    ]).then(([profile, counts]) => {
+      api.order.list({}).catch(() => []),
+    ]).then(([profile, orderList]) => {
       if (profile) {
         this.applyUser(profile)
         wx.setStorageSync('userInfo', profile)
         app.globalData.userInfo = profile
       }
-      if (counts && typeof counts === 'object') {
-        const orders = this.data.orders.map((o) => ({ ...o, count: counts[o.key] || 0 }))
-        this.setData({ orders })
-      }
+      const normalized = adapter.pickList(orderList).map(adapter.normalizeOrder)
+      const counts = normalized.reduce((acc, item) => {
+        const key = item.statusKey
+        if (!acc[key]) acc[key] = 0
+        acc[key] += 1
+        return acc
+      }, {})
+      const orders = this.data.orders.map((o) => ({ ...o, count: counts[o.key] || 0 }))
+      this.setData({ orders })
     })
   },
   applyUser(raw) {
@@ -102,7 +110,6 @@ Page({
       },
     })
   },
-  // 头像点击：未登录引导登录；已登录则上传头像
   onAvatarTap() {
     if (this.data.user.isGuest) {
       this.doLogin()
@@ -113,13 +120,59 @@ Page({
         const url = urls[0]
         wx.setStorageSync('user_avatar', url)
         this.setData({ 'user.avatar': url })
-        // 同步到后端
         api.user.updateProfile({ avatar: url }).catch(() => {})
         wx.showToast({ title: '头像已更新', icon: 'none' })
       })
       .catch((err) => {
         if (err && (err.message === 'CANCELLED' || err.message === 'OVER_SIZE')) return
         wx.showToast({ title: '上传失败', icon: 'none' })
+      })
+  },
+  openProfileEditor() {
+    if (this.data.user.isGuest) {
+      this.doLogin()
+      return
+    }
+    this.setData({
+      profileEditorVisible: true,
+      profileForm: {
+        nickname: this.data.user.name || '',
+        motto: this.data.user.motto || '',
+      },
+    })
+  },
+  closeProfileEditor() {
+    if (this.data.profileSaving) return
+    this.setData({ profileEditorVisible: false })
+  },
+  onProfileInput(e) {
+    const key = e.currentTarget.dataset.key
+    this.setData({ [`profileForm.${key}`]: e.detail.value })
+  },
+  saveProfile() {
+    if (this.data.profileSaving) return
+    const nickname = (this.data.profileForm.nickname || '').trim()
+    const motto = (this.data.profileForm.motto || '').trim()
+    if (!nickname) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' })
+      return
+    }
+    const payload = { nickname, name: nickname, motto, signature: motto }
+    this.setData({ profileSaving: true })
+    api.user.updateProfile(payload)
+      .then((profile) => {
+        const merged = Object.assign({}, wx.getStorageSync('userInfo') || {}, profile || payload)
+        wx.setStorageSync('userInfo', merged)
+        app.globalData.userInfo = merged
+        this.applyUser(merged)
+        this.setData({ profileEditorVisible: false })
+        wx.showToast({ title: '已保存', icon: 'none' })
+      })
+      .catch((err) => {
+        wx.showToast({ title: err.message || '保存失败', icon: 'none' })
+      })
+      .finally(() => {
+        this.setData({ profileSaving: false })
       })
   },
   doLogin() {

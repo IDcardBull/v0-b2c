@@ -18,6 +18,7 @@ App({
       wx.login({
         success: async (res) => {
           try {
+            if (!res.code) throw new Error('wx.login 未返回 code，请确认开发者工具已使用真实 AppID 并重新打开项目')
             const data = await api.auth.miniLogin(res.code)
             wx.setStorageSync('token', data.token)
             wx.setStorageSync('userInfo', data.user)

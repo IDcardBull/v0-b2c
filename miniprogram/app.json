@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/login",
     "pages/index/index",
     "pages/category/category",
     "pages/cart/cart",
@@ -7,12 +8,12 @@
     "pages/detail/detail",
     "pages/review/review",
     "pages/feedback/feedback",
-    "pages/login/login",
     "pages/address/address",
     "pages/checkout/checkout",
     "pages/pay-result/pay-result",
     "pages/orders/orders",
-    "pages/order-detail/order-detail"
+    "pages/order-detail/order-detail",
+    "pages/logistics/logistics"
   ],
   "window": {
     "navigationStyle": "custom",

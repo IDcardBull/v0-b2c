@@ -28,7 +28,6 @@
           <view class="rail-bar"></view>
           <view class="rail-text">
             <text class="rail-cn">{{item.name}}</text>
-            <text class="rail-en">{{item.sub}}</text>
           </view>
         </view>
         <view
@@ -42,7 +41,6 @@
           <view class="rail-bar"></view>
           <view class="rail-text">
             <text class="rail-cn">{{child.name}}</text>
-            <text class="rail-en">{{child.sub}}</text>
           </view>
         </view>
       </block>
@@ -60,7 +58,7 @@
           wx:for="{{list}}"
           wx:key="id"
           class="item"
-          data-id="{{item.id}}"
+          data-id="{{item.productId || item.id}}"
           bindtap="goDetail"
         >
           <image class="item-img" src="{{item.mainImage}}" mode="aspectFill"></image>

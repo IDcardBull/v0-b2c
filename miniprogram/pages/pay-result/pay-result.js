@@ -13,13 +13,15 @@ Page({
   },
 
   onLoad(options) {
+    const mock = options.mock === '1'
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
       orderId: options.orderId || options.id || '',
+      success: mock,
     })
     if (this.data.orderId) {
-      setTimeout(() => this.loadOrder(), 800)
+      setTimeout(() => this.loadOrder(), mock ? 200 : 800)
     } else {
       this.setData({ loading: false })
     }

@@ -19,8 +19,10 @@ function normalizeCategoryNode(raw, index = 0, parentId = null) {
 function flattenCategoryIds(category) {
   if (!category) return []
   const ids = [category.id]
-  ;(category.children || []).forEach((child) => {
-    ids.push(...flattenCategoryIds(child))
+  const children = category.children || []
+  children.forEach((child) => {
+    const childIds = flattenCategoryIds(child)
+    childIds.forEach((childId) => ids.push(childId))
   })
   return ids
 }
@@ -65,14 +67,15 @@ Page({
       }
       wait()
     }
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 1 })
+    if (typeof this.getTabBar === 'function') {
+      const tabBar = this.getTabBar()
+      if (tabBar) tabBar.setData({ selected: 1 })
     }
   },
   loadCategories() {
     return api.category.tree()
       .then((data) => {
-        const raw = Array.isArray(data) ? data : data && data.list ? data.list : []
+        const raw = Array.isArray(data) ? data : ((data && data.list) ? data.list : [])
         const roots = raw
           .filter((item) => item.parentId == null && item.status !== 0)
           .sort((a, b) => (a.sort || 0) - (b.sort || 0))
@@ -129,7 +132,6 @@ Page({
       .then((results) => {
         const products = []
         results.forEach((data) => {
-          const raw = Array.isArray(data) ? data : (data && (data.list || data.items || data.records || data.rows)) || []
           api.normalizeRetailProducts(data).forEach((item) => products.push(item))
         })
         const list = uniqueProducts(products)
@@ -147,7 +149,15 @@ Page({
       })
   },
   goDetail(e) {
-    wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` })
+    const id = e.currentTarget.dataset.id
+    if (!id) {
+      wx.showToast({ title: '商品信息缺失', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: `/pages/detail/detail?id=${id}`,
+      fail: () => wx.showToast({ title: '详情页打开失败', icon: 'none' }),
+    })
   },
   onSearch() {
     wx.showToast({ title: '搜索功能即将开放', icon: 'none' })

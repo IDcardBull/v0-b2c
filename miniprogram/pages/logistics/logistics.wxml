@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <text class="back" bindtap="back">‹</text>
+      <view class="page-title">
+        <text class="t-cn">物流轨迹</text>
+        <text class="t-en">LOGISTICS</text>
+      </view>
+      <view></view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="hero-card">
+      <view class="hero-head">
+        <text class="seal">运</text>
+        <view class="hero-copy">
+          <text class="hero-title">{{company || order.logisticsCompany || '物流信息'}}</text>
+          <text class="hero-no">{{trackingNo || order.trackingNo || '暂无单号'}}</text>
+        </view>
+      </view>
+      <view wx:if="{{trackingNo || (order && order.trackingNo)}}" class="copy-btn" bindtap="copyNo">复制单号</view>
+    </view>
+
+    <view wx:if="{{loading}}" class="empty-state">
+      <text class="empty-text">物流轨迹载入中…</text>
+    </view>
+
+    <view wx:elif="{{empty}}" class="empty-state">
+      <text class="empty-text">暂未查询到物流轨迹</text>
+      <text class="empty-sub">如刚发货，请稍候再试</text>
+    </view>
+
+    <view wx:else class="timeline">
+      <view wx:for="{{tracks}}" wx:key="id" class="trace-item {{index === 0 ? 'trace-item--latest' : ''}}">
+        <view class="trace-axis">
+          <view class="trace-dot"></view>
+          <view wx:if="{{index !== tracks.length - 1}}" class="trace-line"></view>
+        </view>
+        <view class="trace-main">
+          <text class="trace-status">{{item.status}}</text>
+          <text wx:if="{{item.location}}" class="trace-location">{{item.location}}</text>
+          <text class="trace-time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view style="height: 80rpx;"></view>
+  </scroll-view>
+</view>

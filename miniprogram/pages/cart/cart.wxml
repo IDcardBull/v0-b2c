@@ -55,7 +55,7 @@
           >
             <view wx:if="{{item.checked}}" class="check-dot"></view>
           </view>
-          <image class="row-img" src="{{item.cover}}" mode="aspectFill" data-id="{{item.id}}" bindtap="goDetail"></image>
+          <image class="row-img" src="{{item.cover}}" mode="aspectFill" data-id="{{item.productId || item.id}}" bindtap="goDetail"></image>
           <view class="row-meta">
             <view class="row-title-row">
               <text class="row-title">{{item.name}}</text>
@@ -86,7 +86,7 @@
       </view>
 
       <view class="end-text">— 止 —</view>
-      <view style="height: 240rpx;"></view>
+      <view style="height: 320rpx;"></view>
     </block>
   </scroll-view>
 
