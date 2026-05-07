@@ -1,5 +1,6 @@
 // app.js
 const api = require('./utils/api.js')
+const wecomBot = require('./utils/wecom-bot.js')
 
 App({
   onLaunch() {
@@ -57,6 +58,16 @@ App({
     this.globalData.userInfo = null
     wx.removeStorageSync('token')
     wx.removeStorageSync('userInfo')
+  },
+
+  // 设置企微机器人 key
+  setWecomBotKey(key) {
+    wecomBot.setBotKey(key)
+  },
+
+  // 获取企微机器人 key
+  getWecomBotKey() {
+    return wecomBot.getBotKey()
   },
   globalData: {
     statusBarHeight: 20,

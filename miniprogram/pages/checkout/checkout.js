@@ -1,5 +1,7 @@
+// pages/checkout/checkout.js
 const app = getApp()
 const api = require('../../utils/api.js')
+const wecomBot = require('../../utils/wecom-bot.js')
 
 const FREE_SHIPPING_THRESHOLD = 199
 const FLAT_FREIGHT = 12
@@ -80,11 +82,47 @@ Page({
         addressId: this.data.address.id,
         remark: this.data.remark,
       })
+      // 下单成功后，异步发送企微机器人通知（不阻塞支付流程）
+      this.sendWecomNotify(order.id || order.orderId || order.orderNo)
       await this.pay(order.id)
     } catch (err) {
       this.setData({ submitting: false })
     }
   },
+  // 发送企业微信机器人订单通知
+  sendWecomNotify(orderId) {
+    if (!wecomBot.isConfigured()) return
+    const { items, address, subtotal, freight, total, remark } = this.data
+    const now = new Date()
+    const pad = (n) => String(n).padStart(2, '0')
+    const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+    const orderInfo = {
+      orderNo: String(orderId || ''),
+      customerName: address ? (address.name || address.receiverName || '') : '',
+      customerPhone: address ? (address.phone || address.mobile || '') : '',
+      address: address ? [
+        address.province || '',
+        address.city || '',
+        address.district || '',
+        address.detail || address.address || '',
+      ].filter(Boolean).join(' ') : '',
+      items: items.map((item) => ({
+        name: item.name || item.productName || '',
+        skuSpec: item.skuSpec || item.spec || '',
+        qty: item.qty || 1,
+        price: item.price || 0,
+      })),
+      subtotal,
+      freight,
+      total,
+      remark: remark || '',
+      time,
+    }
+    wecomBot.submitOrder(orderInfo).catch(() => {
+      // 通知发送失败不影响主流程，静默处理
+    })
+  },
+
   async pay(orderId) {
     try {
       const pay = await api.pay.order(orderId)

@@ -24,6 +24,7 @@ Page({
     optionView: [], // 渲染用：[{name, values:[{value, selected, disabled}]}]
     qty: 1,
     pickedSpecText: '',
+    baseGallery: [], // 商品原始图库（不含SKU专属图）
   },
   onLoad(options) {
     const id = options.id
@@ -58,21 +59,37 @@ Page({
       })
   },
   applyItem(item) {
-    const gallery = item.images && item.images.length > 0
+    const baseGallery = item.images && item.images.length > 0
       ? item.images
       : item.mainImage ? [item.mainImage] : []
     const skus = item.skus || []
     const selection = api.defaultSelection(skus)
     const selectedSku = api.findSkuBySelection(skus, selection)
+    // 初始化时，如果默认SKU有图片则优先展示
+    const gallery = this.buildGallery(selectedSku, item, baseGallery)
     this.setData({
       item,
       gallery,
+      baseGallery,
+      galleryIdx: 0,
       loading: false,
       selection,
       selectedSku,
       pickedSpecText: this.formatPicked(item.specOptions, selection),
     })
     this.rebuildOptionView()
+  },
+
+  // 构建当前展示的图片列表：SKU专属图片优先，其次商品图库
+  buildGallery(sku, item, baseGallery) {
+    if (sku && sku.image) {
+      // SKU有专属图：将SKU图放在最前面，过滤掉图库中重复的
+      const rest = (baseGallery || []).filter((img) => img !== sku.image)
+      return [sku.image, ...rest]
+    }
+    return baseGallery && baseGallery.length > 0
+      ? baseGallery
+      : (item && item.mainImage ? [item.mainImage] : [])
   },
   formatPicked(options, selection) {
     if (!options || !options.length) return ''
@@ -162,9 +179,13 @@ Page({
     const { name, value } = e.currentTarget.dataset
     const selection = { ...this.data.selection, [name]: value }
     const sku = api.findSkuBySelection(this.data.item.skus || [], selection)
+    // 切换SKU时同步更新图片展示
+    const gallery = this.buildGallery(sku, this.data.item, this.data.baseGallery)
     this.setData({
       selection,
       selectedSku: sku,
+      gallery,
+      galleryIdx: 0, // 切换规格时回到第一张
       pickedSpecText: this.formatPicked(this.data.item.specOptions, selection),
     })
     this.rebuildOptionView()

@@ -34,6 +34,7 @@ Page({
       { key: 'footprint', glyph: '迹', label: '足迹', sub: '近日所观之器' },
       { key: 'custom', glyph: '定', label: '定制订做', sub: '一器一议' },
       { key: 'feedback', glyph: '问', label: '客户服务', sub: '联系主理人·售后凭证' },
+      { key: 'wecom', glyph: '机', label: '企微通知配置', sub: '配置Webhook接收订单通知' },
       { key: 'about', glyph: '志', label: '关于釉见', sub: '品牌·匠人' },
     ],
     profileEditorVisible: false,
@@ -234,6 +235,22 @@ Page({
     if (key === 'address') {
       if (!this.ensureLoggedIn('/pages/address/address')) return
       wx.navigateTo({ url: '/pages/address/address' })
+      return
+    }
+    if (key === 'wecom') {
+      const currentKey = app.getWecomBotKey ? app.getWecomBotKey() : ''
+      wx.showModal({
+        title: '企微机器人配置',
+        editable: true,
+        placeholderText: '请输入 Webhook Key',
+        content: currentKey,
+        success: (res) => {
+          if (res.confirm && res.content) {
+            if (app.setWecomBotKey) app.setWecomBotKey(res.content.trim())
+            wx.showToast({ title: '配置已保存', icon: 'success' })
+          }
+        },
+      })
       return
     }
     wx.showToast({ title: `${key} 即将开放`, icon: 'none' })
