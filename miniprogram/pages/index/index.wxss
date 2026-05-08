@@ -412,3 +412,59 @@
   letter-spacing: 6rpx;
   color: var(--color-ink-faint);
 }
+
+/* ============ 实体店引流 · 寻访线下空间 ============ */
+.storefront {
+  padding: 96rpx 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+.storefront-kicker {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.sf-en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink-faint);
+}
+.sf-line {
+  flex: 1;
+  height: 1rpx;
+  background: rgba(58,58,58,0.18);
+}
+.storefront-frame {
+  width: 100%;
+  height: 360rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.storefront-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.storefront-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+  padding: 8rpx 0 0;
+}
+.sf-cn {
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 12rpx;
+  color: var(--color-ink);
+  font-weight: 500;
+}
+.sf-sub {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-faint);
+}
