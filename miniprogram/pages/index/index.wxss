@@ -2,344 +2,413 @@
   min-height: 100vh;
   background: var(--color-bg);
 }
-
 .scroll {
   height: 100vh;
   box-sizing: border-box;
 }
 
-/* 导航 —— 毛玻璃质感增强 */
+/* ============ 顶栏 · 透明克制 ============ */
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: rgba(239, 232, 220, 0.82);
-  backdrop-filter: saturate(180%) blur(24rpx);
-  -webkit-backdrop-filter: saturate(180%) blur(24rpx);
-  border-bottom: 1rpx solid rgba(58, 58, 58, 0.04);
+  top: 0; left: 0; right: 0;
+  z-index: 30;
+  background: transparent;
+  pointer-events: none;
 }
 .navbar-inner {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
   padding: 0 40rpx;
-  gap: 10rpx;
+  pointer-events: auto;
 }
 .brand {
   display: flex;
   align-items: baseline;
-  gap: 16rpx;
+  gap: 14rpx;
 }
 .brand-cn {
   font-family: "Songti SC", serif;
-  font-size: var(--fs-h2);
-  letter-spacing: 12rpx;
+  font-size: 30rpx;
+  letter-spacing: 8rpx;
   color: var(--color-ink);
-  font-weight: 600;
+  font-weight: 500;
 }
 .brand-en {
   font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 4rpx;
+  font-size: 18rpx;
+  letter-spacing: 5rpx;
   color: var(--color-ink-faint);
-  opacity: 0.8;
+}
+.search-trigger {
+  width: 56rpx; height: 56rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.mag-icon {
+  position: relative;
+  width: 28rpx; height: 28rpx;
+}
+.mag-circle {
+  width: 22rpx; height: 22rpx;
+  border: 1.2rpx solid var(--color-ink);
+  border-radius: 50%;
+}
+.mag-stick {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 10rpx; height: 1.2rpx;
+  background: var(--color-ink);
+  transform: rotate(45deg);
+  transform-origin: right center;
 }
 
-/* 搜索：透明背景 */
-.search {
-  display: none;
-}
-
-/* 画报 —— 增加圆角和阴影 */
+/* ============ Hero · 全屏沉浸画报 ============ */
 .hero {
   position: relative;
-  margin: 24rpx 32rpx 0;
-  height: 840rpx;
+  width: 100%;
+  height: 100vh;
   overflow: hidden;
-  border-radius: var(--radius-lg);
   background: var(--color-card);
-  box-shadow: var(--shadow-lg);
+}
+.hero-swiper, .hero-img {
+  width: 100%; height: 100%;
 }
 .hero-img {
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s var(--ease-out);
+  display: block;
 }
-.hero-swiper {
-  width: 100%;
-  height: 100%;
+.hero-fade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 55%;
+  background: linear-gradient(
+    180deg,
+    rgba(239,232,220,0) 0%,
+    rgba(239,232,220,0.05) 30%,
+    rgba(239,232,220,0.45) 75%,
+    rgba(239,232,220,0.85) 100%
+  );
+  pointer-events: none;
 }
+
+.hero-title-block {
+  position: absolute;
+  left: 56rpx;
+  bottom: 140rpx;
+  display: flex;
+  align-items: flex-end;
+  gap: 28rpx;
+  animation: fadeInUp 0.9s var(--ease-out) 0.2s both;
+}
+.hero-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+.hero-vertical text {
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 76rpx;
+  line-height: 0.95;
+  letter-spacing: 2rpx;
+  color: var(--color-ink);
+  font-weight: 400;
+}
+.hero-rule {
+  width: 1rpx;
+  height: 120rpx;
+  background: var(--color-ink);
+  opacity: 0.5;
+  margin: 0 6rpx 12rpx;
+}
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  padding-bottom: 14rpx;
+}
+.hero-meta-en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  letter-spacing: 6rpx;
+  color: var(--color-ink);
+}
+.hero-meta-vol {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
+  letter-spacing: 2rpx;
+  color: var(--color-ink-soft);
+  font-style: italic;
+}
+
+.hero-issue {
+  position: absolute;
+  right: 56rpx;
+  bottom: 140rpx;
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
+  font-family: "PingFang SC", sans-serif;
+  color: var(--color-ink);
+  animation: fadeIn 1s var(--ease-out) 0.4s both;
+}
+.hero-issue text:first-child {
+  font-size: 18rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-soft);
+}
+.hero-issue-num {
+  font-family: "Songti SC", serif;
+  font-size: 56rpx;
+  letter-spacing: 2rpx;
+  font-weight: 300;
+  line-height: 1;
+}
+
 .hero-paginator {
   position: absolute;
-  bottom: 32rpx;
-  left: 52rpx;
+  left: 56rpx;
+  bottom: 80rpx;
   display: flex;
   gap: 10rpx;
-  z-index: 3;
+  z-index: 4;
 }
 .hp-bar {
-  width: 28rpx;
-  height: 3rpx;
-  background: rgba(58, 58, 58, 0.2);
-  border-radius: 2rpx;
-  transition: all var(--duration-normal) var(--ease-out);
+  width: 12rpx;
+  height: 1rpx;
+  background: rgba(58,58,58,0.35);
+  transition: width var(--duration-normal) var(--ease-out), background var(--duration-normal);
 }
 .hp-bar--on {
   width: 56rpx;
   background: var(--color-ink);
 }
-.hero-mask {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(239, 232, 220, 0) 40%,
-    rgba(239, 232, 220, 0.3) 70%,
-    rgba(239, 232, 220, 0.6) 100%
-  );
-  pointer-events: none;
-}
-.hero-copy {
-  position: absolute;
-  top: 60rpx;
-  right: 52rpx;
-  display: flex;
-  align-items: flex-start;
-  gap: 24rpx;
-  animation: fadeIn 0.8s var(--ease-out) 0.3s both;
-}
-.hero-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 14rpx;
-  writing-mode: vertical-rl;
-}
-.hero-vertical text {
-  font-family: "Songti SC", serif;
-  font-size: 44rpx;
-  color: var(--color-ink);
-  letter-spacing: 8rpx;
-  text-shadow: 0 2rpx 8rpx rgba(239, 232, 220, 0.6);
-}
-.hero-sub {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14rpx;
-  padding-top: 10rpx;
-}
-.hero-line {
-  width: 1rpx;
-  height: 90rpx;
-  background: linear-gradient(180deg, transparent, rgba(58, 58, 58, 0.35), transparent);
-}
-.hero-sub text:last-child {
-  writing-mode: vertical-rl;
-  font-size: 22rpx;
-  letter-spacing: 6rpx;
-  color: var(--color-ink-soft);
-}
-.hero-index {
-  position: absolute;
-  bottom: 40rpx;
-  left: 40rpx;
+
+/* ============ Section · 通用 kicker 标签 ============ */
+.kicker {
   display: flex;
   align-items: center;
-  gap: 14rpx;
+  gap: 20rpx;
+  padding: 0 40rpx;
+  margin-bottom: 48rpx;
+}
+.kicker-line {
+  width: 36rpx;
+  height: 1rpx;
+  background: var(--color-ink);
+}
+.kicker-text {
   font-family: "PingFang SC", sans-serif;
   font-size: 20rpx;
-  letter-spacing: 4rpx;
-  color: var(--color-ink-soft);
-  animation: fadeInUp 0.6s var(--ease-out) 0.5s both;
+  letter-spacing: 6rpx;
+  color: var(--color-ink);
 }
-.dot-sm {
-  width: 4rpx;
-  height: 4rpx;
-  border-radius: 50%;
-  background: var(--color-ink-faint);
+.kicker-cn {
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink-soft);
 }
 
-/* 分类 —— 增加卡片感和动效 */
-.cats {
-  padding: 60rpx 40rpx 20rpx;
+/* ============ 品类 · 横向文字导航 ============ */
+.cats-section {
+  padding: 120rpx 0 40rpx;
 }
-.section-title {
-  display: flex;
-  align-items: baseline;
-  gap: 16rpx;
-  margin-bottom: 40rpx;
+.cats-scroll {
+  width: 100%;
+  white-space: nowrap;
 }
-.section-cn {
+.cats-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 56rpx;
+  padding: 0 48rpx 8rpx;
+}
+.cat-item {
+  position: relative;
+  padding: 12rpx 0 18rpx;
+  transition: color 0.2s ease;
+}
+.cat-text {
   font-family: "Songti SC", serif;
   font-size: 32rpx;
-  letter-spacing: 12rpx;
+  letter-spacing: 6rpx;
+  color: var(--color-ink-faint);
+  font-weight: 400;
+}
+.cat-item--on .cat-text {
   color: var(--color-ink);
   font-weight: 600;
 }
-.section-en {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 4rpx;
-  color: var(--color-ink-faint);
-  opacity: 0.7;
+.cat-item--on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 24rpx;
+  height: 1.5rpx;
+  background: var(--color-ink);
 }
-.cats-row {
-  display: flex;
-  justify-content: space-between;
-}
-.cat {
+
+/* ============ 章节分隔 · 印章式 ============ */
+.section-break {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14rpx;
-  transition: transform var(--duration-fast) var(--ease-out);
+  gap: 18rpx;
+  padding: 96rpx 40rpx 80rpx;
 }
-.cat:active {
-  transform: scale(0.92);
-}
-.ring {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 50%;
-  border: 1.5rpx solid rgba(58, 58, 58, 0.2);
-  padding: 10rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-md);
-  transition: all var(--duration-normal) var(--ease-out);
-  background: rgba(255, 255, 255, 0.3);
-}
-.ring-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-celadon-light), var(--color-celadon));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 2rpx 6rpx rgba(255, 255, 255, 0.4), 0 2rpx 8rpx rgba(138, 175, 166, 0.2);
-}
-.cat-cn {
-  font-family: "Songti SC", serif;
-  font-size: 28rpx;
+.break-en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20rpx;
   letter-spacing: 6rpx;
+  color: var(--color-ink-soft);
+}
+.break-cn {
+  font-family: "Songti SC", serif;
+  font-size: 48rpx;
+  letter-spacing: 24rpx;
+  padding-left: 24rpx;
   color: var(--color-ink);
   font-weight: 500;
 }
-.cat-en {
+.break-sub {
   font-family: "PingFang SC", sans-serif;
   font-size: 20rpx;
-  letter-spacing: 3rpx;
+  letter-spacing: 2rpx;
   color: var(--color-ink-faint);
+  font-style: italic;
+  margin-top: 8rpx;
 }
 
-/* 商品宫格 —— 增加卡片阴影和圆角 */
-.grid {
-  padding: 0 32rpx;
+/* ============ 画廊 · 错落策展布局 ============ */
+.gallery {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  row-gap: 48rpx;
+  padding: 0 40rpx;
+  gap: 24rpx 24rpx;
 }
-.card {
-  width: 48%;
-  box-sizing: border-box;
+.g-card {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--color-paper);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast);
+  transition: opacity 0.25s ease;
 }
-.card:active {
-  transform: scale(0.97) translateY(2rpx);
-  box-shadow: var(--shadow-sm);
-}
-.card-img {
+.g-card:active { opacity: 0.78; }
+.g-frame {
   width: 100%;
-  height: 440rpx;
+  overflow: hidden;
   background: var(--color-card);
 }
-.card-meta {
-  padding: 20rpx 20rpx 24rpx;
+.g-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.6s var(--ease-out);
+}
+
+/* 错落规则：3n+1 通栏大图，3n+2 / 3n+3 两张竖图同行 */
+.g-card:nth-child(3n+1) { width: 100%; }
+.g-card:nth-child(3n+1) .g-frame { height: 880rpx; }
+
+.g-card:nth-child(3n+2),
+.g-card:nth-child(3n) {
+  width: calc(50% - 12rpx);
+}
+.g-card:nth-child(3n+2) .g-frame,
+.g-card:nth-child(3n) .g-frame {
+  height: 720rpx;
+}
+
+/* 卡片信息 */
+.g-meta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 24rpx 4rpx 8rpx;
+  gap: 16rpx;
+}
+.g-meta-left {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 6rpx;
+  min-width: 0;
 }
-.card-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10rpx;
-}
-.card-title {
-  flex: 1;
+.g-title {
   font-family: "Songti SC", serif;
   font-size: 28rpx;
   letter-spacing: 3rpx;
   color: var(--color-ink);
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 500;
 }
-.seal {
-  flex-shrink: 0;
-  font-family: "Songti SC", serif;
-  font-size: 18rpx;
-  letter-spacing: 3rpx;
-  color: var(--color-celadon-deep);
-  padding: 4rpx 12rpx;
-  border: 1rpx solid var(--color-celadon);
-  border-radius: var(--radius-xs);
-  background: rgba(184, 207, 200, 0.12);
-}
-.card-sub {
+.g-sub {
   font-family: "PingFang SC", sans-serif;
-  font-size: 22rpx;
+  font-size: 20rpx;
   letter-spacing: 2rpx;
   color: var(--color-ink-faint);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.card-price {
-  font-size: 32rpx;
-  padding-top: 8rpx;
-  font-weight: 600;
+.g-price {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+  color: var(--color-ink-faint);
+  margin-top: 6rpx;
+  font-weight: 300;
 }
 
-/* 结尾 —— 增加装饰感 */
+/* 极简加号按钮 —— 1rpx 边框圆形 */
+.g-add {
+  position: relative;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(58,58,58,0.35);
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+.g-add-h, .g-add-v {
+  position: absolute;
+  background: var(--color-ink);
+  top: 50%; left: 50%;
+}
+.g-add-h {
+  width: 16rpx;
+  height: 1rpx;
+  transform: translate(-50%, -50%);
+}
+.g-add-v {
+  width: 1rpx;
+  height: 16rpx;
+  transform: translate(-50%, -50%);
+}
+
+/* ============ 结尾 ============ */
 .end-mark {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
-  padding: 80rpx 0 40rpx;
+  gap: 18rpx;
+  padding: 140rpx 0 60rpx;
 }
 .end-seal {
-  width: 68rpx;
-  height: 68rpx;
-  border: 1.5rpx solid rgba(58, 58, 58, 0.3);
-  border-radius: var(--radius-sm);
+  width: 64rpx;
+  height: 64rpx;
+  border: 1rpx solid var(--color-ink);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: "Songti SC", serif;
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: var(--color-ink);
-  transform: rotate(-3deg);
-  box-shadow: var(--shadow-sm);
-  background: rgba(246, 241, 230, 0.6);
 }
 .end-sub {
   font-family: "PingFang SC", sans-serif;
   font-size: 18rpx;
-  letter-spacing: 4rpx;
+  letter-spacing: 6rpx;
   color: var(--color-ink-faint);
-  opacity: 0.7;
 }
