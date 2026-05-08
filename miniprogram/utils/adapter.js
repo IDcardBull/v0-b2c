@@ -196,29 +196,10 @@ function normalizeOrderStatus(status) {
   return STATUS_LABEL[status] || '处 · 理'
 }
 
-function getOrderSnapshots() {
-  try {
-    return wx.getStorageSync('orderItemSnapshots') || {}
-  } catch (err) {
-    return {}
-  }
-}
-
-function getMockPaidOrders() {
-  try {
-    return wx.getStorageSync('mockPaidOrders') || {}
-  } catch (err) {
-    return {}
-  }
-}
-
+// 订单状态完全由后端决定，前端不再做"已支付"兜底
 function getEffectiveOrderStatus(order) {
   if (!order) return 'pending_pay'
-  const mockPaidOrders = getMockPaidOrders()
-  const orderId = `${order.id}`
-  const rawStatus = order.status || 'pending_pay'
-  if (rawStatus === 'pending_pay' && mockPaidOrders[orderId]) return 'pending_ship'
-  return rawStatus
+  return order.status || 'pending_pay'
 }
 
 function normalizeOrderItem(item, index = 0, snapshot = null) {
@@ -273,13 +254,9 @@ function normalizeAddress(addr) {
 
 function normalizeOrder(order) {
   if (!order) return null
-  const mockPaidOrders = getMockPaidOrders()
-  const snapshots = getOrderSnapshots()
-  const orderId = `${order.id}`
   const status = getEffectiveOrderStatus(order)
-  const sourceItems = order.items || order.orderItems || snapshots[orderId] || []
-  const snapshotItems = snapshots[orderId] || []
-  const items = sourceItems.map((it, i) => normalizeOrderItem(it, i, snapshotItems[i] || null))
+  const sourceItems = order.items || order.orderItems || []
+  const items = sourceItems.map((it, i) => normalizeOrderItem(it, i, null))
   const totalQty = items.reduce((s, x) => s + (x.quantity || 0), 0)
   const subtotal = Number(order.subtotal || order.itemsTotal || items.reduce((s, x) => s + x.price * x.quantity, 0))
   const freight = Number(order.freight || order.shippingFee || 0)
@@ -310,7 +287,7 @@ function normalizeOrder(order) {
     paidAmount: total,
     remark: order.remark || order.note || '',
     createdAt: order.createdAt || '',
-    paidAt: order.paidAt || (mockPaidOrders[orderId] ? order.updatedAt || order.createdAt || '' : ''),
+    paidAt: order.paidAt || '',
     shippedAt: order.shippedAt || '',
     completedAt: order.completedAt || '',
   }

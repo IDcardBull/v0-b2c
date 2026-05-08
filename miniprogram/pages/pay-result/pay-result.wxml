@@ -53,7 +53,7 @@
       <text class="sub">若您已支付，请稍候片刻</text>
       <view class="actions">
         <view class="btn ghost" bindtap="goOrders">订单列表</view>
-        <view class="btn solid" bindtap="goOrder">再去支付</view>
+        <view class="btn solid {{paying ? 'disabled' : ''}}" bindtap="retryPay">{{paying ? '调起支付中...' : '再去支付'}}</view>
       </view>
     </block>
   </view>

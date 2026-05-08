@@ -10,29 +10,6 @@ const TABS = [
   { key: 'completed', label: '已成' },
 ]
 
-function markMockOrderPaid(orderId, order) {
-  const mockPaid = wx.getStorageSync('mockPaidOrders') || {}
-  mockPaid[`${orderId}`] = true
-  wx.setStorageSync('mockPaidOrders', mockPaid)
-
-  if (!order || !Array.isArray(order.items)) return
-  const snapshots = wx.getStorageSync('orderItemSnapshots') || {}
-  snapshots[`${orderId}`] = order.items.map((item) => ({
-    productId: item.productId || item.id,
-    skuId: item.skuId,
-    name: item.name,
-    image: item.image || item.skuImage || item.cover || '',
-    cover: item.cover || item.image || item.skuImage || '',
-    skuImage: item.skuImage || item.image || item.cover || '',
-    spec: item.spec || item.skuSpec || '',
-    skuSpec: item.skuSpec || item.spec || '',
-    price: Number(item.price || 0),
-    quantity: Number(item.quantity || item.qty || 1),
-    qty: Number(item.quantity || item.qty || 1),
-  }))
-  wx.setStorageSync('orderItemSnapshots', snapshots)
-}
-
 Page({
   data: {
     statusBarHeight: 20,
@@ -94,40 +71,40 @@ Page({
     wx.switchTab({ url: '/pages/index/index' })
   },
 
+  // catchtap 兜底，阻止冒泡
+  noop() {},
+
+  /**
+   * 继续支付：直接调后端取得 wx.requestPayment 参数后唤起收银台。
+   * 取消/失败时订单仍是 pending_pay，用户可继续重试。
+   */
   payOrder(e) {
     const id = e.currentTarget.dataset.id
-    const order = this.data.list.find((item) => `${item.id}` === `${id}`)
     wx.showLoading({ title: '请稍候', mask: true })
     api.pay
       .order(id)
-      .then((res) => {
+      .then((params) => {
         wx.hideLoading()
-        const params = res && (res.payParams || res)
-        if (!params || !params.timeStamp) {
-          markMockOrderPaid(id, order)
-          return wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${id}` })
+        if (!params || !params.timeStamp || !params.paySign) {
+          wx.showToast({ title: '支付暂不可用', icon: 'none' })
+          return
         }
         wx.requestPayment({
-          ...params,
-          success: () => {
-            markMockOrderPaid(id, order)
-            wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${id}` })
+          timeStamp: params.timeStamp,
+          nonceStr: params.nonceStr,
+          package: params.package,
+          signType: params.signType || 'RSA',
+          paySign: params.paySign,
+          success: () => wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${id}` }),
+          fail: (err) => {
+            const cancelled = err && err.errMsg && err.errMsg.indexOf('cancel') >= 0
+            wx.showToast({ title: cancelled ? '已取消支付' : '支付未完成', icon: 'none' })
           },
-          fail: () => wx.showToast({ title: '已取消支付', icon: 'none' }),
         })
       })
       .catch((err) => {
         wx.hideLoading()
-        const message = String((err && err.message) || '')
-        if (message.includes('503') || message.includes('Service Unavailable') || message.includes('支付')) {
-          markMockOrderPaid(id, order)
-          wx.showToast({ title: '已走模拟支付', icon: 'none' })
-          setTimeout(() => {
-            wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${id}&mock=1` })
-          }, 280)
-          return
-        }
-        wx.showToast({ title: err.message || '发起失败', icon: 'none' })
+        wx.showToast({ title: (err && err.message) || '发起失败', icon: 'none' })
       })
   },
 

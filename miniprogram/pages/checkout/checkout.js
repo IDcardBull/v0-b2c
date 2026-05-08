@@ -82,9 +82,11 @@ Page({
         addressId: this.data.address.id,
         remark: this.data.remark,
       })
+      const orderId = order.id || order.orderId
       // 下单成功后，异步发送企微机器人通知（不阻塞支付流程）
-      this.sendWecomNotify(order.id || order.orderId || order.orderNo)
-      await this.pay(order.id)
+      this.sendWecomNotify(order.orderNo || orderId)
+      // 拉起微信支付
+      await this.pay(orderId)
     } catch (err) {
       this.setData({ submitting: false })
     }
@@ -123,59 +125,56 @@ Page({
     })
   },
 
+  /**
+   * 调起微信支付。
+   * 1. 后端 /client/pay/orders/:id 返回 wx.requestPayment 所需参数
+   * 2. wx.requestPayment 唤起收银台
+   * 3. 不论成功/失败/取消，统一把购物车里对应商品移除（订单已生成）
+   * 4. 不再做"假支付"兜底，订单状态完全由后端微信回调决定
+   */
   async pay(orderId) {
     try {
-      const pay = await api.pay.order(orderId)
+      const params = await api.pay.order(orderId)
+      if (!params || !params.timeStamp || !params.paySign) {
+        // 后端没返回合法支付参数，跳到结果页提示稍后重试
+        this.removePaidItems()
+        wx.showModal({
+          title: '支付暂不可用',
+          content: '请在订单列表中稍后重试支付，或联系管理员检查支付配置。',
+          showCancel: false,
+        })
+        wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${orderId}&pending=1` })
+        return
+      }
       wx.requestPayment({
-        ...pay,
+        timeStamp: params.timeStamp,
+        nonceStr: params.nonceStr,
+        package: params.package,
+        signType: params.signType || 'RSA',
+        paySign: params.paySign,
         success: () => {
-          this.markMockOrderPaid(orderId)
           this.removePaidItems()
           wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${orderId}` })
         },
-        fail: () => {
-          wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${orderId}&pending=1` })
+        fail: (err) => {
+          // 用户取消或支付失败：订单仍在 pending_pay 状态，可在订单列表里继续支付
+          const cancelled = err && err.errMsg && err.errMsg.indexOf('cancel') >= 0
+          this.removePaidItems()
+          wx.redirectTo({
+            url: `/pages/pay-result/pay-result?orderId=${orderId}&pending=1${cancelled ? '&cancel=1' : ''}`,
+          })
         },
       })
     } catch (err) {
-      const message = String((err && err.message) || '')
-      const isMockPay = message.includes('503') || message.includes('Service Unavailable') || message.includes('支付')
-      if (isMockPay) {
-        this.markMockOrderPaid(orderId)
-        this.removePaidItems()
-        wx.showToast({ title: '已走模拟支付', icon: 'none' })
-        setTimeout(() => {
-          wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${orderId}&mock=1` })
-        }, 280)
-        return
-      }
+      // 后端拒绝下单（如 503 / 缺配置 / 其他错误）：跳到结果页让用户稍后重试
+      this.removePaidItems()
       wx.showModal({
         title: '支付暂不可用',
-        content: err.message || '请联系管理员处理支付配置',
+        content: (err && err.message) || '请稍后再试或联系管理员',
         showCancel: false,
       })
-      wx.redirectTo({ url: `/pages/order-detail/order-detail?id=${orderId}` })
+      wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${orderId}&pending=1` })
     }
-  },
-  markMockOrderPaid(orderId) {
-    const snapshots = wx.getStorageSync('orderItemSnapshots') || {}
-    snapshots[`${orderId}`] = this.data.items.map((item) => ({
-      productId: item.productId || item.id,
-      skuId: item.skuId,
-      name: item.name,
-      image: item.cover || item.mainImage || item.image || '',
-      cover: item.cover || item.mainImage || item.image || '',
-      skuImage: item.cover || item.mainImage || item.image || '',
-      spec: item.skuSpec || item.spec || '',
-      skuSpec: item.skuSpec || item.spec || '',
-      price: Number(item.price || 0),
-      quantity: Number(item.qty || item.quantity || 1),
-      qty: Number(item.qty || item.quantity || 1),
-    }))
-    wx.setStorageSync('orderItemSnapshots', snapshots)
-    const mockPaid = wx.getStorageSync('mockPaidOrders') || {}
-    mockPaid[`${orderId}`] = true
-    wx.setStorageSync('mockPaidOrders', mockPaid)
   },
   removePaidItems() {
     const ids = this.data.items.map((item) => `${item.skuId}`)
