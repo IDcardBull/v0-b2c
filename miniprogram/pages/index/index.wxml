@@ -41,7 +41,23 @@
         </swiper>
       </block>
       <block wx:else>
-        <image class="hero-img" src="/images/hero-celadon.jpg" mode="aspectFill"></image>
+        <swiper
+          class="hero-swiper"
+          indicator-dots="{{false}}"
+          autoplay
+          circular
+          interval="4500"
+          duration="700"
+          current="{{bannerIdx}}"
+          bindchange="onBannerChange"
+        >
+          <swiper-item><image class="hero-img" src="/images/feature-jinkui-01.jpg" mode="aspectFill"></image></swiper-item>
+          <swiper-item><image class="hero-img" src="/images/feature-huakou-01.jpg" mode="aspectFill"></image></swiper-item>
+          <swiper-item><image class="hero-img" src="/images/feature-jinkui-03.jpg" mode="aspectFill"></image></swiper-item>
+          <swiper-item><image class="hero-img" src="/images/feature-huakou-03.jpg" mode="aspectFill"></image></swiper-item>
+          <swiper-item><image class="hero-img" src="/images/feature-jinkui-05.jpg" mode="aspectFill"></image></swiper-item>
+          <swiper-item><image class="hero-img" src="/images/feature-huakou-05.jpg" mode="aspectFill"></image></swiper-item>
+        </swiper>
       </block>
 
       <view class="hero-fade"></view>
@@ -72,6 +88,21 @@
           wx:for-index="bi"
           class="hp-bar {{bi === bannerIdx ? 'hp-bar--on' : ''}}"
         ></view>
+      </view>
+    </view>
+
+    <!-- 实体店引流 —— 寻访线下空间 -->
+    <view class="storefront">
+      <view class="storefront-kicker">
+        <text class="sf-en">VISIT · OFFLINE</text>
+        <text class="sf-line"></text>
+      </view>
+      <view class="storefront-frame">
+        <image class="storefront-img" src="/images/storefront.png" mode="aspectFill"></image>
+      </view>
+      <view class="storefront-meta">
+        <text class="sf-cn">寻 访 线 下 空 间</text>
+        <text class="sf-sub">Youjian Ceramics Atelier · 釉见陶集</text>
       </view>
     </view>
 
