@@ -223,8 +223,11 @@ const api = {
   getBanners,
   getCategories,
   auth: {
-    miniLogin: (code) => request.post('/client/auth/mini-login', { code }, { silent: true, noAuth: true }),
-    phoneLogin: (phone, code) => request.post('/client/auth/phone-login', { phone, code }),
+    // channel:'retail' 让后端用零售小程序的 AppID/Secret 调 jscode2session
+    miniLogin: (code) =>
+      request.post('/client/auth/mini-login', { code, channel: 'retail' }, { silent: true, noAuth: true }),
+    phoneLogin: (phone, code) =>
+      request.post('/client/auth/phone-login', { phone, code, channel: 'retail' }),
     bindPhone: (phone) => request.post('/client/auth/bind-phone', { phone }),
   },
   user: {

@@ -21,10 +21,22 @@ App({
           try {
             if (!res.code) throw new Error('wx.login 未返回 code，请确认开发者工具已使用真实 AppID 并重新打开项目')
             const data = await api.auth.miniLogin(res.code)
+            // 后端 dev fallback：jscode2session 失败时给的占位 openid，无法发起真实支付
+            if (data?.dev) {
+              console.warn(
+                '[miniLogin] 命中后端 dev fallback，原因:', data.reason,
+                '\n→ openid 是假的，下单后支付会被拒绝。\n' +
+                '请检查：\n' +
+                '  1. 微信开发者工具 → 详情 → 项目设置 中的 AppID 是否与后端 .env 的 WX_APPID 一致\n' +
+                '  2. server/.env 的 WX_SECRET 是否正确\n' +
+                '  3. 真机调试时 server 必须能联网访问 api.weixin.qq.com',
+              )
+            }
             wx.setStorageSync('token', data.token)
             wx.setStorageSync('userInfo', data.user)
             this.globalData.token = data.token
             this.globalData.userInfo = data.user
+            this.globalData.isDevLogin = !!data?.dev
             resolve(data)
           } catch (err) {
             reject(err)
