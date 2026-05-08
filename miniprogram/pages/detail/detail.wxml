@@ -48,6 +48,10 @@
         <view wx:else class="price"><text class="unit">¥</text>{{item.price}}</view>
         <text class="price-note">含税 · 含精装木盒</text>
       </view>
+      <view class="ship-row">
+        <text wx:if="{{item.freeShipping}}" class="ship-tag ship-tag--free">包邮</text>
+        <text wx:elif="{{item.shippingFee > 0}}" class="ship-tag">运费 ¥{{item.shippingFee}}</text>
+      </view>
       <view wx:if="{{item.salesCount > 0 || item.rating > 0}}" class="meta-row">
         <text wx:if="{{item.rating > 0}}" class="meta-text">评 · {{item.rating}}</text>
         <text wx:if="{{item.salesCount > 0}}" class="meta-text">已售 · {{item.salesCount}}</text>

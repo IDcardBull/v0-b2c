@@ -3,9 +3,6 @@ const app = getApp()
 const api = require('../../utils/api.js')
 const wecomBot = require('../../utils/wecom-bot.js')
 
-const FREE_SHIPPING_THRESHOLD = 199
-const FLAT_FREIGHT = 12
-
 Page({
   data: {
     statusBarHeight: 20,
@@ -16,6 +13,7 @@ Page({
     subtotal: 0,
     freight: 0,
     total: 0,
+    allFreeShipping: false, // 所有商品都包邮 → 显示"全场包邮"
     submitting: false,
   },
   onLoad() {
@@ -30,14 +28,28 @@ Page({
     this.recalc()
     this.loadAddress()
   },
+  // 运费规则（与后端保持一致）：
+  //   - 每个商品自带 freeShipping(布尔) / shippingFee(数字)，由管理端配置
+  //   - 全部商品包邮 -> 0
+  //   - 否则取所有"非包邮"商品中 shippingFee 的最大值（同单不累加运费，避免多商品多倍邮费）
+  //   - 此处仅作客户端预估值；提交订单后后端会按真实数据复算 Order.freight，最终金额以后端为准
   recalc() {
-    const subtotal = this.data.items.reduce(
+    const items = this.data.items || []
+    const subtotal = items.reduce(
       (sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0),
       0,
     )
-    const freight = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : FLAT_FREIGHT
+    let freight = 0
+    let allFreeShipping = items.length > 0
+    items.forEach((item) => {
+      if (item.freeShipping) return
+      allFreeShipping = false
+      const fee = Number(item.shippingFee || 0)
+      if (fee > freight) freight = fee
+    })
+    if (subtotal === 0) freight = 0
     const total = subtotal + freight
-    this.setData({ subtotal, freight, total })
+    this.setData({ subtotal, freight, total, allFreeShipping })
   },
   async loadAddress() {
     try {

@@ -235,6 +235,9 @@ Page({
         stock: selectedSku.stock,
         qty: qty,
         checked: true,
+        // 透传商品的包邮配置，结算时按规则合并
+        freeShipping: !!item.freeShipping,
+        shippingFee: Number(item.shippingFee || 0),
       }
       cart.push(entry)
     }

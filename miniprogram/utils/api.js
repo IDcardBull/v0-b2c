@@ -143,6 +143,15 @@ function normalizeProduct(raw) {
     status,
     retailEnabled: raw.retailEnabled === true,
     wholesaleEnabled: raw.wholesaleEnabled === true,
+    // 包邮配置（管理端「商品基础信息」可配）
+    freeShipping: raw.freeShipping === true || raw.free_shipping === true,
+    shippingFee: Number(
+      raw.shippingFee != null
+        ? raw.shippingFee
+        : raw.shipping_fee != null
+          ? raw.shipping_fee
+          : 0,
+    ) || 0,
   }
 }
 

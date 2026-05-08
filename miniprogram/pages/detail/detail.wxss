@@ -773,3 +773,27 @@
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
+
+/* 包邮 / 运费 标签 */
+.ship-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding-top: 12rpx;
+}
+.ship-tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: var(--color-ink-soft);
+  background: rgba(246, 241, 230, 0.6);
+  border: 1rpx solid rgba(58, 58, 58, 0.12);
+  border-radius: var(--radius-xs);
+}
+.ship-tag--free {
+  color: var(--color-celadon-deep);
+  background: rgba(138, 175, 166, 0.12);
+  border-color: rgba(138, 175, 166, 0.5);
+}
