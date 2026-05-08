@@ -1,25 +1,37 @@
-.tabbar {
+/* 悬浮玻璃胶囊 TabBar */
+.tabbar-wrap {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   bottom: 0;
   z-index: 99;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 80rpx calc(env(safe-area-inset-bottom) + 28rpx);
   transform: translateY(0);
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .tabbar--hidden {
-  transform: translateY(120%);
+  transform: translateY(160%);
   pointer-events: none;
 }
-
+.tabbar {
+  position: relative;
+  width: 100%;
+  max-width: 620rpx;
+  pointer-events: auto;
+}
 .tabbar-bg {
   position: absolute;
   inset: 0;
-  background: rgba(239, 232, 220, 0.92);
-  backdrop-filter: saturate(180%) blur(24rpx);
-  -webkit-backdrop-filter: saturate(180%) blur(24rpx);
-  border-top: 1rpx solid rgba(58, 58, 58, 0.05);
-  box-shadow: 0 -4rpx 24rpx rgba(58, 58, 58, 0.04);
+  border-radius: 9999rpx;
+  background: rgba(246, 241, 230, 0.55);
+  backdrop-filter: blur(40rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(40rpx) saturate(180%);
+  box-shadow:
+    0 12rpx 40rpx rgba(58, 58, 58, 0.12),
+    0 2rpx 8rpx rgba(58, 58, 58, 0.06),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.45);
 }
 
 .tabbar-row {
@@ -27,7 +39,7 @@
   display: flex;
   align-items: stretch;
   justify-content: space-around;
-  padding: 20rpx 0 24rpx;
+  padding: 18rpx 16rpx 16rpx;
 }
 
 .tab {
@@ -37,80 +49,161 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10rpx;
-  padding: 10rpx 0;
+  gap: 6rpx;
+  padding: 6rpx 0;
   transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
-.tab:active {
-  transform: scale(0.88);
-}
+.tab:active { transform: scale(0.9); }
 
 .tab-icon {
-  width: 36rpx;
-  height: 36rpx;
+  width: 40rpx;
+  height: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.dot {
-  width: 8rpx;
-  height: 8rpx;
-  border-radius: 50%;
-  background: var(--color-ink-faint);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+.ic {
+  position: relative;
+  width: 32rpx;
+  height: 32rpx;
 }
 
-.tab--on .dot {
-  background: var(--color-celadon-deep);
+/* —— 通用细线条颜色 —— */
+.ic-home-roof, .ic-home-base,
+.ic-cat-l,
+.ic-bag-handle, .ic-bag-body,
+.ic-me-head, .ic-me-body {
+  background: var(--color-ink-faint);
+  border-color: var(--color-ink-faint);
+  transition: all 0.25s ease;
+}
+.tab--on .ic-home-roof,
+.tab--on .ic-home-base,
+.tab--on .ic-cat-l,
+.tab--on .ic-bag-handle,
+.tab--on .ic-bag-body,
+.tab--on .ic-me-head,
+.tab--on .ic-me-body {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+/* 首页 · 屋顶 */
+.ic-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ic-home-roof {
+  width: 0; height: 0;
+  background: transparent !important;
+  border-left: 16rpx solid transparent;
+  border-right: 16rpx solid transparent;
+  border-bottom: 14rpx solid var(--color-ink-faint);
+  margin-bottom: -1rpx;
+}
+.tab--on .ic-home-roof { border-bottom-color: var(--color-ink); }
+.ic-home-base {
+  width: 24rpx;
+  height: 16rpx;
+  background: transparent !important;
+  border: 1.2rpx solid var(--color-ink-faint);
+  border-top: none;
+}
+.tab--on .ic-home-base { border-color: var(--color-ink); }
+
+/* 分类 · 三横线 */
+.ic-cat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6rpx 0;
+}
+.ic-cat-l {
+  width: 100%;
+  height: 1.2rpx;
+}
+.ic-cat-l:nth-child(2) { width: 70%; }
+
+/* 购物袋 */
+.ic-bag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ic-bag-handle {
+  width: 14rpx;
+  height: 8rpx;
+  background: transparent !important;
+  border: 1.2rpx solid var(--color-ink-faint);
+  border-bottom: none;
+  border-radius: 8rpx 8rpx 0 0;
+}
+.tab--on .ic-bag-handle { border-color: var(--color-ink); }
+.ic-bag-body {
+  width: 26rpx;
+  height: 22rpx;
+  background: transparent !important;
+  border: 1.2rpx solid var(--color-ink-faint);
+  border-radius: 2rpx 2rpx 4rpx 4rpx;
+  margin-top: -1rpx;
+}
+.tab--on .ic-bag-body { border-color: var(--color-ink); }
+
+/* 我 */
+.ic-me {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rpx;
+}
+.ic-me-head {
   width: 14rpx;
   height: 14rpx;
-  box-shadow: 0 0 12rpx rgba(138, 175, 166, 0.5);
+  border-radius: 50%;
+  background: transparent !important;
+  border: 1.2rpx solid var(--color-ink-faint);
 }
+.tab--on .ic-me-head { border-color: var(--color-ink); }
+.ic-me-body {
+  width: 24rpx;
+  height: 12rpx;
+  border-radius: 12rpx 12rpx 0 0;
+  background: transparent !important;
+  border: 1.2rpx solid var(--color-ink-faint);
+  border-bottom: none;
+}
+.tab--on .ic-me-body { border-color: var(--color-ink); }
 
 .tab-label {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 22rpx;
-  letter-spacing: 5rpx;
+  font-size: 18rpx;
+  letter-spacing: 4rpx;
   color: var(--color-ink-faint);
-  padding-left: 5rpx;
+  padding-left: 4rpx;
   transition: all 0.25s ease;
 }
-
 .tab--on .tab-label {
   color: var(--color-ink);
   font-weight: 600;
-  letter-spacing: 7rpx;
+  letter-spacing: 6rpx;
 }
 
 .badge {
   position: absolute;
-  top: 2rpx;
+  top: -2rpx;
   right: 50%;
-  transform: translateX(44rpx);
-  min-width: 30rpx;
-  height: 30rpx;
+  transform: translateX(40rpx);
+  min-width: 28rpx;
+  height: 28rpx;
   padding: 0 8rpx;
-  border-radius: 15rpx;
-  background: var(--color-celadon-deep);
-  color: #fff;
+  border-radius: 14rpx;
+  background: var(--color-ink);
+  color: #F6F1E6;
   font-size: 18rpx;
   font-family: "PingFang SC", sans-serif;
-  line-height: 30rpx;
+  line-height: 28rpx;
   text-align: center;
   letter-spacing: 0;
-  box-shadow: 0 2rpx 8rpx rgba(138, 175, 166, 0.4);
-  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: translateX(44rpx) scale(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(44rpx) scale(1);
-  }
+  box-shadow: 0 2rpx 8rpx rgba(58, 58, 58, 0.25);
 }
