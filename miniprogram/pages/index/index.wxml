@@ -1,11 +1,8 @@
 <view class="page">
-  <!-- 顶部：极简透明导航 -->
+  <!-- 顶栏：极简标题 -->
   <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
-      <view class="brand">
-        <text class="brand-cn">釉见</text>
-        <text class="brand-en">YOUJIAN</text>
-      </view>
+      <text class="brand-title">窑亦窑</text>
       <view class="search-trigger" bindtap="onSearch">
         <view class="mag-icon">
           <view class="mag-circle"></view>
@@ -16,95 +13,70 @@
   </view>
 
   <scroll-view scroll-y class="scroll" enhanced show-scrollbar="{{false}}">
-    <!-- Hero —— 顶格 4:3 轮播 -->
-    <view class="hero">
-      <block wx:if="{{banners.length > 0}}">
-        <swiper
-          class="hero-swiper"
-          indicator-dots="{{true}}"
-          indicator-color="rgba(58,58,58,0.3)"
-          indicator-active-color="#3a3a3a"
-          autoplay
-          circular
-          interval="4500"
-          duration="700"
-          current="{{bannerIdx}}"
-          bindchange="onBannerChange"
-        >
+    <!-- Hero · 圆角大图 + 文字叠层 -->
+    <view class="hero-card">
+      <swiper
+        class="hero-swiper"
+        indicator-dots="{{false}}"
+        autoplay
+        circular
+        interval="5000"
+        duration="700"
+        current="{{bannerIdx}}"
+        bindchange="onBannerChange"
+      >
+        <block wx:if="{{banners.length > 0}}">
           <swiper-item wx:for="{{banners}}" wx:key="id">
-            <image
-              class="hero-img"
-              src="{{item.image}}"
-              mode="aspectFill"
-              data-link="{{item.link}}"
-              bindtap="onBannerTap"
-            ></image>
+            <image class="hero-img" src="{{item.image}}" mode="aspectFill" data-link="{{item.link}}" bindtap="onBannerTap"></image>
           </swiper-item>
-        </swiper>
-      </block>
-      <block wx:else>
-        <swiper
-          class="hero-swiper"
-          indicator-dots="{{true}}"
-          indicator-color="rgba(58,58,58,0.3)"
-          indicator-active-color="#3a3a3a"
-          autoplay
-          circular
-          interval="4500"
-          duration="700"
-          current="{{bannerIdx}}"
-          bindchange="onBannerChange"
-        >
+        </block>
+        <block wx:else>
+          <swiper-item><image class="hero-img" src="/images/storefront.png" mode="aspectFill"></image></swiper-item>
           <swiper-item><image class="hero-img" src="/images/feature-jinkui-01.jpg" mode="aspectFill"></image></swiper-item>
           <swiper-item><image class="hero-img" src="/images/feature-huakou-01.jpg" mode="aspectFill"></image></swiper-item>
-          <swiper-item><image class="hero-img" src="/images/feature-jinkui-03.jpg" mode="aspectFill"></image></swiper-item>
-          <swiper-item><image class="hero-img" src="/images/feature-huakou-03.jpg" mode="aspectFill"></image></swiper-item>
-        </swiper>
-      </block>
+        </block>
+      </swiper>
+      <view class="hero-overlay">
+        <text class="hero-title">窑 亦 窑</text>
+        <text class="hero-sub">以器载道，窑火千年</text>
+        <text class="hero-tag">每一件器物，都有温度</text>
+      </view>
     </view>
 
-    <!-- 分类 · 圆形横向滑动 -->
-    <view class="cats-section">
-      <scroll-view scroll-x class="cats-scroll" enhanced show-scrollbar="{{false}}">
-        <view class="cats-row">
-          <view
-            wx:for="{{categories}}"
-            wx:key="id"
-            class="cat-circle"
-            data-id="{{item.id}}"
-            bindtap="goCategory"
-          >
-            <view class="cat-circle-inner">
-              <image wx:if="{{item.icon || item.image}}" class="cat-icon" src="{{item.icon || item.image}}" mode="aspectFill"></image>
-              <text wx:else class="cat-circle-char">{{item.name[0]}}</text>
-            </view>
-            <text class="cat-circle-name">{{item.name}}</text>
+    <!-- 分类 · 4 件套米色方卡 -->
+    <view class="cat-grid-wrap">
+      <view class="cat-grid">
+        <view
+          wx:for="{{categories}}"
+          wx:key="id"
+          class="cat-tile"
+          data-id="{{item.id}}"
+          bindtap="goCategory"
+        >
+          <view class="cat-tile-inner">
+            <image wx:if="{{item.icon}}" class="cat-tile-icon" src="{{item.icon}}" mode="aspectFit"></image>
+            <text wx:else class="cat-tile-char">{{item.name[0]}}</text>
           </view>
+          <text class="cat-tile-name">{{item.name}}</text>
         </view>
-      </scroll-view>
-    </view>
-
-    <!-- 实体店引流 —— 寻访线下空间 -->
-    <view class="storefront">
-      <view class="storefront-frame">
-        <image class="storefront-img" src="/images/storefront.png" mode="aspectFill"></image>
-      </view>
-      <view class="storefront-meta">
-        <text class="sf-cn">寻 访 线 下 空 间</text>
       </view>
     </view>
 
-    <!-- 章节分隔 -->
-    <view class="section-break">
-      <text class="break-cn">臻 选</text>
+    <!-- 精选清单 -->
+    <view class="section-head">
+      <text class="section-title">精选清单</text>
+      <view class="section-more" bindtap="goCategory">
+        <text class="section-more-text">查看全部</text>
+        <text class="section-more-arrow">→</text>
+      </view>
     </view>
 
-    <!-- 商品 —— 单品横向轮播（一件一件） -->
+    <!-- 商品 · 单品横向轮播 -->
     <view class="gallery-swiper-wrap">
       <swiper
         class="gallery-swiper"
-        previous-margin="60rpx"
-        next-margin="60rpx"
+        previous-margin="56rpx"
+        next-margin="56rpx"
         circular
         autoplay
         interval="5000"
@@ -131,6 +103,6 @@
       </swiper>
     </view>
 
-    <view style="height: 60rpx;"></view>
+    <view style="height: 80rpx;"></view>
   </scroll-view>
 </view>
