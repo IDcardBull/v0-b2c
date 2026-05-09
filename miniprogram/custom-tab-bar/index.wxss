@@ -210,3 +210,8 @@
   letter-spacing: 0;
   box-shadow: 0 2rpx 8rpx rgba(58, 58, 58, 0.25);
 }
+
+/* 简化：仅显示文字并居中 */
+.tab-icon { display: none !important; }
+.tab { justify-content: center; padding: 0; }
+.tab-label { font-size: 28rpx; }

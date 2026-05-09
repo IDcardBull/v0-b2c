@@ -34,7 +34,6 @@
           </view>
         </view>
         <view class="tab-label">{{item.text}}</view>
-        <view wx:if="{{item.text === '购物袋' && cartCount > 0}}" class="badge">{{cartCount}}</view>
       </view>
     </view>
   </view>

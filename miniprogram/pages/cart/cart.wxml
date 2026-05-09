@@ -80,7 +80,7 @@
 
 
       <view class="end-text">— 止 —</view>
-      <view style="height: 400rpx;"></view>
+      <view style="height: 560rpx;"></view>
     </block>
   </scroll-view>
 
