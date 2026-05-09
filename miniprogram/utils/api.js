@@ -311,6 +311,41 @@ const api = {
       detail: (id) => request.get('/admin/sku/' + id, {}, { auth: 'admin' }),
       updateStock: (id, stock) => request.patch('/admin/sku/' + id + '/stock', { stock: Number(stock) }, { auth: 'admin' }),
     },
+    banner: {
+      // 后端 BannerAdminController 路径是 /api/home/banners（不是 /admin/）—
+      // 必须显式声明 auth:'admin'，否则 request.js 会按客户端 token 走。
+      list: () => request.get('/home/banners', {}, { auth: 'admin', silent: true }),
+      save: (list) => request.post('/home/banners', list, { auth: 'admin' }),
+    },
+    /**
+     * 上传图片到后端 /api/upload，返回 { url }。
+     * 必须用 wx.uploadFile（不能 wx.request multipart），手工拼上 admin token。
+     */
+    upload(filePath) {
+      return new Promise((resolve, reject) => {
+        const adminToken = wx.getStorageSync('adminToken') || ''
+        wx.uploadFile({
+          url: request.BASE_URL + '/upload',
+          filePath,
+          name: 'file',
+          header: adminToken ? { Authorization: 'Bearer ' + adminToken } : {},
+          success: (res) => {
+            if (res.statusCode < 200 || res.statusCode >= 300) {
+              reject(new Error('上传失败 (' + res.statusCode + ')'))
+              return
+            }
+            try {
+              const body = JSON.parse(res.data || '{}')
+              if (body && body.url) resolve(body)
+              else reject(new Error(body.message || '上传响应格式不正确'))
+            } catch (err) {
+              reject(err instanceof Error ? err : new Error('上传响应解析失败'))
+            }
+          },
+          fail: (err) => reject(err),
+        })
+      })
+    },
   },
 }
 

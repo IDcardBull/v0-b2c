@@ -1,0 +1,142 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <text class="back" bindtap="back">‹</text>
+      <view class="page-title">
+        <text class="t-cn">轮 · 播</text>
+        <text class="t-en">SLIDESHOW · ADMIN</text>
+      </view>
+      <view class="nav-add" bindtap="addBanner">
+        <text class="plus">＋</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="hero">
+      <text class="hero-cn">首页轮播</text>
+      <text class="hero-en">RETAIL HOME · SLIDESHOW</text>
+      <text class="hero-sub">已启用 {{enabledCount}} / 共 {{list.length}} 张 · 建议比例 4:3</text>
+    </view>
+
+    <view wx:if="{{loading && list.length === 0}}" class="empty">
+      <text>载入中…</text>
+    </view>
+
+    <view wx:elif="{{list.length === 0}}" class="empty">
+      <view class="empty-seal">空</view>
+      <text class="empty-cn">暂无轮播图</text>
+      <view class="empty-btn" bindtap="addBanner">
+        <text>＋ 新增第一张</text>
+      </view>
+    </view>
+
+    <view wx:else class="list">
+      <view
+        wx:for="{{list}}"
+        wx:key="id"
+        class="item"
+      >
+        <view class="item-rank">
+          <text class="rank-num">{{index + 1}}</text>
+          <view class="rank-tools">
+            <view class="rank-btn {{index === 0 ? 'is-disabled' : ''}}" data-index="{{index}}" bindtap="onMoveUp">
+              <text>↑</text>
+            </view>
+            <view class="rank-btn {{index === list.length - 1 ? 'is-disabled' : ''}}" data-index="{{index}}" bindtap="onMoveDown">
+              <text>↓</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="item-cover" data-index="{{index}}" bindtap="onReplaceImage">
+          <image
+            wx:if="{{item.imageUrl}}"
+            class="cover"
+            src="{{item.imageUrl}}"
+            mode="aspectFill"
+          ></image>
+          <view wx:else class="cover-placeholder">
+            <text class="ph-icon">▢</text>
+            <text class="ph-text">{{uploadingId === item.id ? '上传中…' : '点击上传'}}</text>
+          </view>
+          <view wx:if="{{item.imageUrl}}" class="cover-mask">
+            <text>{{uploadingId === item.id ? '上传中…' : '换一张'}}</text>
+          </view>
+          <view wx:if="{{!item.enabled}}" class="cover-tag">已停用</view>
+        </view>
+
+        <view class="item-meta">
+          <text class="meta-title">{{item.title || '（未命名轮播）'}}</text>
+          <text class="meta-link" wx:if="{{item.linkUrl}}">→ {{item.linkUrl}}</text>
+          <text class="meta-link meta-link--mute" wx:else>未设置跳转</text>
+
+          <view class="meta-actions">
+            <view class="act act--edit" data-index="{{index}}" bindtap="openEditor">
+              <text>编辑</text>
+            </view>
+            <view class="act {{item.enabled ? 'act--off' : 'act--on'}}" data-index="{{index}}" bindtap="onToggleEnabled">
+              <text>{{item.enabled ? '停用' : '启用'}}</text>
+            </view>
+            <view class="act act--del" data-index="{{index}}" bindtap="onRemove">
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+
+  <view class="footer">
+    <view class="btn-save {{saving ? 'is-busy' : ''}}" bindtap="saveAll">
+      <text>{{saving ? '保存中…' : '保存设置'}}</text>
+    </view>
+  </view>
+
+  <!-- 编辑弹层 -->
+  <view wx:if="{{editorVisible}}" class="editor-mask" bindtap="closeEditor">
+    <view class="editor-sheet" catchtap="noop">
+      <view class="editor-handle"></view>
+      <text class="editor-title">编辑轮播信息</text>
+
+      <view class="form-row">
+        <text class="form-label">标题</text>
+        <input
+          class="form-input"
+          placeholder="仅后台展示，可空"
+          placeholder-class="form-ph"
+          value="{{editor.title}}"
+          maxlength="30"
+          bindinput="onEditorTitle"
+        />
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">跳转</text>
+        <input
+          class="form-input"
+          placeholder="如 /pages/detail/detail?id=1"
+          placeholder-class="form-ph"
+          value="{{editor.linkUrl}}"
+          bindinput="onEditorLink"
+        />
+      </view>
+
+      <view class="form-row form-row--switch">
+        <text class="form-label">启用</text>
+        <switch
+          checked="{{editor.enabled}}"
+          color="#B8CFC8"
+          bindchange="onEditorEnabled"
+        />
+      </view>
+
+      <view class="editor-btns">
+        <view class="ed-btn ed-btn--ghost" bindtap="closeEditor"><text>取消</text></view>
+        <view class="ed-btn ed-btn--solid" bindtap="saveEditor"><text>完成</text></view>
+      </view>
+    </view>
+  </view>
+</view>

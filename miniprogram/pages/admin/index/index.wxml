@@ -116,6 +116,14 @@
         </view>
         <text class="action-arrow">›</text>
       </view>
+      <view class="action" bindtap="goBanners">
+        <text class="action-glyph">轮</text>
+        <view class="action-text">
+          <text class="action-cn">首页轮播</text>
+          <text class="action-en">SLIDESHOW</text>
+        </view>
+        <text class="action-arrow">›</text>
+      </view>
       <view class="action" bindtap="goShop">
         <text class="action-glyph">客</text>
         <view class="action-text">

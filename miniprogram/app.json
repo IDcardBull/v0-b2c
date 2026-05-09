@@ -19,7 +19,8 @@
     "pages/admin/orders/orders",
     "pages/admin/order-detail/order-detail",
     "pages/admin/products/products",
-    "pages/admin/product-edit/product-edit"
+    "pages/admin/product-edit/product-edit",
+    "pages/admin/banners/banners"
   ],
   "window": {
     "navigationStyle": "custom",
