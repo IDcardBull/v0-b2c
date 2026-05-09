@@ -20,8 +20,10 @@ Page({
       orderId: options.orderId || options.id || '',
     })
     if (this.data.orderId) {
-      // 进页面立即查一次订单状态，回调可能略有延迟，再补一次轮询
-      setTimeout(() => this.loadOrder(), 600)
+      // 进页面先主动让后端去微信查一次（兜底 notify 没推到的情况），再拉详情。
+      api.pay.sync(this.data.orderId)
+        .catch(() => {})
+        .then(() => setTimeout(() => this.loadOrder(), 400))
     } else {
       this.setData({ loading: false })
     }
@@ -38,8 +40,13 @@ Page({
           order.status === 'completed'
         this.setData({ order, loading: false, success })
         if (order.status === 'pending_pay') {
-          // 微信回调有时延迟，pending_pay 状态下继续轮询几次
-          setTimeout(() => this.loadOrder(), 4000)
+          // 仍未付：再让后端 sync + 重新拉详情（最多 6 次，间隔 4s）
+          this._pollCount = (this._pollCount || 0) + 1
+          if (this._pollCount <= 6) {
+            setTimeout(() => {
+              api.pay.sync(this.data.orderId).catch(() => {}).then(() => this.loadOrder())
+            }, 4000)
+          }
         }
       })
       .catch(() => this.setData({ loading: false }))
@@ -83,7 +90,8 @@ Page({
           paySign: params.paySign,
           success: () => {
             this.setData({ paying: false })
-            this.loadOrder()
+            // 主动同步一次，立刻把订单从 pending_pay 翻成 pending_ship
+            api.pay.sync(this.data.orderId).catch(() => {}).then(() => this.loadOrder())
           },
           fail: (err) => {
             this.setData({ paying: false })

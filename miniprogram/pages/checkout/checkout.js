@@ -14,6 +14,8 @@ Page({
     freight: 0,
     total: 0,
     allFreeShipping: false, // 所有商品都包邮 → 显示"全场包邮"
+    freightLoading: false,  // 正在向后端按地址拉真实运费
+    freightProvince: '',    // 后端按哪个省算的（用于显示提示）
     submitting: false,
   },
   onLoad() {
@@ -25,15 +27,15 @@ Page({
       items,
       remark,
     })
-    this.recalc()
+    this.recalcLocal()
     this.loadAddress()
   },
-  // 运费规则（与后端保持一致）：
-  //   - 每个商品自带 freeShipping(布尔) / shippingFee(数字)，由管理端配置
-  //   - 全部商品包邮 -> 0
-  //   - 否则取所有"非包邮"商品中 shippingFee 的最大值（同单不累加运费，避免多商品多倍邮费）
-  //   - 此处仅作客户端预估值；提交订单后后端会按真实数据复算 Order.freight，最终金额以后端为准
-  recalc() {
+  /**
+   * 本地预估值（地址加载前 / 后端拉取失败时使用）。
+   * 真正的运费由 reloadFreight() 调用后端 /client/orders/preview 算，
+   * 后端会按收件省匹配运费模板的"特殊地区/满额包邮"规则，与下单时金额一致。
+   */
+  recalcLocal() {
     const items = this.data.items || []
     const subtotal = items.reduce(
       (sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0),
@@ -49,7 +51,53 @@ Page({
     })
     if (subtotal === 0) freight = 0
     const total = subtotal + freight
-    this.setData({ subtotal, freight, total, allFreeShipping })
+    this.setData({
+      subtotal: Math.round(subtotal * 100) / 100,
+      freight: Math.round(freight * 100) / 100,
+      total: Math.round(total * 100) / 100,
+      allFreeShipping,
+    })
+  },
+  /**
+   * 调用后端 preview 接口，按收件省算真实运费 + 应付。
+   * 静默失败 → 仍用本地估算，避免阻塞用户结算。
+   */
+  reloadFreight() {
+    const items = (this.data.items || [])
+      .map((it) => ({ skuId: it.skuId, qty: Number(it.qty) || 1 }))
+      .filter((it) => it.skuId)
+    if (!items.length) return Promise.resolve()
+    if (!wx.getStorageSync('token')) return Promise.resolve() // 未登录就先跳过
+    this.setData({ freightLoading: true })
+    return api.order.preview(items, this.data.address && this.data.address.id)
+      .then((res) => {
+        if (!res) return
+        const subtotal = Number(res.totalAmount || 0)
+        const freight = Number(res.freight || 0)
+        const total = Number(res.payAmount != null ? res.payAmount : subtotal + freight)
+        const allFreeShipping = freight === 0 && subtotal > 0
+        this.setData({
+          subtotal,
+          freight,
+          total,
+          allFreeShipping,
+          freightLoading: false,
+          freightProvince: res.province || '',
+        })
+      })
+      .catch(() => {
+        this.setData({ freightLoading: false })
+        // 不弹错，沉默回退到本地估算（已经在 recalcLocal 写过了）
+      })
+  },
+  onShow() {
+    // 从 address 页选完新地址回来时刷新
+    const picked = wx.getStorageSync('selectedAddress')
+    if (picked && (!this.data.address || picked.id !== this.data.address.id)) {
+      this.setData({ address: picked })
+      wx.removeStorageSync('selectedAddress')
+      this.reloadFreight()
+    }
   },
   async loadAddress() {
     try {
@@ -57,6 +105,8 @@ Page({
       const address = (list || []).find((item) => item.isDefault) || (list || [])[0] || null
       this.setData({ address })
     } catch (err) {}
+    // 不论拿到/没拿到地址都让后端算一次（拿到→按收件省；没拿到→后端用全国默认规则）
+    this.reloadFreight()
   },
   back() {
     wx.navigateBack({ fail: () => wx.switchTab({ url: '/pages/cart/cart' }) })
@@ -166,6 +216,8 @@ Page({
         paySign: params.paySign,
         success: () => {
           this.removePaidItems()
+          // 主动同步一次，避免微信异步回调延迟/失败导致订单状态没更新
+          api.pay.sync(orderId).catch(() => {})
           wx.redirectTo({ url: `/pages/pay-result/pay-result?orderId=${orderId}` })
         },
         fail: (err) => {

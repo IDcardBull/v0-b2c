@@ -253,6 +253,17 @@ const api = {
   },
   order: {
     create: (data) => request.post('/client/orders', Object.assign({ channel: 'retail', source: 'miniprogram_a' }, data || {})),
+    /**
+     * 结算页运费试算 —— 不落库
+     * items + addressId → 后端按收件省匹配运费模板规则（含特殊地区/满额包邮），
+     * 返回 { totalAmount, freight, payAmount, province, breakdown[] }
+     */
+    preview: (items, addressId) =>
+      request.post(
+        '/client/orders/preview',
+        { items: items || [], addressId: addressId || undefined, channel: 'retail' },
+        { silent: true },
+      ),
     list: (params) => request.get('/client/orders', params),
     counts: () => request.get('/client/orders/status-counts', {}, { silent: true }),
     detail: (id) => request.get('/client/orders/' + id),
@@ -268,6 +279,13 @@ const api = {
   },
   pay: {
     order: (id) => request.post('/client/pay/orders/' + id),
+    /**
+     * 主动同步支付状态（解决"明明付钱了但订单仍待支付"的问题）
+     * 应在 wx.requestPayment success 回调里立刻调用一次；进入 pay-result 页时也兜底调用。
+     * 后端去微信查 trade_state，命中 SUCCESS 即 markPaid。
+     */
+    sync: (id) =>
+      request.post('/client/pay/orders/' + id + '/sync', {}, { silent: true }),
   },
   review: {
     create: (data) => request.post('/client/reviews', data),

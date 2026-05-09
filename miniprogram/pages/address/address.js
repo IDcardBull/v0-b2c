@@ -171,6 +171,10 @@ Page({
 
     if (prev.route === 'pages/checkout/checkout') {
       prev.setData({ address: item })
+      // 让 checkout 立即按新省份重新拉运费（不存在该方法时安全跳过）
+      if (typeof prev.reloadFreight === 'function') {
+        try { prev.reloadFreight() } catch (e) {}
+      }
       wx.navigateBack()
       return
     }
