@@ -436,7 +436,7 @@
 .checkout-inner {
   display: flex;
   align-items: center;
-  padding: 20rpx 32rpx;
+  padding: 32rpx 32rpx 48rpx;
   gap: 20rpx;
 }
 .safe-bar {

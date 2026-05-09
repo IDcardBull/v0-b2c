@@ -57,7 +57,7 @@
             <image wx:if="{{item.icon}}" class="cat-tile-icon" src="{{item.icon}}" mode="aspectFit"></image>
             <text wx:else class="cat-tile-char">{{item.name[0]}}</text>
           </view>
-          <text class="cat-tile-name">{{item.name}}</text>
+          
         </view>
       </view>
     </view>
@@ -113,6 +113,6 @@
       </swiper>
     </view>
 
-    <view style="height: 80rpx;"></view>
+    <view style="height: 240rpx;"></view>
   </scroll-view>
 </view>

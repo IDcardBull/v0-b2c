@@ -78,15 +78,9 @@
         </view>
       </view>
 
-      <view class="card-note">
-        <view class="note-title">附 · 随函札</view>
-        <view class="note-input">
-          <input placeholder="为此器题一句话（选填）" placeholder-class="ph" value="{{note}}" bindinput="onNote" />
-        </view>
-      </view>
 
       <view class="end-text">— 止 —</view>
-      <view style="height: 320rpx;"></view>
+      <view style="height: 400rpx;"></view>
     </block>
   </scroll-view>
 
