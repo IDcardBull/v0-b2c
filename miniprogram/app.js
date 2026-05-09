@@ -1,6 +1,5 @@
 // app.js
 const api = require('./utils/api.js')
-const wecomBot = require('./utils/wecom-bot.js')
 
 App({
   onLaunch() {
@@ -100,15 +99,8 @@ App({
   },
 
 
-  // 设置企微机器人 key
-  setWecomBotKey(key) {
-    wecomBot.setBotKey(key)
-  },
-
-  // 获取企微机器人 key
-  getWecomBotKey() {
-    return wecomBot.getBotKey()
-  },
+  // 企微机器人改由服务端 WorkWxService 通过 server/.env WORK_WX_BOT_WEBHOOK 推送，
+  // 客户端不再调用 qyapi.weixin.qq.com（小程序合法域名白名单不允许）。
   globalData: {
     statusBarHeight: 20,
     navBarHeight: 44,

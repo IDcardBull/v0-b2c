@@ -1,7 +1,6 @@
 // pages/checkout/checkout.js
 const app = getApp()
 const api = require('../../utils/api.js')
-const wecomBot = require('../../utils/wecom-bot.js')
 
 Page({
   data: {
@@ -16,6 +15,7 @@ Page({
     allFreeShipping: false, // 所有商品都包邮 → 显示"全场包邮"
     freightLoading: false,  // 正在向后端按地址拉真实运费
     freightProvince: '',    // 后端按哪个省算的（用于显示提示）
+    freightTip: '',         // 运费来源提示（如"未配运费模板"），为空时显示默认提示
     submitting: false,
   },
   onLoad() {
@@ -76,6 +76,26 @@ Page({
         const freight = Number(res.freight || 0)
         const total = Number(res.payAmount != null ? res.payAmount : subtotal + freight)
         const allFreeShipping = freight === 0 && subtotal > 0
+        // 由 breakdown 推断"为什么是 0 元"，把诊断信息直接写到结算页
+        // 让用户/运营一眼能看出"模板没配 / 命中了满额包邮 / 商品没挂模板"
+        let freightTip = ''
+        const breakdown = Array.isArray(res.breakdown) ? res.breakdown : []
+        if (freight === 0 && subtotal > 0 && breakdown.length) {
+          // 优先级：legacy_all_free（商家手工设置全免邮，正常情况）→ free_shipping → no_first_rule → legacy
+          const reasons = breakdown.map((b) => b && b.reason).filter(Boolean)
+          if (reasons.indexOf('no_first_rule') >= 0) {
+            freightTip = '该商品的运费模板未配置首件规则，已暂按免邮处理'
+          } else if (reasons.indexOf('legacy') >= 0) {
+            freightTip = '部分商品未挂运费模板，按商品默认运费计算'
+          } else if (reasons.indexOf('free_shipping') >= 0) {
+            freightTip = '已满足运费模板的满额包邮条件'
+          } else if (reasons.every((r) => r === 'legacy_all_free')) {
+            freightTip = '该商品已设置为包邮'
+          }
+        } else if (freight > 0 && breakdown.length > 1) {
+          // 多模板分组累加，强调一下计算方式
+          freightTip = '订单含多个运费模板，运费已按模板分别计算并相加'
+        }
         this.setData({
           subtotal,
           freight,
@@ -83,6 +103,7 @@ Page({
           allFreeShipping,
           freightLoading: false,
           freightProvince: res.province || '',
+          freightTip,
         })
       })
       .catch(() => {
@@ -145,48 +166,13 @@ Page({
         remark: this.data.remark,
       })
       const orderId = order.id || order.orderId
-      // 下单成功后，异步发送企微机器人通知（不阻塞支付流程）
-      this.sendWecomNotify(order.orderNo || orderId)
+      // 企微通知由服务端 WorkWxService 在订单创建/支付时主动推送（见 server/.env WORK_WX_BOT_WEBHOOK）。
       // 拉起微信支付
       await this.pay(orderId)
     } catch (err) {
       this.setData({ submitting: false })
     }
   },
-  // 发送企业微信机器人订单通知
-  sendWecomNotify(orderId) {
-    if (!wecomBot.isConfigured()) return
-    const { items, address, subtotal, freight, total, remark } = this.data
-    const now = new Date()
-    const pad = (n) => String(n).padStart(2, '0')
-    const time = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`
-    const orderInfo = {
-      orderNo: String(orderId || ''),
-      customerName: address ? (address.name || address.receiverName || '') : '',
-      customerPhone: address ? (address.phone || address.mobile || '') : '',
-      address: address ? [
-        address.province || '',
-        address.city || '',
-        address.district || '',
-        address.detail || address.address || '',
-      ].filter(Boolean).join(' ') : '',
-      items: items.map((item) => ({
-        name: item.name || item.productName || '',
-        skuSpec: item.skuSpec || item.spec || '',
-        qty: item.qty || 1,
-        price: item.price || 0,
-      })),
-      subtotal,
-      freight,
-      total,
-      remark: remark || '',
-      time,
-    }
-    wecomBot.submitOrder(orderInfo).catch(() => {
-      // 通知发送失败不影响主流程，静默处理
-    })
-  },
-
   /**
    * 调起微信支付。
    * 1. 后端 /client/pay/orders/:id 返回 wx.requestPayment 所需参数

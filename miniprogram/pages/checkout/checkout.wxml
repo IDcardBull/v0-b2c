@@ -71,8 +71,9 @@
         <text>邮 · 资</text>
         <text class="sum-num">{{freight === 0 ? '包邮' : '¥' + freight}}</text>
       </view>
-      <view wx:if="{{allFreeShipping && subtotal > 0}}" class="sum-tip">本单全场包邮</view>
-      <view wx:elif="{{freight > 0}}" class="sum-tip">运费按订单内最高单品运费收取，不累加</view>
+      <view wx:if="{{freightTip}}" class="sum-tip">{{freightTip}}</view>
+      <view wx:elif="{{allFreeShipping && subtotal > 0}}" class="sum-tip">本单全场包邮</view>
+      <view wx:elif="{{freight > 0}}" class="sum-tip">运费按运费模板分别计算，订单内多模板可叠加</view>
       <view class="sum-divider"></view>
       <view class="sum-row total-row">
         <text>合 计</text>

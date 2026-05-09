@@ -257,22 +257,8 @@ Page({
       wx.navigateTo({ url: '/pages/address/address' })
       return
     }
-    if (key === 'wecom') {
-      const currentKey = app.getWecomBotKey ? app.getWecomBotKey() : ''
-      wx.showModal({
-        title: '企微机器人配置',
-        editable: true,
-        placeholderText: '请输入 Webhook Key',
-        content: currentKey,
-        success: (res) => {
-          if (res.confirm && res.content) {
-            if (app.setWecomBotKey) app.setWecomBotKey(res.content.trim())
-            wx.showToast({ title: '配置已保存', icon: 'success' })
-          }
-        },
-      })
-      return
-    }
+    // 企微机器人改由后端 server/.env WORK_WX_BOT_WEBHOOK 统一配置（订单创建/付款时
+    // WorkWxService 自动推送），客户端不再提供配置入口。
     wx.showToast({ title: `${key} 即将开放`, icon: 'none' })
   },
 })
