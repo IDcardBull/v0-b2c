@@ -17,12 +17,17 @@
   -webkit-backdrop-filter: saturate(180%) blur(20rpx);
 }
 .navbar-inner {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 0 36rpx;
 }
 .brand-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   font-family: "Songti SC", "STSong", serif;
   font-size: 36rpx;
   font-weight: 600;
@@ -257,3 +262,34 @@
 }
 .gs-add-h { width: 16rpx; height: 1rpx; transform: translate(-50%, -50%); }
 .gs-add-v { width: 1rpx; height: 16rpx; transform: translate(-50%, -50%); }
+
+/* ============ 实体店引流 · 寻访线下空间 ============ */
+.storefront {
+  margin: 40rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.storefront-frame {
+  width: 100%;
+  height: 480rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: #1a1a1a;
+  box-shadow: 0 10rpx 28rpx rgba(58,58,58,0.10);
+}
+.storefront-img { width: 100%; height: 100%; display: block; }
+.storefront-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+  padding: 4rpx 0 0;
+}
+.sf-cn {
+  font-family: "Songti SC", serif;
+  font-size: 28rpx;
+  letter-spacing: 12rpx;
+  color: var(--color-ink-soft);
+  font-weight: 400;
+}
