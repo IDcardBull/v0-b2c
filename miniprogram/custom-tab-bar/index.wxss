@@ -39,7 +39,7 @@
   display: flex;
   align-items: stretch;
   justify-content: space-around;
-  padding: 18rpx 16rpx 16rpx;
+  padding: 14rpx 8rpx 12rpx;
 }
 
 .tab {
@@ -49,15 +49,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6rpx;
-  padding: 6rpx 0;
+  gap: 4rpx;
+  padding: 4rpx 0;
+  text-align: center;
   transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .tab:active { transform: scale(0.9); }
 
 .tab-icon {
-  width: 40rpx;
-  height: 40rpx;
+  width: 44rpx;
+  height: 36rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,11 +178,12 @@
 
 .tab-label {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 22rpx;
+  font-size: 24rpx;
   letter-spacing: 2rpx;
   color: var(--color-ink-faint);
-  padding-left: 0;
+  width: 100%;
   text-align: center;
+  line-height: 1.2;
   transition: all 0.25s ease;
 }
 .tab--on .tab-label {

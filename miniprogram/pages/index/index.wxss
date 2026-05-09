@@ -41,7 +41,7 @@
 .mag-circle { width: 22rpx; height: 22rpx; border: 1.2rpx solid var(--color-ink); border-radius: 50%; }
 .mag-stick { position: absolute; right: 0; bottom: 0; width: 10rpx; height: 1.2rpx; background: var(--color-ink); transform: rotate(45deg); transform-origin: right center; }
 
-/* ============ Hero · 顶格 4:3 轮播 ============ */
+/* ============ Hero · 顶格 3:4 轮播 ============ */
 .hero {
   position: relative;
   width: 100%;
@@ -49,7 +49,7 @@
 }
 .hero-swiper {
   width: 100%;
-  height: 75vw; /* 4:3 比例 */
+  height: 133.33vw; /* 3:4 比例（竖向） */
 }
 .hero-img {
   width: 100%;
@@ -57,9 +57,9 @@
   display: block;
 }
 
-/* ============ 分类 · 圆形横滑 ============ */
+/* ============ 分类 · 精致圆形横滑 ============ */
 .cats-section {
-  padding: 48rpx 0 24rpx;
+  padding: 36rpx 0 12rpx;
 }
 .cats-scroll {
   width: 100%;
@@ -68,44 +68,56 @@
 .cats-row {
   display: inline-flex;
   align-items: flex-start;
-  gap: 36rpx;
-  padding: 8rpx 40rpx 16rpx;
+  gap: 28rpx;
+  padding: 6rpx 44rpx 14rpx;
 }
 .cat-circle {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 14rpx;
-  width: 132rpx;
-  transition: transform 0.2s ease;
+  gap: 12rpx;
+  width: 96rpx;
+  transition: transform 0.25s ease;
 }
-.cat-circle:active { transform: scale(0.94); }
+.cat-circle:active { transform: scale(0.92); }
 .cat-circle-inner {
-  width: 120rpx;
-  height: 120rpx;
+  position: relative;
+  width: 84rpx;
+  height: 84rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-paper), var(--color-card));
-  border: 1rpx solid rgba(58,58,58,0.08);
-  box-shadow: 0 4rpx 14rpx rgba(58,58,58,0.06);
+  background: radial-gradient(circle at 32% 28%, #fbf6ec 0%, #efe5d2 70%, #e6d9bf 100%);
+  box-shadow:
+    inset 0 1rpx 2rpx rgba(255,255,255,0.7),
+    inset 0 -2rpx 6rpx rgba(120,90,40,0.06),
+    0 2rpx 8rpx rgba(58,58,58,0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+.cat-circle-inner::after {
+  content: "";
+  position: absolute;
+  inset: 4rpx;
+  border-radius: 50%;
+  border: 0.6rpx solid rgba(120,90,40,0.18);
+  pointer-events: none;
 }
 .cat-icon {
   width: 100%;
   height: 100%;
 }
 .cat-circle-char {
-  font-family: "Songti SC", serif;
-  font-size: 44rpx;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 32rpx;
   color: var(--color-ink);
   letter-spacing: 0;
+  font-weight: 500;
 }
 .cat-circle-name {
   font-family: "Songti SC", serif;
-  font-size: 24rpx;
-  letter-spacing: 4rpx;
+  font-size: 22rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink-soft);
   text-align: center;
   width: 100%;
@@ -116,10 +128,10 @@
 
 /* ============ 实体店引流 · 寻访线下空间 ============ */
 .storefront {
-  padding: 48rpx 40rpx 24rpx;
+  padding: 40rpx 40rpx 8rpx;
   display: flex;
   flex-direction: column;
-  gap: 28rpx;
+  gap: 24rpx;
 }
 .storefront-frame {
   width: 100%;
@@ -134,83 +146,93 @@
   flex-direction: column;
   align-items: center;
   gap: 14rpx;
-  padding: 8rpx 0 0;
+  padding: 6rpx 0 0;
 }
 .sf-cn {
   font-family: "Songti SC", serif;
-  font-size: 30rpx;
+  font-size: 28rpx;
   letter-spacing: 12rpx;
-  color: var(--color-ink);
-  font-weight: 500;
+  color: var(--color-ink-soft);
+  font-weight: 400;
 }
 
-/* ============ 章节分隔 · 臻选 ============ */
+/* ============ 章节分隔 · 臻选（柔和过渡） ============ */
 .section-break {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
-  padding: 64rpx 40rpx 40rpx;
+  gap: 16rpx;
+  padding: 36rpx 40rpx 28rpx;
+  position: relative;
+}
+.section-break::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1rpx;
+  height: 28rpx;
+  background: linear-gradient(to bottom, transparent, rgba(58,58,58,0.25));
 }
 .break-cn {
   font-family: "Songti SC", serif;
-  font-size: 44rpx;
-  letter-spacing: 16rpx;
-  padding-left: 16rpx;
+  font-size: 38rpx;
+  letter-spacing: 14rpx;
+  padding-left: 14rpx;
   color: var(--color-ink);
   font-weight: 500;
 }
 
-/* ============ 画廊 · 错落布局 ============ */
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 40rpx;
-  gap: 24rpx 24rpx;
+/* ============ 商品 · 单品横向轮播 ============ */
+.gallery-swiper-wrap {
+  padding: 8rpx 0 24rpx;
 }
-.g-card {
+.gallery-swiper {
   width: 100%;
+  height: 920rpx;
+}
+.gs-item {
+  box-sizing: border-box;
+  padding: 16rpx 14rpx 24rpx;
+}
+.gs-card {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  transition: opacity 0.25s ease;
-}
-.g-card:active { opacity: 0.78; }
-.g-frame {
-  width: 100%;
-  overflow: hidden;
   background: var(--color-card);
-  border-radius: 8rpx;
+  border-radius: 14rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 28rpx rgba(58,58,58,0.08);
+  transition: transform 0.25s ease, opacity 0.25s ease;
 }
-.g-swiper { width: 100%; height: 100%; }
-.g-img { width: 100%; height: 100%; display: block; }
-
-.g-card:nth-child(3n+1) { width: 100%; }
-.g-card:nth-child(3n+1) .g-frame { height: 880rpx; }
-.g-card:nth-child(3n+2),
-.g-card:nth-child(3n) { width: calc(50% - 12rpx); }
-.g-card:nth-child(3n+2) .g-frame,
-.g-card:nth-child(3n) .g-frame { height: 540rpx; }
-
-/* 卡片信息 */
-.g-meta {
+.gs-card:active { transform: scale(0.985); opacity: 0.92; }
+.gs-frame {
+  width: 100%;
+  height: 760rpx;
+  overflow: hidden;
+}
+.gs-img { width: 100%; height: 100%; display: block; }
+.gs-meta {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 18rpx 4rpx 4rpx;
+  padding: 22rpx 26rpx 22rpx;
   gap: 16rpx;
 }
-.g-meta-left { flex: 1; display: flex; flex-direction: column; gap: 6rpx; min-width: 0; }
-.g-title {
+.gs-meta-left { flex: 1; display: flex; flex-direction: column; gap: 6rpx; min-width: 0; }
+.gs-title {
   font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  letter-spacing: 2rpx;
+  font-size: 28rpx;
+  letter-spacing: 3rpx;
   color: var(--color-ink);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.g-sub {
+.gs-sub {
   font-family: "PingFang SC", sans-serif;
   font-size: 20rpx;
   letter-spacing: 2rpx;
@@ -219,7 +241,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.g-price {
+.gs-price {
   font-family: "PingFang SC", sans-serif;
   font-size: 22rpx;
   letter-spacing: 1rpx;
@@ -227,7 +249,7 @@
   margin-top: 4rpx;
   font-weight: 300;
 }
-.g-add {
+.gs-add {
   position: relative;
   width: 52rpx;
   height: 52rpx;
@@ -235,10 +257,10 @@
   border: 1rpx solid rgba(58,58,58,0.35);
   flex-shrink: 0;
 }
-.g-add-h, .g-add-v {
+.gs-add-h, .gs-add-v {
   position: absolute;
   background: var(--color-ink);
   top: 50%; left: 50%;
 }
-.g-add-h { width: 16rpx; height: 1rpx; transform: translate(-50%, -50%); }
-.g-add-v { width: 1rpx; height: 16rpx; transform: translate(-50%, -50%); }
+.gs-add-h { width: 16rpx; height: 1rpx; transform: translate(-50%, -50%); }
+.gs-add-v { width: 1rpx; height: 16rpx; transform: translate(-50%, -50%); }

@@ -99,46 +99,38 @@
       <text class="break-cn">臻 选</text>
     </view>
 
-    <!-- 商品 —— 画廊策展式错落布局，图片轮播 -->
-    <view class="gallery">
-      <view
-        wx:for="{{list}}"
-        wx:key="id"
-        wx:for-index="gi"
-        class="g-card"
-        data-id="{{item.id}}"
-        bindtap="goDetail"
+    <!-- 商品 —— 单品横向轮播（一件一件） -->
+    <view class="gallery-swiper-wrap">
+      <swiper
+        class="gallery-swiper"
+        previous-margin="60rpx"
+        next-margin="60rpx"
+        circular
+        autoplay
+        interval="5000"
+        duration="600"
       >
-        <view class="g-frame">
-          <swiper
-            class="g-swiper"
-            indicator-dots="{{item.gallery.length > 1}}"
-            indicator-color="rgba(255,255,255,0.5)"
-            indicator-active-color="#fff"
-            autoplay="{{item.gallery.length > 1}}"
-            circular
-            interval="{{4000 + gi * 300}}"
-            duration="500"
-          >
-            <swiper-item wx:for="{{item.gallery}}" wx:for-item="img" wx:key="*this">
-              <image class="g-img" src="{{img}}" mode="aspectFill"></image>
-            </swiper-item>
-          </swiper>
-        </view>
-        <view class="g-meta">
-          <view class="g-meta-left">
-            <text class="g-title">{{item.name}}</text>
-            <text class="g-sub">{{item.sub}}</text>
-            <text class="g-price">¥ {{item.price}}</text>
+        <swiper-item wx:for="{{list}}" wx:key="id" class="gs-item">
+          <view class="gs-card" data-id="{{item.id}}" bindtap="goDetail">
+            <view class="gs-frame">
+              <image class="gs-img" src="{{item.image || item.gallery[0]}}" mode="aspectFill"></image>
+            </view>
+            <view class="gs-meta">
+              <view class="gs-meta-left">
+                <text class="gs-title">{{item.name}}</text>
+                <text class="gs-sub">{{item.sub}}</text>
+                <text class="gs-price">¥ {{item.price}}</text>
+              </view>
+              <view class="gs-add" catchtap="goDetail" data-id="{{item.id}}">
+                <view class="gs-add-h"></view>
+                <view class="gs-add-v"></view>
+              </view>
+            </view>
           </view>
-          <view class="g-add" catchtap="goDetail" data-id="{{item.id}}">
-            <view class="g-add-h"></view>
-            <view class="g-add-v"></view>
-          </view>
-        </view>
-      </view>
+        </swiper-item>
+      </swiper>
     </view>
 
-    <view style="height: 40rpx;"></view>
+    <view style="height: 60rpx;"></view>
   </scroll-view>
 </view>

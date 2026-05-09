@@ -552,11 +552,11 @@
   to { transform: translateY(0); }
 }
 
-/* 紧凑底部 */
+/* 紧凑底部 — 给 tabbar 留出空间 */
 .footer-mini {
   display: flex;
   justify-content: center;
-  padding: 60rpx 0 20rpx;
+  padding: 48rpx 0 calc(env(safe-area-inset-bottom) + 200rpx);
 }
 .footer-mini-seal {
   font-family: "Songti SC", serif;
