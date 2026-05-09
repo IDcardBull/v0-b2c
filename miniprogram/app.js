@@ -13,6 +13,8 @@ App({
     this.globalData.token = wx.getStorageSync('token') || ''
     this.globalData.userInfo = wx.getStorageSync('userInfo') || null
     this.globalData.cart = wx.getStorageSync('cart') || []
+    this.globalData.adminToken = wx.getStorageSync('adminToken') || ''
+    this.globalData.adminInfo = wx.getStorageSync('adminInfo') || null
   },
   miniLogin() {
     return new Promise((resolve, reject) => {
@@ -71,6 +73,32 @@ App({
     wx.removeStorageSync('token')
     wx.removeStorageSync('userInfo')
   },
+  setAdmin(payload) {
+    if (!payload) return
+    const token = payload.token || ''
+    const user = payload.user || null
+    this.globalData.adminToken = token
+    this.globalData.adminInfo = user
+    if (token) wx.setStorageSync('adminToken', token)
+    if (user) wx.setStorageSync('adminInfo', user)
+  },
+  clearAdmin() {
+    this.globalData.adminToken = ''
+    this.globalData.adminInfo = null
+    wx.removeStorageSync('adminToken')
+    wx.removeStorageSync('adminInfo')
+  },
+  ensureAdmin(redirect) {
+    const token = this.globalData.adminToken || wx.getStorageSync('adminToken')
+    if (token) return Promise.resolve()
+    const url = redirect
+      ? '/pages/admin/login/login?redirect=' + encodeURIComponent(redirect)
+      : '/pages/admin/login/login'
+    return new Promise((resolve, reject) => {
+      wx.navigateTo({ url, success: resolve, fail: reject })
+    })
+  },
+
 
   // 设置企微机器人 key
   setWecomBotKey(key) {
@@ -89,5 +117,7 @@ App({
     userInfo: null,
     cart: [],
     pendingCategory: null,
+    adminToken: '',
+    adminInfo: null,
   },
 })

@@ -222,6 +222,31 @@ Page({
     if (!this.ensureLoggedIn('/pages/orders/orders')) return
     wx.navigateTo({ url: `/pages/orders/orders?status=${key}` })
   },
+
+  onSecretTap() {
+    // 7 次连点进入移动端管理工作台；管理员已登录则直接跳工作台
+    const adminToken = (app.globalData && app.globalData.adminToken) || wx.getStorageSync('adminToken')
+    if (adminToken) {
+      wx.navigateTo({ url: '/pages/admin/index/index' })
+      return
+    }
+    const now = Date.now()
+    if (!this._secretTaps || now - this._secretTaps.last > 1500) {
+      this._secretTaps = { count: 0, last: now }
+    }
+    this._secretTaps.count += 1
+    this._secretTaps.last = now
+    if (this._secretTaps.count >= 7) {
+      this._secretTaps = null
+      wx.navigateTo({ url: '/pages/admin/login/login' })
+    } else if (this._secretTaps.count >= 4) {
+      wx.showToast({
+        title: `还差 ${7 - this._secretTaps.count} 次`,
+        icon: 'none',
+        duration: 600,
+      })
+    }
+  },
   onMenu(e) {
     const key = e.currentTarget.dataset.key
     if (key === 'review') {

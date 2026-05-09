@@ -87,7 +87,7 @@
     </view>
 
     <view class="footer">
-      <view class="footer-seal">釉 · 见</view>
+      <view class="footer-seal" bindtap="onSecretTap">釉 · 见</view>
       <text class="footer-line">器 · 以 · 载 · 道</text>
       <text class="footer-en">YOUJIAN CERAMICS · est. 2016</text>
     </view>

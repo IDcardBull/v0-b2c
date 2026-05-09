@@ -1,0 +1,70 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <text class="back" bindtap="back">‹</text>
+      <view class="page-title">
+        <text class="t-cn">商 · 品</text>
+        <text class="t-en">CATALOG · ADMIN</text>
+      </view>
+      <view></view>
+    </view>
+  </view>
+
+  <view class="search" style="top: {{statusBarHeight + navBarHeight}}px;">
+    <view class="search-input">
+      <text class="search-icon">⌕</text>
+      <input
+        value="{{keyword}}"
+        bindinput="onKeyword"
+        bindconfirm="onSearch"
+        confirm-type="search"
+        placeholder="搜名称 / 编码"
+        placeholder-class="ph"
+      />
+      <view class="scan" bindtap="scanProduct"><text>扫</text></view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight + 96}}px;">
+    <view wx:if="{{loading && list.length === 0}}" class="empty">载入中…</view>
+    <view wx:elif="{{empty}}" class="empty">
+      <view class="empty-seal">空</view>
+      <text class="empty-cn">暂无商品</text>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="item"
+      data-id="{{item.id}}"
+      bindtap="goEdit"
+    >
+      <image class="cover" src="{{item.cover}}" mode="aspectFill"></image>
+      <view class="meta">
+        <view class="meta-top">
+          <text class="name">{{item.name}}</text>
+          <text class="code">{{item.code}}</text>
+        </view>
+        <view class="meta-mid">
+          <text class="price">
+            <text class="unit">¥</text>{{item.minPrice}}<text wx:if="{{item.maxPrice > item.minPrice}}"> – {{item.maxPrice}}</text>
+          </text>
+          <text class="badge badge-{{item.statusKey}}">{{item.statusText}}</text>
+        </view>
+        <view class="meta-bottom">
+          <text class="info">SKU {{item.skuCount}} · 库存 {{item.stock}}</text>
+          <switch
+            class="switch"
+            color="#B8CFC8"
+            checked="{{item.statusKey === 'online'}}"
+            data-id="{{item.id}}"
+            catchchange="toggleListing"
+            disabled="{{item.toggling}}"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view style="height: 160rpx;"></view>
+  </scroll-view>
+</view>

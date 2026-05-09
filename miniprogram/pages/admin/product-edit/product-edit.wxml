@@ -1,0 +1,101 @@
+<view class="page">
+  <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-inner" style="height: {{navBarHeight}}px;">
+      <text class="back" bindtap="back">‹</text>
+      <view class="page-title">
+        <text class="t-cn">商品 · 库存</text>
+        <text class="t-en">SKU STOCK</text>
+      </view>
+      <view class="scan-btn" bindtap="scanLocate"><text>扫</text></view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
+    <view wx:if="{{loading}}" class="empty">载入中…</view>
+
+    <block wx:elif="{{product}}">
+      <view class="hero">
+        <image class="cover" src="{{product.cover}}" mode="aspectFill"></image>
+        <view class="hero-meta">
+          <text class="hero-name">{{product.name}}</text>
+          <text class="hero-code">{{product.code}}</text>
+          <text class="hero-price">
+            <text class="unit">¥</text>{{product.minPrice}}<text wx:if="{{product.maxPrice > product.minPrice}}"> – {{product.maxPrice}}</text>
+          </text>
+        </view>
+      </view>
+
+      <view class="block">
+        <view class="block-head">
+          <text class="head-cn">上架状态</text>
+          <text class="head-en">LISTING</text>
+        </view>
+        <view class="toggle-row" bindtap="toggleListing">
+          <view class="toggle-text">
+            <text class="toggle-cn">商品总开关</text>
+            <text class="toggle-sub">{{product.status === 0 ? '当前已下架' : '当前在售'}}</text>
+          </view>
+          <text class="toggle-action">{{product.status === 0 ? '上架' : '下架'}}</text>
+        </view>
+        <view class="toggle-row" bindtap="toggleRetail">
+          <view class="toggle-text">
+            <text class="toggle-cn">零售可见</text>
+            <text class="toggle-sub">{{product.retailEnabled ? '客户端可见' : '客户端隐藏'}}</text>
+          </view>
+          <text class="toggle-action">{{product.retailEnabled ? '隐藏' : '显示'}}</text>
+        </view>
+      </view>
+
+      <view class="block">
+        <view class="block-head">
+          <text class="head-cn">SKU 库存</text>
+          <text class="head-en">{{skus.length}} ITEMS</text>
+        </view>
+        <view wx:if="{{skus.length === 0}}" class="empty-card">该商品暂无 SKU</view>
+        <view
+          wx:for="{{skus}}"
+          wx:key="id"
+          class="sku-card"
+        >
+          <view class="sku-head">
+            <text class="sku-spec">{{item.specText}}</text>
+            <text wx:if="{{item.code}}" class="sku-code">{{item.code}}</text>
+          </view>
+          <view class="sku-row">
+            <text class="sku-label">售价</text>
+            <text class="sku-value"><text class="unit">¥</text>{{item.retailPrice}}</text>
+          </view>
+          <view class="sku-row">
+            <text class="sku-label">现库存</text>
+            <view class="stepper">
+              <view class="step-btn" data-idx="{{index}}" data-delta="-1" bindtap="step"><text>-</text></view>
+              <input
+                class="stock-input"
+                type="number"
+                value="{{item.stockInput}}"
+                data-idx="{{index}}"
+                bindinput="onStockInput"
+              />
+              <view class="step-btn" data-idx="{{index}}" data-delta="1" bindtap="step"><text>+</text></view>
+            </view>
+          </view>
+          <view class="sku-foot">
+            <text class="sku-hint">原 {{item.stockOriginal}}</text>
+            <view
+              class="save-btn {{item.saving ? 'save-btn--loading' : ''}}"
+              data-idx="{{index}}"
+              bindtap="saveStock"
+            >
+              <text>{{item.saving ? '保存中…' : '保存库存'}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="hint-card">
+          仅支持改库存。售价、详情、规格请到 PC 后台修改。
+        </view>
+      </view>
+    </block>
+
+    <view style="height: 200rpx;"></view>
+  </scroll-view>
+</view>
