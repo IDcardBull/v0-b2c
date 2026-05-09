@@ -10,30 +10,10 @@
         data-path="{{item.pagePath}}"
         bindtap="switchTab"
       >
-        <view class="tab-icon">
-          <!-- 首页 · 极简屋顶 -->
-          <view wx:if="{{item.text === '首页'}}" class="ic ic-home">
-            <view class="ic-home-roof"></view>
-            <view class="ic-home-base"></view>
-          </view>
-          <!-- 分类 · 三横线 -->
-          <view wx:elif="{{item.text === '分类'}}" class="ic ic-cat">
-            <view class="ic-cat-l"></view>
-            <view class="ic-cat-l"></view>
-            <view class="ic-cat-l"></view>
-          </view>
-          <!-- 购物袋 · 极简袋型 -->
-          <view wx:elif="{{item.text === '购物袋'}}" class="ic ic-bag">
-            <view class="ic-bag-handle"></view>
-            <view class="ic-bag-body"></view>
-          </view>
-          <!-- 我 · 圆+弧 -->
-          <view wx:else class="ic ic-me">
-            <view class="ic-me-head"></view>
-            <view class="ic-me-body"></view>
-          </view>
-        </view>
-        <view class="tab-label">{{item.text}}</view>
+        <text class="tab-glyph" wx:if="{{item.text === '首页'}}">⌂</text>
+        <text class="tab-glyph" wx:elif="{{item.text === '分类'}}">≡</text>
+        <text class="tab-glyph" wx:elif="{{item.text === '购物袋'}}">🛍</text>
+        <text class="tab-glyph" wx:else>☻</text>
       </view>
     </view>
   </view>

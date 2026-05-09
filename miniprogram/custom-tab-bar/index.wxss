@@ -56,6 +56,16 @@
 }
 .tab:active { transform: scale(0.9); }
 
+.tab-glyph {
+  font-size: 44rpx;
+  line-height: 1;
+  color: var(--color-ink-faint);
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.tab--on .tab-glyph {
+  color: var(--color-ink);
+  transform: scale(1.08);
+}
 .tab-icon {
   width: 44rpx;
   height: 36rpx;
