@@ -55,7 +55,6 @@
       <view wx:if="{{item.salesCount > 0 || item.rating > 0}}" class="meta-row">
         <text wx:if="{{item.rating > 0}}" class="meta-text">评 · {{item.rating}}</text>
         <text wx:if="{{item.salesCount > 0}}" class="meta-text">已售 · {{item.salesCount}}</text>
-        <text wx:if="{{item.craft}}" class="meta-text">{{item.craft}}</text>
       </view>
     </view>
 
@@ -87,30 +86,22 @@
       </view>
     </view>
 
-    <!-- 工艺·材质 -->
-    <view wx:if="{{item.craft || item.material}}" class="section">
+    <!-- 款号（保留商品编码这一项简单信息） -->
+    <view wx:if="{{item.code}}" class="section">
       <view class="section-head">
-        <text class="s-cn">工 · 艺</text>
-        <text class="s-en">CRAFT</text>
+        <text class="s-cn">款 · 号</text>
+        <text class="s-en">CODE</text>
       </view>
       <view class="specs">
-        <view wx:if="{{item.craft}}" class="spec-row">
-          <view class="spec-dot"></view>
-          <text class="spec-text">工艺 {{item.craft}}</text>
-        </view>
-        <view wx:if="{{item.material}}" class="spec-row">
-          <view class="spec-dot"></view>
-          <text class="spec-text">胎质 {{item.material}}</text>
-        </view>
-        <view wx:if="{{item.code}}" class="spec-row">
+        <view class="spec-row">
           <view class="spec-dot"></view>
           <text class="spec-text">款号 {{item.code}}</text>
         </view>
       </view>
     </view>
 
-    <!-- 匠人 / 品牌 -->
-    <view wx:if="{{item.brand || item.category}}" class="section">
+    <!-- 匠人 / 分类（v2 移除品牌字段，仅按分类做作坊门面） -->
+    <view wx:if="{{item.category}}" class="section">
       <view class="section-head">
         <text class="s-cn">工 · 坊</text>
         <text class="s-en">THE MAKER</text>
@@ -118,10 +109,8 @@
       <view class="maker">
         <view class="maker-avatar"><text>作</text></view>
         <view class="maker-body">
-          <text class="maker-name">{{item.brand.name || item.category.name || '釉见 · 作坊'}}</text>
-          <text wx:if="{{item.brand.story}}" class="maker-desc">{{item.brand.story}}</text>
-          <text wx:elif="{{item.brand.origin}}" class="maker-desc">产自 {{item.brand.origin}}</text>
-          <text wx:else class="maker-desc">手拉坯·柴烧；一年不过四窑，每窑不过数件。</text>
+          <text class="maker-name">{{item.category.name || '釉见 · 作坊'}}</text>
+          <text class="maker-desc">手拉坯·柴烧；一年不过四窑，每窑不过数件。</text>
           <view class="maker-link" bindtap="viewMaker">
             <text>查看作坊</text>
             <text class="arrow">→</text>
@@ -181,7 +170,7 @@
     </view>
   </view>
 
-  <!-- 规格选择浮层 -->
+  <!-- 规格选择���层 -->
   <view wx:if="{{sheetVisible}}" class="sheet-mask" bindtap="closeSheet">
     <view class="sheet" catchtap="noop">
       <view class="sheet-head">

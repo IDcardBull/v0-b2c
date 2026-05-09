@@ -98,7 +98,6 @@ function normalizeProduct(raw) {
   const rawSkus = Array.isArray(raw.skus) ? raw.skus : (Array.isArray(raw.skuList) ? raw.skuList : [])
   const skus = rawSkus.map(normalizeSku).filter(Boolean)
   const specOptions = buildSpecOptions(skus)
-  const brand = raw.brand && typeof raw.brand === 'object' ? raw.brand : null
   const category = raw.category && typeof raw.category === 'object' ? raw.category : null
   const status = raw.status == null ? 1 : Number(raw.status)
   const retailPrice = Number(raw.retailPrice != null ? raw.retailPrice : (raw.price != null ? raw.price : 0))
@@ -109,7 +108,8 @@ function normalizeProduct(raw) {
   const skuPrices = skus.map((s) => s.price).filter((p) => p > 0)
   const minPrice = skuPrices.length > 0 ? Math.min.apply(null, skuPrices) : displayPrice
   const maxPrice = skuPrices.length > 0 ? Math.max.apply(null, skuPrices) : displayPrice
-  const sub = (brand && brand.name) || (category && category.name) || raw.brandName || raw.categoryName || raw.material || raw.craft || ''
+  // v2 简化：移除 brand/material/craft 兜底
+  const sub = (category && category.name) || raw.categoryName || ''
   return {
     id: raw.id != null ? raw.id : (raw.code || ''),
     code: raw.code || '',
@@ -126,14 +126,10 @@ function normalizeProduct(raw) {
     gallery: resolvedGallery,
     category,
     categoryId: raw.categoryId != null ? raw.categoryId : null,
-    brand,
-    brandId: raw.brandId != null ? raw.brandId : null,
     tag: tags[0] || raw.tag || raw.label || (raw.isLimited ? '限量' : ''),
     tags,
     intro: raw.intro || raw.description || raw.detail || '',
     detail: raw.detail || '',
-    craft: raw.craft || '',
-    material: raw.material || '',
     salesCount: Number(raw.salesCount || 0),
     rating: Number(raw.rating || 0),
     skus,
@@ -237,9 +233,6 @@ const api = {
   category: {
     tree: () => request.get('/client/categories/tree', {}, { silent: true }),
     list: () => request.get('/client/categories', {}, { silent: true }),
-  },
-  brand: {
-    list: () => request.get('/client/brands', {}, { silent: true }),
   },
   product: {
     list: (params) => {

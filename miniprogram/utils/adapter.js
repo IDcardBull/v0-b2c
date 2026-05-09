@@ -81,9 +81,8 @@ function categoryName(product) {
   const category = product.category || product.categoryInfo
   if (category && category.name) return category.name
   if (product.categoryName) return product.categoryName
-  const brand = product.brand || product.brandInfo
-  if (brand && brand.name) return brand.name
-  return product.origin || product.subTitle || '釉见 · 手作'
+  // v2 简化：移除 brand / origin 兜底
+  return product.subTitle || '釉见 · 手作'
 }
 
 function normalizeCategory(item, index = 0) {
@@ -118,7 +117,6 @@ function normalizeProduct(product, index = 0) {
   const specs = []
   const skuLabel = skuText(sku)
   if (skuLabel) specs.push(`规格 ${skuLabel}`)
-  if (product.material) specs.push(`材质 ${product.material}`)
   if (product.size) specs.push(`尺寸 ${product.size}`)
   if (product.weight) specs.push(`重量 ${product.weight}`)
   if (product.code) specs.push(`款号 ${product.code}`)
