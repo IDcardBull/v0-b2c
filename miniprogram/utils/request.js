@@ -1,19 +1,57 @@
 // utils/request.js —— 与后端通信的统一入口
-// 服务器全局前缀为 /api，业务路径以 /client/... 开头
+// 服务器全局前缀为 /api，零售小程序业务路径以 /client/... 开头，移动端管理员功能以 /admin/... 开头。
 const BASE_URL = 'http://127.0.0.1:3001/api'
 
-function goLogin() {
+function isAdminPath(url) {
+  return typeof url === 'string' && url.indexOf('/admin/') === 0
+}
+
+function goLogin(opts) {
   const pages = getCurrentPages()
   const current = pages[pages.length - 1]
   const route = current ? `/${current.route}` : '/pages/index/index'
-  if (route !== '/pages/login/login') {
-    wx.navigateTo({ url: `/pages/login/login?redirect=${encodeURIComponent(route)}` })
+  const target = opts && opts.admin ? '/pages/admin/login/login' : '/pages/login/login'
+  if (route !== target) {
+    wx.navigateTo({ url: `${target}?redirect=${encodeURIComponent(route)}` })
   }
+}
+
+function pickToken(options) {
+  if (options.noAuth) return ''
+  // 显式声明走管理员通道
+  if (options.auth === 'admin' || isAdminPath(options.url)) {
+    return wx.getStorageSync('adminToken') || ''
+  }
+  if (options.auth === 'client' || options.auth === 'user') {
+    return wx.getStorageSync('token') || ''
+  }
+  return wx.getStorageSync('token') || ''
+}
+
+function clearTokenForOptions(options) {
+  const app = getApp() || {}
+  const isAdmin = options.auth === 'admin' || isAdminPath(options.url)
+  if (isAdmin) {
+    wx.removeStorageSync('adminToken')
+    wx.removeStorageSync('adminInfo')
+    if (app.globalData) {
+      app.globalData.adminToken = ''
+      app.globalData.adminInfo = null
+    }
+  } else {
+    wx.removeStorageSync('token')
+    wx.removeStorageSync('userInfo')
+    if (app.globalData) {
+      app.globalData.token = ''
+      app.globalData.userInfo = null
+    }
+  }
+  return isAdmin
 }
 
 function request(options) {
   return new Promise((resolve, reject) => {
-    const token = options.noAuth ? '' : wx.getStorageSync('token')
+    const token = pickToken(options)
     wx.request({
       url: BASE_URL + options.url,
       method: options.method || 'GET',
@@ -28,14 +66,8 @@ function request(options) {
         const body = res.data
         // 401 / 403 触发跳登录
         if (res.statusCode === 401 || res.statusCode === 403) {
-          wx.removeStorageSync('token')
-          wx.removeStorageSync('userInfo')
-          const app = getApp()
-          if (app && app.globalData) {
-            app.globalData.token = ''
-            app.globalData.userInfo = null
-          }
-          if (!options.silent) goLogin()
+          const isAdmin = clearTokenForOptions(options)
+          if (!options.silent) goLogin({ admin: isAdmin })
           reject(new Error((body && body.message) || '登录已过期'))
           return
         }

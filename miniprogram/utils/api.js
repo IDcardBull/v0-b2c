@@ -276,6 +276,42 @@ const api = {
   feedback: {
     create: (data) => request.post('/client/feedbacks', data),
   },
+
+  admin: {
+    login: (username, password) =>
+      request.post('/admin/auth/login', { username, password }, { auth: 'admin', noAuth: true }),
+    profile: () => request.get('/admin/auth/profile', {}, { auth: 'admin', silent: true }),
+    logout: () => request.post('/admin/auth/logout', {}, { auth: 'admin', silent: true }),
+    dashboard: {
+      overview: () => request.get('/admin/dashboard/overview', {}, { auth: 'admin', silent: true }),
+      salesTrend: (days) => request.get('/admin/dashboard/sales-trend', { days }, { auth: 'admin', silent: true }),
+      topProducts: (limit) => request.get('/admin/dashboard/top-products', { limit }, { auth: 'admin', silent: true }),
+    },
+    order: {
+      list: (params) => request.get('/admin/orders', params || {}, { auth: 'admin' }),
+      counts: (channel) => request.get('/admin/orders/status-counts', channel ? { channel } : {}, { auth: 'admin', silent: true }),
+      detail: (id) => request.get('/admin/orders/' + id, {}, { auth: 'admin' }),
+      logistics: (id) => request.get('/admin/orders/' + id + '/logistics', {}, { auth: 'admin', silent: true }),
+      ship: (id, payload) => request.patch('/admin/orders/' + id + '/ship', payload, { auth: 'admin' }),
+      markPaid: (id) => request.patch('/admin/orders/' + id + '/mark-paid', {}, { auth: 'admin' }),
+      complete: (id) => request.patch('/admin/orders/' + id + '/complete', {}, { auth: 'admin' }),
+      close: (id, reason) => request.patch('/admin/orders/' + id + '/close', { reason: reason || '' }, { auth: 'admin' }),
+      refund: (id, amount, reason) => request.post('/admin/orders/' + id + '/refund', { amount, reason }, { auth: 'admin' }),
+    },
+    product: {
+      list: (params) => request.get('/admin/products', params || {}, { auth: 'admin' }),
+      detail: (id) => request.get('/admin/products/' + id, {}, { auth: 'admin' }),
+      toggleListing: (id) => request.patch('/admin/products/' + id + '/toggle-listing', {}, { auth: 'admin' }),
+      toggleRetail: (id) => request.patch('/admin/products/' + id + '/toggle-retail', {}, { auth: 'admin' }),
+      setStatus: (id, status) => request.patch('/admin/products/' + id + '/status', { status }, { auth: 'admin' }),
+      setChannel: (id, channel, enabled) => request.patch('/admin/products/' + id + '/channel', { channel, enabled }, { auth: 'admin' }),
+    },
+    sku: {
+      listByProduct: (productId) => request.get('/admin/sku/by-product/' + productId, {}, { auth: 'admin' }),
+      detail: (id) => request.get('/admin/sku/' + id, {}, { auth: 'admin' }),
+      updateStock: (id, stock) => request.patch('/admin/sku/' + id + '/stock', { stock: Number(stock) }, { auth: 'admin' }),
+    },
+  },
 }
 
 module.exports = api

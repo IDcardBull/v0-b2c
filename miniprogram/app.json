@@ -13,7 +13,13 @@
     "pages/pay-result/pay-result",
     "pages/orders/orders",
     "pages/order-detail/order-detail",
-    "pages/logistics/logistics"
+    "pages/logistics/logistics",
+    "pages/admin/login/login",
+    "pages/admin/index/index",
+    "pages/admin/orders/orders",
+    "pages/admin/order-detail/order-detail",
+    "pages/admin/products/products",
+    "pages/admin/product-edit/product-edit"
   ],
   "window": {
     "navigationStyle": "custom",
