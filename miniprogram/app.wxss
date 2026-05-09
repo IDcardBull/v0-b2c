@@ -176,3 +176,285 @@ button::after {
     transform: translateY(0);
   }
 }
+
+/* ============================================================
+ * v2.1 全局精修 —— 通用组件、表单、空态、按钮、卡片
+ * ============================================================ */
+
+/* —— 通用页容器 —— */
+.page {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+.page-pad {
+  padding: 0 32rpx;
+}
+.section {
+  margin: var(--space-section) 0;
+}
+.section-sm { margin: 64rpx 0; }
+
+/* —— 通用区块标题 —— */
+.section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 20rpx;
+  padding: 0 32rpx;
+  margin-bottom: 36rpx;
+}
+.section-title .cn {
+  font-size: var(--fs-h3);
+  color: var(--color-ink);
+  letter-spacing: var(--ls-wide);
+  font-weight: 500;
+}
+.section-title .en {
+  font-family: "PingFang SC", sans-serif;
+  font-size: var(--fs-mini);
+  color: var(--color-ink-faint);
+  letter-spacing: var(--ls-magazine);
+  text-transform: uppercase;
+}
+.section-title .rule {
+  flex: 1;
+  height: 1rpx;
+  background: linear-gradient(90deg, var(--color-line), transparent);
+  margin-left: 8rpx;
+}
+
+/* —— 通用卡片 —— */
+.card {
+  background: var(--color-paper);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 32rpx;
+  transition: box-shadow var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
+}
+.card-elevated {
+  box-shadow: var(--shadow-md);
+}
+.card:active {
+  transform: scale(0.995);
+  box-shadow: var(--shadow-md);
+}
+
+/* —— 极简按钮体系 —— */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  height: 88rpx;
+  padding: 0 48rpx;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-body);
+  letter-spacing: var(--ls-wide);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  box-shadow: 0 6rpx 18rpx rgba(58, 58, 58, 0.18);
+}
+.btn-primary:active {
+  background: #2a2a2a;
+  transform: translateY(1rpx);
+  box-shadow: 0 3rpx 10rpx rgba(58, 58, 58, 0.22);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1rpx solid rgba(58, 58, 58, 0.18);
+}
+.btn-ghost:active {
+  background: rgba(58, 58, 58, 0.04);
+}
+.btn-celadon {
+  background: linear-gradient(135deg, var(--color-celadon-deep), #6f9c92);
+  color: #fff;
+  box-shadow: 0 6rpx 18rpx rgba(138, 175, 166, 0.32);
+}
+.btn-warm {
+  background: linear-gradient(135deg, var(--color-warm), #b08e63);
+  color: #fff;
+  box-shadow: 0 6rpx 18rpx rgba(200, 168, 130, 0.32);
+}
+.btn-block { width: 100%; }
+.btn-sm { height: 64rpx; padding: 0 32rpx; font-size: var(--fs-sub); }
+
+/* —— 表单控件全局精修 —— */
+input,
+textarea {
+  font-family: "PingFang SC", sans-serif !important;
+  color: var(--color-ink);
+}
+.field {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: var(--color-paper);
+  padding: 28rpx 32rpx;
+  border-radius: var(--radius-md);
+  border: 1rpx solid transparent;
+  transition: border-color var(--duration-fast);
+}
+.field:focus-within {
+  border-color: rgba(138, 175, 166, 0.5);
+}
+.field-label {
+  font-size: var(--fs-sub);
+  color: var(--color-ink-soft);
+  min-width: 140rpx;
+  letter-spacing: var(--ls-tight);
+}
+.field input,
+.field .picker-text {
+  flex: 1;
+  font-size: var(--fs-body);
+  color: var(--color-ink);
+}
+
+/* —— 空态 —— */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 60rpx;
+  text-align: center;
+}
+.empty-icon {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-card), var(--color-paper));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 36rpx;
+  box-shadow: var(--shadow-sm);
+  font-size: 56rpx;
+  color: var(--color-ink-faint);
+}
+.empty-title {
+  font-size: var(--fs-h3);
+  color: var(--color-ink);
+  letter-spacing: var(--ls-wide);
+  margin-bottom: 12rpx;
+}
+.empty-desc {
+  font-family: "PingFang SC", sans-serif;
+  font-size: var(--fs-sub);
+  color: var(--color-ink-faint);
+  letter-spacing: var(--ls-tight);
+  margin-bottom: 40rpx;
+}
+
+/* —— 列表行 —— */
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-paper);
+  padding: 32rpx;
+  border-radius: var(--radius-md);
+  margin-bottom: 16rpx;
+  transition: transform var(--duration-fast);
+}
+.cell:active { transform: scale(0.992); }
+.cell-left { display: flex; align-items: center; gap: 24rpx; flex: 1; min-width: 0; }
+.cell-icon {
+  width: 64rpx; height: 64rpx;
+  border-radius: 50%;
+  background: var(--color-card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32rpx;
+  color: var(--color-celadon-deep);
+  flex-shrink: 0;
+}
+.cell-title {
+  font-size: var(--fs-body);
+  color: var(--color-ink);
+  letter-spacing: var(--ls-tight);
+}
+.cell-sub {
+  font-size: var(--fs-mini);
+  color: var(--color-ink-faint);
+  margin-top: 4rpx;
+}
+.cell-arrow {
+  font-family: "PingFang SC", sans-serif;
+  color: var(--color-ink-faint);
+  font-size: 28rpx;
+}
+
+/* —— 标签 / 徽章 —— */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14rpx;
+  height: 36rpx;
+  border-radius: var(--radius-sm);
+  font-size: 22rpx;
+  font-family: "PingFang SC", sans-serif;
+  letter-spacing: var(--ls-tight);
+  background: var(--color-card);
+  color: var(--color-ink-soft);
+}
+.badge-celadon { background: rgba(138, 175, 166, 0.18); color: var(--color-celadon-deep); }
+.badge-warm    { background: rgba(200, 168, 130, 0.20); color: #8a6f48; }
+.badge-ink     { background: var(--color-ink); color: var(--color-paper); }
+
+/* —— 底部固定操作栏 —— */
+.action-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 32rpx calc(env(safe-area-inset-bottom) + 20rpx);
+  background: rgba(246, 241, 230, 0.92);
+  backdrop-filter: saturate(180%) blur(20rpx);
+  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
+  border-top: 1rpx solid var(--color-line);
+}
+
+/* —— 顶部 Nav 通用 —— */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  position: relative;
+  font-size: var(--fs-h3);
+  color: var(--color-ink);
+  letter-spacing: var(--ls-wide);
+}
+.nav-bar .nav-back {
+  position: absolute;
+  left: 24rpx; top: 50%;
+  transform: translateY(-50%);
+  width: 64rpx; height: 64rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36rpx;
+  color: var(--color-ink-soft);
+}
+
+/* —— 通用动画类 —— */
+.fade-in     { animation: fadeIn var(--duration-slow) var(--ease-out) both; }
+.fade-in-up  { animation: fadeInUp var(--duration-slow) var(--ease-out) both; }
+.scale-in    { animation: scaleIn var(--duration-normal) var(--ease-spring) both; }
+
+/* —— 加载占位骨架 —— */
+@keyframes skeletonShimmer {
+  0%   { background-position: -200rpx 0; }
+  100% { background-position: 200rpx 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--color-card) 0%, var(--color-paper) 50%, var(--color-card) 100%);
+  background-size: 400rpx 100%;
+  animation: skeletonShimmer 1.4s infinite linear;
+  border-radius: var(--radius-sm);
+}
