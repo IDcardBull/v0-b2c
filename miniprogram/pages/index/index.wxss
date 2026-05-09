@@ -12,21 +12,17 @@
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 30;
-  background: transparent;
-  pointer-events: none;
+  background: rgba(239, 232, 220, 0.85);
+  backdrop-filter: saturate(180%) blur(20rpx);
+  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
 }
 .navbar-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 40rpx;
-  pointer-events: auto;
 }
-.brand {
-  display: flex;
-  align-items: baseline;
-  gap: 14rpx;
-}
+.brand { display: flex; align-items: baseline; gap: 14rpx; }
 .brand-cn {
   font-family: "Songti SC", serif;
   font-size: 30rpx;
@@ -40,177 +36,30 @@
   letter-spacing: 5rpx;
   color: var(--color-ink-faint);
 }
-.search-trigger {
-  width: 56rpx; height: 56rpx;
-  display: flex; align-items: center; justify-content: center;
-}
-.mag-icon {
-  position: relative;
-  width: 28rpx; height: 28rpx;
-}
-.mag-circle {
-  width: 22rpx; height: 22rpx;
-  border: 1.2rpx solid var(--color-ink);
-  border-radius: 50%;
-}
-.mag-stick {
-  position: absolute;
-  right: 0; bottom: 0;
-  width: 10rpx; height: 1.2rpx;
-  background: var(--color-ink);
-  transform: rotate(45deg);
-  transform-origin: right center;
-}
+.search-trigger { width: 56rpx; height: 56rpx; display: flex; align-items: center; justify-content: center; }
+.mag-icon { position: relative; width: 28rpx; height: 28rpx; }
+.mag-circle { width: 22rpx; height: 22rpx; border: 1.2rpx solid var(--color-ink); border-radius: 50%; }
+.mag-stick { position: absolute; right: 0; bottom: 0; width: 10rpx; height: 1.2rpx; background: var(--color-ink); transform: rotate(45deg); transform-origin: right center; }
 
-/* ============ Hero · 全屏沉浸画报 ============ */
+/* ============ Hero · 顶格 4:3 轮播 ============ */
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
   background: var(--color-card);
 }
-.hero-swiper, .hero-img {
-  width: 100%; height: 100%;
+.hero-swiper {
+  width: 100%;
+  height: 75vw; /* 4:3 比例 */
 }
 .hero-img {
+  width: 100%;
+  height: 100%;
   display: block;
 }
-.hero-fade {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 55%;
-  background: linear-gradient(
-    180deg,
-    rgba(239,232,220,0) 0%,
-    rgba(239,232,220,0.05) 30%,
-    rgba(239,232,220,0.45) 75%,
-    rgba(239,232,220,0.85) 100%
-  );
-  pointer-events: none;
-}
 
-.hero-title-block {
-  position: absolute;
-  left: 56rpx;
-  bottom: 140rpx;
-  display: flex;
-  align-items: flex-end;
-  gap: 28rpx;
-  animation: fadeInUp 0.9s var(--ease-out) 0.2s both;
-}
-.hero-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 10rpx;
-}
-.hero-vertical text {
-  font-family: "Songti SC", "STSong", serif;
-  font-size: 76rpx;
-  line-height: 0.95;
-  letter-spacing: 2rpx;
-  color: var(--color-ink);
-  font-weight: 400;
-}
-.hero-rule {
-  width: 1rpx;
-  height: 120rpx;
-  background: var(--color-ink);
-  opacity: 0.5;
-  margin: 0 6rpx 12rpx;
-}
-.hero-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 10rpx;
-  padding-bottom: 14rpx;
-}
-.hero-meta-en {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 6rpx;
-  color: var(--color-ink);
-}
-.hero-meta-vol {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 2rpx;
-  color: var(--color-ink-soft);
-  font-style: italic;
-}
-
-.hero-issue {
-  position: absolute;
-  right: 56rpx;
-  bottom: 140rpx;
-  display: flex;
-  align-items: baseline;
-  gap: 10rpx;
-  font-family: "PingFang SC", sans-serif;
-  color: var(--color-ink);
-  animation: fadeIn 1s var(--ease-out) 0.4s both;
-}
-.hero-issue text:first-child {
-  font-size: 18rpx;
-  letter-spacing: 4rpx;
-  color: var(--color-ink-soft);
-}
-.hero-issue-num {
-  font-family: "Songti SC", serif;
-  font-size: 56rpx;
-  letter-spacing: 2rpx;
-  font-weight: 300;
-  line-height: 1;
-}
-
-.hero-paginator {
-  position: absolute;
-  left: 56rpx;
-  bottom: 80rpx;
-  display: flex;
-  gap: 10rpx;
-  z-index: 4;
-}
-.hp-bar {
-  width: 12rpx;
-  height: 1rpx;
-  background: rgba(58,58,58,0.35);
-  transition: width var(--duration-normal) var(--ease-out), background var(--duration-normal);
-}
-.hp-bar--on {
-  width: 56rpx;
-  background: var(--color-ink);
-}
-
-/* ============ Section · 通用 kicker 标签 ============ */
-.kicker {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-  padding: 0 40rpx;
-  margin-bottom: 48rpx;
-}
-.kicker-line {
-  width: 36rpx;
-  height: 1rpx;
-  background: var(--color-ink);
-}
-.kicker-text {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 6rpx;
-  color: var(--color-ink);
-}
-.kicker-cn {
-  font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  letter-spacing: 8rpx;
-  color: var(--color-ink-soft);
-}
-
-/* ============ 品类 · 横向文字导航 ============ */
+/* ============ 分类 · 圆形横滑 ============ */
 .cats-section {
-  padding: 120rpx 0 40rpx;
+  padding: 48rpx 0 24rpx;
 }
 .cats-scroll {
   width: 100%;
@@ -218,68 +67,101 @@
 }
 .cats-row {
   display: inline-flex;
+  align-items: flex-start;
+  gap: 36rpx;
+  padding: 8rpx 40rpx 16rpx;
+}
+.cat-circle {
+  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 56rpx;
-  padding: 0 48rpx 8rpx;
+  gap: 14rpx;
+  width: 132rpx;
+  transition: transform 0.2s ease;
 }
-.cat-item {
-  position: relative;
-  padding: 12rpx 0 18rpx;
-  transition: color 0.2s ease;
+.cat-circle:active { transform: scale(0.94); }
+.cat-circle-inner {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-paper), var(--color-card));
+  border: 1rpx solid rgba(58,58,58,0.08);
+  box-shadow: 0 4rpx 14rpx rgba(58,58,58,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-.cat-text {
+.cat-icon {
+  width: 100%;
+  height: 100%;
+}
+.cat-circle-char {
   font-family: "Songti SC", serif;
-  font-size: 32rpx;
-  letter-spacing: 6rpx;
-  color: var(--color-ink-faint);
-  font-weight: 400;
-}
-.cat-item--on .cat-text {
+  font-size: 44rpx;
   color: var(--color-ink);
-  font-weight: 600;
+  letter-spacing: 0;
 }
-.cat-item--on::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 24rpx;
-  height: 1.5rpx;
-  background: var(--color-ink);
+.cat-circle-name {
+  font-family: "Songti SC", serif;
+  font-size: 24rpx;
+  letter-spacing: 4rpx;
+  color: var(--color-ink-soft);
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ============ 章节分隔 · 印章式 ============ */
+/* ============ 实体店引流 · 寻访线下空间 ============ */
+.storefront {
+  padding: 48rpx 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+.storefront-frame {
+  width: 100%;
+  height: 360rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.storefront-img { width: 100%; height: 100%; display: block; }
+.storefront-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+  padding: 8rpx 0 0;
+}
+.sf-cn {
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 12rpx;
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+/* ============ 章节分隔 · 臻选 ============ */
 .section-break {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18rpx;
-  padding: 96rpx 40rpx 80rpx;
-}
-.break-en {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 6rpx;
-  color: var(--color-ink-soft);
+  gap: 12rpx;
+  padding: 64rpx 40rpx 40rpx;
 }
 .break-cn {
   font-family: "Songti SC", serif;
-  font-size: 48rpx;
-  letter-spacing: 24rpx;
-  padding-left: 24rpx;
+  font-size: 44rpx;
+  letter-spacing: 16rpx;
+  padding-left: 16rpx;
   color: var(--color-ink);
   font-weight: 500;
 }
-.break-sub {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 2rpx;
-  color: var(--color-ink-faint);
-  font-style: italic;
-  margin-top: 8rpx;
-}
 
-/* ============ 画廊 · 错落策展布局 ============ */
+/* ============ 画廊 · 错落布局 ============ */
 .gallery {
   display: flex;
   flex-wrap: wrap;
@@ -297,46 +179,31 @@
   width: 100%;
   overflow: hidden;
   background: var(--color-card);
+  border-radius: 8rpx;
 }
-.g-img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  transition: transform 0.6s var(--ease-out);
-}
+.g-swiper { width: 100%; height: 100%; }
+.g-img { width: 100%; height: 100%; display: block; }
 
-/* 错落规则：3n+1 通栏大图，3n+2 / 3n+3 两张竖图同行 */
 .g-card:nth-child(3n+1) { width: 100%; }
 .g-card:nth-child(3n+1) .g-frame { height: 880rpx; }
-
 .g-card:nth-child(3n+2),
-.g-card:nth-child(3n) {
-  width: calc(50% - 12rpx);
-}
+.g-card:nth-child(3n) { width: calc(50% - 12rpx); }
 .g-card:nth-child(3n+2) .g-frame,
-.g-card:nth-child(3n) .g-frame {
-  height: 720rpx;
-}
+.g-card:nth-child(3n) .g-frame { height: 540rpx; }
 
 /* 卡片信息 */
 .g-meta {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 24rpx 4rpx 8rpx;
+  padding: 18rpx 4rpx 4rpx;
   gap: 16rpx;
 }
-.g-meta-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-  min-width: 0;
-}
+.g-meta-left { flex: 1; display: flex; flex-direction: column; gap: 6rpx; min-width: 0; }
 .g-title {
   font-family: "Songti SC", serif;
-  font-size: 28rpx;
-  letter-spacing: 3rpx;
+  font-size: 26rpx;
+  letter-spacing: 2rpx;
   color: var(--color-ink);
   font-weight: 500;
   white-space: nowrap;
@@ -357,114 +224,21 @@
   font-size: 22rpx;
   letter-spacing: 1rpx;
   color: var(--color-ink-faint);
-  margin-top: 6rpx;
+  margin-top: 4rpx;
   font-weight: 300;
 }
-
-/* 极简加号按钮 —— 1rpx 边框圆形 */
 .g-add {
   position: relative;
-  width: 56rpx;
-  height: 56rpx;
+  width: 52rpx;
+  height: 52rpx;
   border-radius: 50%;
   border: 1rpx solid rgba(58,58,58,0.35);
   flex-shrink: 0;
-  transition: all 0.25s ease;
 }
 .g-add-h, .g-add-v {
   position: absolute;
   background: var(--color-ink);
   top: 50%; left: 50%;
 }
-.g-add-h {
-  width: 16rpx;
-  height: 1rpx;
-  transform: translate(-50%, -50%);
-}
-.g-add-v {
-  width: 1rpx;
-  height: 16rpx;
-  transform: translate(-50%, -50%);
-}
-
-/* ============ 结尾 ============ */
-.end-mark {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18rpx;
-  padding: 140rpx 0 60rpx;
-}
-.end-seal {
-  width: 64rpx;
-  height: 64rpx;
-  border: 1rpx solid var(--color-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  color: var(--color-ink);
-}
-.end-sub {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 18rpx;
-  letter-spacing: 6rpx;
-  color: var(--color-ink-faint);
-}
-
-/* ============ 实体店引流 · 寻访线下空间 ============ */
-.storefront {
-  padding: 96rpx 40rpx 24rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 32rpx;
-}
-.storefront-kicker {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-}
-.sf-en {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 8rpx;
-  color: var(--color-ink-faint);
-}
-.sf-line {
-  flex: 1;
-  height: 1rpx;
-  background: rgba(58,58,58,0.18);
-}
-.storefront-frame {
-  width: 100%;
-  height: 360rpx;
-  border-radius: 12rpx;
-  overflow: hidden;
-  background: #1a1a1a;
-}
-.storefront-img {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.storefront-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14rpx;
-  padding: 8rpx 0 0;
-}
-.sf-cn {
-  font-family: "Songti SC", serif;
-  font-size: 30rpx;
-  letter-spacing: 12rpx;
-  color: var(--color-ink);
-  font-weight: 500;
-}
-.sf-sub {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx;
-  letter-spacing: 4rpx;
-  color: var(--color-ink-faint);
-}
+.g-add-h { width: 16rpx; height: 1rpx; transform: translate(-50%, -50%); }
+.g-add-v { width: 1rpx; height: 16rpx; transform: translate(-50%, -50%); }

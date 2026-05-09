@@ -551,3 +551,18 @@
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
+
+/* 紧凑底部 */
+.footer-mini {
+  display: flex;
+  justify-content: center;
+  padding: 60rpx 0 20rpx;
+}
+.footer-mini-seal {
+  font-family: "Songti SC", serif;
+  font-size: 22rpx;
+  letter-spacing: 8rpx;
+  color: var(--color-ink-faint);
+  padding: 12rpx 24rpx;
+  opacity: 0.5;
+}

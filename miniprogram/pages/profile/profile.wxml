@@ -29,17 +29,10 @@
       <view class="user">
         <view class="user-name-row">
           <text class="user-name">{{user.name}}</text>
-          <text class="vip">{{user.level}}</text>
+          <text wx:if="{{user.level}}" class="vip">{{user.level}}</text>
         </view>
         <text class="user-motto">{{user.motto}}</text>
         <view class="profile-edit-btn" bindtap="openProfileEditor">编辑资料</view>
-        <view class="stats">
-          <view class="stat"><text class="stat-num">{{user.collect}}</text><text class="stat-label">收藏</text></view>
-          <view class="vbar"></view>
-          <view class="stat"><text class="stat-num">{{user.follow}}</text><text class="stat-label">足迹</text></view>
-          <view class="vbar"></view>
-          <view class="stat"><text class="stat-num">{{user.points}}</text><text class="stat-label">积分</text></view>
-        </view>
       </view>
     </view>
 
@@ -86,13 +79,10 @@
       </view>
     </view>
 
-    <view class="footer">
-      <view class="footer-seal" bindtap="onSecretTap">釉 · 见</view>
-      <text class="footer-line">器 · 以 · 载 · 道</text>
-      <text class="footer-en">YOUJIAN CERAMICS · est. 2016</text>
+    <view class="footer-mini">
+      <text class="footer-mini-seal" bindtap="onSecretTap">釉 · 见</text>
     </view>
-
-    <view style="height: 200rpx;"></view>
+    <view style="height: 60rpx;"></view>
   </scroll-view>
 
   <view wx:if="{{profileEditorVisible}}" class="edit-mask" bindtap="closeProfileEditor">
