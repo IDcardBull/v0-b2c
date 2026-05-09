@@ -2,7 +2,7 @@
   <!-- 顶栏：极简标题 -->
   <view class="navbar" style="padding-top: {{statusBarHeight}}px;">
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
-      <text class="brand-title">窑亦窑</text>
+      <text class="brand-title">釉见陶集</text>
       <view class="search-trigger" bindtap="onSearch">
         <view class="mag-icon">
           <view class="mag-circle"></view>
@@ -37,7 +37,7 @@
         </block>
       </swiper>
       <view class="hero-overlay">
-        <text class="hero-title">窑 亦 窑</text>
+        <text class="hero-title">釉 见 陶 集</text>
         <text class="hero-sub">以器载道，窑火千年</text>
         <text class="hero-tag">每一件器物，都有温度</text>
       </view>
@@ -59,6 +59,16 @@
           </view>
           <text class="cat-tile-name">{{item.name}}</text>
         </view>
+      </view>
+    </view>
+
+    <!-- 实体店引流 · 寻访线下空间 -->
+    <view class="storefront">
+      <view class="storefront-frame">
+        <image class="storefront-img" src="/images/storefront.png" mode="aspectFill"></image>
+      </view>
+      <view class="storefront-meta">
+        <text class="sf-cn">寻 访 线 下 空 间</text>
       </view>
     </view>
 

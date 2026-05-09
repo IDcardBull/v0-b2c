@@ -45,7 +45,7 @@
 }
 .hero-swiper {
   width: 100%;
-  height: 880rpx;
+  height: calc((100vw - 64rpx) * 0.75); /* 4:3 比例（扣除两侧 32rpx margin） */
 }
 .hero-img {
   width: 100%;
