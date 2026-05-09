@@ -38,8 +38,6 @@
       </swiper>
       <view class="hero-overlay">
         <text class="hero-title">釉 见 陶 集</text>
-        <text class="hero-sub">以器载道，窑火千年</text>
-        <text class="hero-tag">每一件器物，都有温度</text>
       </view>
     </view>
 

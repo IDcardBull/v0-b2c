@@ -60,7 +60,7 @@
 .hero-overlay {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  padding: 80rpx 40rpx 56rpx;
+  padding: 80rpx 40rpx 24rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
