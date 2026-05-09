@@ -84,6 +84,7 @@ Page({
     wx.navigateTo({ url: `/pages/admin/orders/orders${status ? '?status=' + status : ''}` })
   },
   goProducts() { wx.navigateTo({ url: '/pages/admin/products/products' }) },
+  goBanners() { wx.navigateTo({ url: '/pages/admin/banners/banners' }) },
   goShop() { wx.switchTab({ url: '/pages/profile/profile' }) },
   signOut() {
     wx.showModal({
