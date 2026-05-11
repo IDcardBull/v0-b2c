@@ -2,7 +2,7 @@
 // 统一图片上传工具：对接后端 http://124.221.2.61:3001/api/upload
 // 字段名固定为 file，返回 { url } 或 { data: { url } }
 
-const UPLOAD_URL = 'http://127.0.0.1:3001/api/upload'
+const UPLOAD_URL = 'http://124.221.2.61/api/upload'
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 
 /**

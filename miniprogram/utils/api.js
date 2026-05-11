@@ -1,6 +1,6 @@
 // utils/api.js —— 业务 API 入口
 const request = require('./request.js')
-const RESOURCE_BASE = 'http://127.0.0.1:3001'
+const RESOURCE_BASE = 'http://124.221.2.61:3001'
 
 function resolveImageUrl(url) {
   if (!url || typeof url !== 'string') return ''

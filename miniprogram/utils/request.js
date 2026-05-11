@@ -1,6 +1,6 @@
 // utils/request.js —— 与后端通信的统一入口
 // 服务器全局前缀为 /api，零售小程序业务路径以 /client/... 开头，移动端管理员功能以 /admin/... 开头。
-const BASE_URL = 'http://127.0.0.1:3001/api'
+const BASE_URL = 'http://124.221.2.61/api'
 
 function isAdminPath(url) {
   return typeof url === 'string' && url.indexOf('/admin/') === 0
