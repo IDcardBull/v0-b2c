@@ -99,6 +99,10 @@
               </view>
               <view class="gs-meta-right">
                 <text class="gs-price">¥ {{item.price}}</text>
+                <view class="gs-add" data-id="{{item.id}}" catchtap="quickAdd">
+                  <view class="gs-add-h"></view>
+                  <view class="gs-add-v"></view>
+                </view>
               </view>
             </view>
           </view>
@@ -117,7 +121,13 @@
           <image class="wf-img" src="{{item.image || item.gallery[0]}}" mode="widthFix"></image>
           <view class="wf-meta">
             <text class="wf-title">{{item.name}}</text>
-            <view class="wf-price-row"><text class="wf-price">¥ {{item.price}}</text></view>
+            <view class="wf-price-row">
+              <text class="wf-price">¥ {{item.price}}</text>
+              <view class="gs-add wf-add" data-id="{{item.id}}" catchtap="quickAdd">
+                <view class="gs-add-h"></view>
+                <view class="gs-add-v"></view>
+              </view>
+            </view>
           </view>
         </view>
       </view>
@@ -126,7 +136,13 @@
           <image class="wf-img" src="{{item.image || item.gallery[0]}}" mode="widthFix"></image>
           <view class="wf-meta">
             <text class="wf-title">{{item.name}}</text>
-            <view class="wf-price-row"><text class="wf-price">¥ {{item.price}}</text></view>
+            <view class="wf-price-row">
+              <text class="wf-price">¥ {{item.price}}</text>
+              <view class="gs-add wf-add" data-id="{{item.id}}" catchtap="quickAdd">
+                <view class="gs-add-h"></view>
+                <view class="gs-add-v"></view>
+              </view>
+            </view>
           </view>
         </view>
       </view>

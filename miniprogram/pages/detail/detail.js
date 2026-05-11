@@ -28,6 +28,7 @@ Page({
   },
   onLoad(options) {
     const id = options.id
+    this._pendingAction = options.action || ''
     this.setData({
       statusBarHeight: app.globalData.statusBarHeight,
       navBarHeight: app.globalData.navBarHeight,
@@ -78,6 +79,11 @@ Page({
       pickedSpecText: this.formatPicked(item.specOptions, selection),
     })
     this.rebuildOptionView()
+    // 来自首页加号：商品/SKU 加载完成后自动唤起规格浮层
+    if (this._pendingAction === 'cart' && skus.length > 0) {
+      this._pendingAction = ''
+      this.setData({ sheetVisible: true, sheetAction: 'cart', qty: 1 })
+    }
   },
 
   // 构建当前展示的图片列表：SKU专属图片优先，其次商品图库

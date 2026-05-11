@@ -323,14 +323,15 @@
   background: #f5f1ea;
 }
 .wf-meta {
-  padding: 16rpx 18rpx 20rpx;
+  padding: 12rpx 18rpx 14rpx;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 6rpx;
+  align-items: stretch;
 }
 .wf-title {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 30rpx;
+  font-size: 28rpx;
   color: #1F1F1F;
   letter-spacing: 1rpx;
   font-weight: 700;
@@ -338,13 +339,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.wf-meta { padding: 18rpx 20rpx 22rpx; gap: 10rpx; align-items: stretch; }
-.wf-price-row { display: flex; justify-content: flex-end; }
+.wf-price-row { display: flex; justify-content: space-between; align-items: center; }
 .wf-price {
   font-family: "PingFang SC", sans-serif;
-  font-size: 30rpx;
+  font-size: 28rpx;
   color: #1F1F1F;
   letter-spacing: 0;
   font-weight: 700;
   text-align: right;
 }
+.wf-add { width: 40rpx; height: 40rpx; }
+.wf-add .gs-add-h { width: 14rpx; }
+.wf-add .gs-add-v { height: 14rpx; }

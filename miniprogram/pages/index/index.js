@@ -115,4 +115,9 @@ Page({
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` })
   },
+  quickAdd(e) {
+    const id = e.currentTarget.dataset.id
+    if (!id) return
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}&action=cart` })
+  },
 })
