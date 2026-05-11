@@ -41,7 +41,7 @@
       </view>
       <input
         class="input"
-        placeholder="可填写订单编号，如 YM-20260418-0007"
+        placeholder="订单编号（选填）"
         placeholder-class="ph"
         value="{{orderCode}}"
         bindinput="onOrder"
@@ -110,7 +110,7 @@
       </view>
       <input
         class="input"
-        placeholder="手机号或微信号"
+        placeholder="手机号 / 微信号"
         placeholder-class="ph"
         value="{{contact}}"
         bindinput="onContact"
