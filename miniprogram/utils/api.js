@@ -291,10 +291,6 @@ const api = {
     create: (data) => request.post('/client/reviews', data),
     listByProduct: (productId, params) => request.get('/client/reviews', Object.assign({ productId }, params || {}), { silent: true }),
   },
-  feedback: {
-    create: (data) => request.post('/client/feedbacks', data),
-  },
-
   admin: {
     login: (username, password) =>
       request.post('/admin/auth/login', { username, password }, { auth: 'admin', noAuth: true }),

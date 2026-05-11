@@ -29,7 +29,6 @@ Page({
     ],
     menu: [
       { key: 'address', glyph: '址', label: '地址簿', sub: '收件人·配送地址' },
-      { key: 'feedback', glyph: '问', label: '客户服务', sub: '联系主理人·售后凭证' },
       { key: 'about', glyph: '志', label: '关于釉见', sub: '品牌·匠人' },
     ],
     profileEditorVisible: false,
@@ -246,10 +245,6 @@ Page({
     const key = e.currentTarget.dataset.key
     if (key === 'review') {
       wx.navigateTo({ url: '/pages/review/review' })
-      return
-    }
-    if (key === 'feedback') {
-      wx.navigateTo({ url: '/pages/feedback/feedback' })
       return
     }
     if (key === 'address') {

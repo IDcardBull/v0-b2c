@@ -105,10 +105,6 @@
   <view class="action safe-bottom">
     <view class="action-line"></view>
     <view class="action-inner">
-      <view class="action-icon" bindtap="goService">
-        <text class="ai-char">问</text>
-        <text class="ai-label">咨询</text>
-      </view>
       <view class="action-icon" bindtap="goCart">
         <text class="ai-char">袋</text>
         <text class="ai-label">购物袋</text>

@@ -7,7 +7,6 @@
     "pages/profile/profile",
     "pages/detail/detail",
     "pages/review/review",
-    "pages/feedback/feedback",
     "pages/address/address",
     "pages/checkout/checkout",
     "pages/pay-result/pay-result",
