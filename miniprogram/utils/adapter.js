@@ -8,7 +8,7 @@ const fallbackImages = [
   '/images/product-vase2.jpg',
 ]
 
-const RESOURCE_BASE = 'http://124.221.2.61:3001'
+const RESOURCE_BASE = 'https://api-proxy-256554-6-1424676913.sh.run.tcloudbase.com'
 
 function resolveImageUrl(url) {
   if (!url || typeof url !== 'string') return ''
