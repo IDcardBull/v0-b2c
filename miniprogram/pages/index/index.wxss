@@ -69,13 +69,14 @@
   pointer-events: none;
 }
 .hero-title {
-  font-family: "Songti SC", serif;
-  font-size: 56rpx;
-  letter-spacing: 12rpx;
+  font-family: "STXingkai", "STKaiti", "Kaiti SC", "KaiTi", cursive;
+  font-size: 84rpx;
+  letter-spacing: 18rpx;
   color: #fff;
-  font-weight: 500;
-  padding-left: 12rpx;
-  text-shadow: 0 2rpx 12rpx rgba(0,0,0,0.4);
+  font-weight: 400;
+  font-style: italic;
+  padding-left: 18rpx;
+  text-shadow: 0 4rpx 18rpx rgba(0,0,0,0.55), 0 1rpx 2rpx rgba(0,0,0,0.4);
 }
 .hero-sub {
   font-family: "Songti SC", serif;
@@ -188,7 +189,7 @@
 }
 .gallery-swiper {
   width: 100%;
-  height: 920rpx;
+  height: 680rpx;
 }
 .gs-item {
   box-sizing: border-box;
@@ -208,7 +209,7 @@
 .gs-card:active { transform: scale(0.985); opacity: 0.92; }
 .gs-frame {
   width: 100%;
-  height: 760rpx;
+  height: 520rpx;
   overflow: hidden;
 }
 .gs-img { width: 100%; height: 100%; display: block; }
@@ -292,4 +293,53 @@
   letter-spacing: 12rpx;
   color: var(--color-ink-soft);
   font-weight: 400;
+}
+
+
+/* ============ 精选好物 · 双列瀑布流 ============ */
+.waterfall {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx 24rpx 24rpx;
+}
+.wf-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  min-width: 0;
+}
+.wf-card {
+  background: var(--color-card);
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 18rpx rgba(58,58,58,0.06);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.wf-card:active { transform: scale(0.98); opacity: 0.9; }
+.wf-img {
+  width: 100%;
+  display: block;
+  background: #f5f1ea;
+}
+.wf-meta {
+  padding: 16rpx 18rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.wf-title {
+  font-family: "Songti SC", serif;
+  font-size: 26rpx;
+  color: var(--color-ink);
+  letter-spacing: 2rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wf-price {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 24rpx;
+  color: var(--color-ink-soft);
+  letter-spacing: 1rpx;
 }

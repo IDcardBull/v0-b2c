@@ -37,7 +37,7 @@
         </block>
       </swiper>
       <view class="hero-overlay">
-        <text class="hero-title">釉 见 陶 集</text>
+        <text class="hero-title">釉見陶集</text>
       </view>
     </view>
 
@@ -109,6 +109,32 @@
           </view>
         </swiper-item>
       </swiper>
+    </view>
+
+
+    <!-- 精选好物 · 双列瀑布流 -->
+    <view class="section-head">
+      <text class="section-title">精选好物</text>
+    </view>
+    <view class="waterfall">
+      <view class="wf-col">
+        <view wx:for="{{waterfallLeft}}" wx:key="id" class="wf-card" data-id="{{item.id}}" bindtap="goDetail">
+          <image class="wf-img" src="{{item.image || item.gallery[0]}}" mode="widthFix"></image>
+          <view class="wf-meta">
+            <text class="wf-title">{{item.name}}</text>
+            <text class="wf-price">¥ {{item.price}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="wf-col">
+        <view wx:for="{{waterfallRight}}" wx:key="id" class="wf-card" data-id="{{item.id}}" bindtap="goDetail">
+          <image class="wf-img" src="{{item.image || item.gallery[0]}}" mode="widthFix"></image>
+          <view class="wf-meta">
+            <text class="wf-title">{{item.name}}</text>
+            <text class="wf-price">¥ {{item.price}}</text>
+          </view>
+        </view>
+      </view>
     </view>
 
     <view style="height: 240rpx;"></view>

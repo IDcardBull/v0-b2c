@@ -11,6 +11,8 @@ Page({
     banners: [],
     bannerIdx: 0,
     list: [],
+    waterfallLeft: [],
+    waterfallRight: [],
     loading: true,
   },
   onLoad() {
@@ -63,9 +65,18 @@ Page({
       })
   },
   loadProducts() {
-    return api.getProducts({ page: 1, pageSize: 20, channel: 'retail' })
+    return api.getProducts({ page: 1, pageSize: 30, channel: 'retail' })
       .then((list) => {
-        this.setData({ list: list || [] })
+        const all = list || []
+        const swiperList = all.slice(0, 8)
+        const wfSource = all.slice(0, 20)
+        const left = []
+        const right = []
+        wfSource.forEach((item, i) => {
+          if (i % 2 === 0) left.push(item)
+          else right.push(item)
+        })
+        this.setData({ list: swiperList, waterfallLeft: left, waterfallRight: right })
       })
       .catch(() => {
         this.setData({ list: [] })
