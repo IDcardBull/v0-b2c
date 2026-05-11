@@ -1,8 +1,8 @@
 // utils/upload.js
-// 统一图片上传工具：对接后端 http://124.221.2.61:3001/api/upload
+// 统一图片上传工具：对接后端 https://api-proxy-256554-6-1424676913.sh.run.tcloudbase.com/api/upload
 // 字段名固定为 file，返回 { url } 或 { data: { url } }
 
-const UPLOAD_URL = 'http://124.221.2.61/api/upload'
+const UPLOAD_URL = 'https://api-proxy-256554-6-1424676913.sh.run.tcloudbase.com/api/upload'
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 
 /**
