@@ -63,23 +63,26 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
-  padding: 16rpx 0;
+  gap: 14rpx;
+  padding: 24rpx 0;
   border-bottom: 1rpx solid rgba(58, 58, 58, 0.08);
 }
+.field + .field { margin-top: 8rpx; }
 .field:last-of-type { border-bottom: none; }
 .label {
-  font-size: 20rpx; letter-spacing: 6rpx;
+  font-size: 22rpx; letter-spacing: 6rpx;
   color: #5A8A80;
   font-family: "PingFang SC", sans-serif;
 }
 .input {
   font-family: "PingFang SC", sans-serif;
-  font-size: 28rpx;
+  font-size: 30rpx;
+  line-height: 1.4;
+  min-height: 56rpx;
   color: #3A3A3A;
   letter-spacing: 2rpx;
 }
-.ph { color: rgba(58, 58, 58, 0.35); }
+.ph { color: rgba(58, 58, 58, 0.35); font-size: 28rpx; }
 
 .error {
   margin-top: 16rpx;
