@@ -23,13 +23,44 @@
 .t-en { font-size: 20rpx; letter-spacing: 4rpx; color: var(--color-ink-faint); font-family: "PingFang SC", sans-serif; opacity: 0.7; }
 .edit {
   font-family: "Songti SC", serif;
-  font-size: var(--fs-sub);
-  letter-spacing: 6rpx;
+  font-size: 28rpx;
+  letter-spacing: 4rpx;
   color: var(--color-celadon-deep);
-  padding: 8rpx 16rpx;
+  padding: 10rpx 20rpx;
   border-radius: var(--radius-full);
+  border: 1rpx solid var(--color-celadon-deep);
+  font-weight: 600;
 }
-.edit:active { background: rgba(138, 175, 166, 0.1); }
+.edit:active { background: rgba(138, 175, 166, 0.18); transform: scale(0.94); }
+
+/* 列表底部「新增地址」虚线大按钮 */
+.addr-add-card {
+  margin: 8rpx 32rpx 0;
+  padding: 36rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+  border: 2rpx dashed rgba(58,58,58,0.28);
+  border-radius: var(--radius-md);
+  background: transparent;
+  transition: transform 0.18s ease, background 0.2s ease;
+}
+.addr-add-card:active { transform: scale(0.98); background: rgba(184,207,200,0.12); }
+.addr-add-plus {
+  font-family: "PingFang SC", sans-serif;
+  font-size: 40rpx;
+  color: var(--color-ink);
+  line-height: 1;
+  font-weight: 300;
+}
+.addr-add-text {
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 6rpx;
+  color: var(--color-ink);
+  font-weight: 500;
+}
 
 /* 地址列表 */
 .addr-list { padding: 24rpx 32rpx; display: flex; flex-direction: column; gap: 20rpx; }

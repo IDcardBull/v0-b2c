@@ -23,7 +23,7 @@
           </view>
           <text class="addr-text">{{address.province}} {{address.city}} {{address.district}} {{address.detail}}</text>
         </block>
-        <text wx:else class="placeholder">请选择收件地址</text>
+        <text wx:else class="placeholder">请选择收件地址 · 点此 + 新增</text>
       </view>
       <text class="addr-arrow">›</text>
     </view>

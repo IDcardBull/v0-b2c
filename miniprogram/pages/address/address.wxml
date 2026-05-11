@@ -3,7 +3,7 @@
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
       <text class="back" bindtap="back">‹</text>
       <view class="page-title"><text class="t-cn">地址簿</text><text class="t-en">ADDRESS</text></view>
-      <text class="edit" bindtap="add">新增</text>
+      <text class="edit" bindtap="add">+ 新增</text>
     </view>
   </view>
 
@@ -23,6 +23,10 @@
           <text data-id="{{item.id}}" catchtap="remove">删除</text>
         </view>
       </view>
+    </view>
+    <view wx:if="{{list.length > 0}}" class="addr-add-card" bindtap="add">
+      <text class="addr-add-plus">+</text>
+      <text class="addr-add-text">新增收件地址</text>
     </view>
     <view style="height: 160rpx;"></view>
   </scroll-view>
