@@ -1,20 +1,41 @@
 <view class="tabbar-wrap safe-bottom {{hidden ? 'tabbar--hidden' : ''}}">
   <view class="tabbar">
-    <view class="tabbar-bg"></view>
-    <view class="tabbar-row">
-      <view
-        wx:for="{{list}}"
-        wx:key="pagePath"
-        class="tab {{selected === index ? 'tab--on' : ''}}"
-        data-index="{{index}}"
-        data-path="{{item.pagePath}}"
-        bindtap="switchTab"
-      >
-        <text class="tab-glyph" wx:if="{{item.text === '首页'}}">⌂</text>
-        <text class="tab-glyph" wx:elif="{{item.text === '分类'}}">≡</text>
-        <text class="tab-glyph" wx:elif="{{item.text === '购物袋'}}">🛍</text>
-        <text class="tab-glyph" wx:else>☻</text>
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="tab {{selected === index ? 'tab--on' : ''}}"
+      data-index="{{index}}"
+      data-path="{{item.pagePath}}"
+      bindtap="switchTab"
+    >
+      <!-- 国风线描 SVG 图标 -->
+      <view class="tab-icon">
+        <!-- 首页：屋檐 -->
+        <view wx:if="{{item.text === '首页'}}" class="ic ic-home">
+          <view class="eaves"></view>
+          <view class="pillar pillar-l"></view>
+          <view class="pillar pillar-r"></view>
+          <view class="floor"></view>
+        </view>
+        <!-- 分类：方胜（古纹） -->
+        <view wx:elif="{{item.text === '分类'}}" class="ic ic-cat">
+          <view class="rhomb rhomb-1"></view>
+          <view class="rhomb rhomb-2"></view>
+        </view>
+        <!-- 购物：竹篮 -->
+        <view wx:elif="{{item.text === '购物袋'}}" class="ic ic-bag">
+          <view class="bag-handle"></view>
+          <view class="bag-body"></view>
+          <view class="bag-line"></view>
+        </view>
+        <!-- 我：印章 -->
+        <view wx:else class="ic ic-me">
+          <view class="seal-out"></view>
+          <view class="seal-in"></view>
+        </view>
+        <view wx:if="{{item.text === '购物袋' && cartCount > 0}}" class="badge">{{cartCount > 99 ? '99+' : cartCount}}</view>
       </view>
+      <text class="tab-label">{{item.text}}</text>
     </view>
   </view>
 </view>

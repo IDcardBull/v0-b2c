@@ -72,34 +72,6 @@
     <view class="hairline m-x"></view>
 
     <!-- 款识 / 介绍 -->
-    <view wx:if="{{item.intro}}" class="section">
-      <view class="section-head">
-        <text class="s-cn">款识</text>
-        <text class="s-en">INSCRIPTION</text>
-      </view>
-      <view class="intro">
-        <text class="intro-text">{{item.intro}}</text>
-        <view class="quote">
-          <text>「素以为绚」</text>
-          <text class="quote-by">— 主理人 · 釉见</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 款号（保留商品编码这一项简单信息） -->
-    <view wx:if="{{item.code}}" class="section">
-      <view class="section-head">
-        <text class="s-cn">款号</text>
-        <text class="s-en">CODE</text>
-      </view>
-      <view class="specs">
-        <view class="spec-row">
-          <view class="spec-dot"></view>
-          <text class="spec-text">款号 {{item.code}}</text>
-        </view>
-      </view>
-    </view>
-
     <!-- 相似推荐 -->
     <view wx:if="{{related.length > 0}}" class="section">
       <view class="section-head">

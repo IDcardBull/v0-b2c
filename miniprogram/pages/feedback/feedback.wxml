@@ -5,7 +5,7 @@
         <text class="back-arrow">‹</text>
       </view>
       <view class="page-title">
-        <text class="t-cn">客 · 服</text>
+        <text class="t-cn">客服</text>
         <text class="t-en">SERVICE</text>
       </view>
       <view class="back" style="visibility: hidden;"></view>
@@ -13,15 +13,10 @@
   </view>
 
   <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px;">
-    <view class="hero">
-      <text class="hero-quote">「器有破，意未破；事有难，缘未尽。」</text>
-      <text class="hero-by">主理人 · 复</text>
-    </view>
-
     <!-- 类型 -->
     <view class="section">
       <view class="section-head">
-        <text class="s-cn">类 · 别</text>
+        <text class="s-cn">类别</text>
         <text class="s-en">TYPE</text>
       </view>
       <view class="types">
@@ -41,7 +36,7 @@
     <!-- 订单（可选） -->
     <view class="section">
       <view class="section-head">
-        <text class="s-cn">订 · 单</text>
+        <text class="s-cn">订单</text>
         <text class="s-en">ORDER · OPTIONAL</text>
       </view>
       <input
@@ -56,7 +51,7 @@
     <!-- 描述 -->
     <view class="section">
       <view class="section-head">
-        <text class="s-cn">详 · 述</text>
+        <text class="s-cn">详述</text>
         <text class="s-en">DESCRIPTION</text>
         <text class="counter">{{content.length}}/500</text>
       </view>
@@ -74,7 +69,7 @@
     <!-- 凭证图 -->
     <view class="section">
       <view class="section-head">
-        <text class="s-cn">凭 · 证</text>
+        <text class="s-cn">凭证</text>
         <text class="s-en">EVIDENCE</text>
         <text class="counter">{{images.length}}/6</text>
       </view>
@@ -110,7 +105,7 @@
     <!-- 联系方式 -->
     <view class="section">
       <view class="section-head">
-        <text class="s-cn">联 · 络</text>
+        <text class="s-cn">联络</text>
         <text class="s-en">CONTACT</text>
       </view>
       <input
@@ -128,9 +123,9 @@
   <view class="action safe-bottom">
     <view class="action-line"></view>
     <view class="action-inner">
-      <view class="hint">主 · 理 · 人 · 回 · 复</view>
+      <view class="hint">主理人回复</view>
       <view class="submit {{canSubmit ? 'submit--on' : ''}}" bindtap="submit">
-        <text>{{submitting ? '提交中…' : '请 · 复'}}</text>
+        <text>{{submitting ? '提交中…' : '提交'}}</text>
       </view>
     </view>
   </view>

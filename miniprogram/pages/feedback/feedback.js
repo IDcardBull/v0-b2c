@@ -8,9 +8,9 @@ Page({
     statusBarHeight: 20,
     navBarHeight: 44,
     types: [
-      { key: 'aftersale', cn: '售 · 后', sub: '破损·错发·漏发' },
-      { key: 'consult', cn: '咨 · 询', sub: '订做·物流·养护' },
-      { key: 'feedback', cn: '建 · 议', sub: '使用反馈·心得' },
+      { key: 'aftersale', cn: '售后', sub: '破损 / 错发 / 漏发' },
+      { key: 'consult', cn: '咨询', sub: '订做 / 物流 / 养护' },
+      { key: 'feedback', cn: '建议', sub: '使用反馈 / 心得' },
     ],
     type: 'aftersale',
     orderCode: '',

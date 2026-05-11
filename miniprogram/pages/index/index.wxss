@@ -217,16 +217,17 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 22rpx 26rpx 22rpx;
+  padding: 24rpx 28rpx 26rpx;
   gap: 16rpx;
 }
+.gs-meta-right { display: flex; align-items: flex-end; }
 .gs-meta-left { flex: 1; display: flex; flex-direction: column; gap: 6rpx; min-width: 0; }
 .gs-title {
-  font-family: "Songti SC", serif;
-  font-size: 28rpx;
-  letter-spacing: 3rpx;
-  color: var(--color-ink);
-  font-weight: 500;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 36rpx;
+  letter-spacing: 2rpx;
+  color: #1F1F1F;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -242,11 +243,10 @@
 }
 .gs-price {
   font-family: "PingFang SC", sans-serif;
-  font-size: 22rpx;
-  letter-spacing: 1rpx;
-  color: var(--color-ink-faint);
-  margin-top: 4rpx;
-  font-weight: 300;
+  font-size: 34rpx;
+  letter-spacing: 0;
+  color: #1F1F1F;
+  font-weight: 700;
 }
 .gs-add {
   position: relative;
@@ -329,17 +329,22 @@
   gap: 8rpx;
 }
 .wf-title {
-  font-family: "Songti SC", serif;
-  font-size: 26rpx;
-  color: var(--color-ink);
-  letter-spacing: 2rpx;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 30rpx;
+  color: #1F1F1F;
+  letter-spacing: 1rpx;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.wf-meta { padding: 18rpx 20rpx 22rpx; gap: 10rpx; align-items: stretch; }
+.wf-price-row { display: flex; justify-content: flex-end; }
 .wf-price {
   font-family: "PingFang SC", sans-serif;
-  font-size: 24rpx;
-  color: var(--color-ink-soft);
-  letter-spacing: 1rpx;
+  font-size: 30rpx;
+  color: #1F1F1F;
+  letter-spacing: 0;
+  font-weight: 700;
+  text-align: right;
 }

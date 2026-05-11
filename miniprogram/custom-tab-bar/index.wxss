@@ -1,223 +1,183 @@
-/* 悬浮玻璃胶囊 TabBar */
+/* 中式贴底 TabBar */
 .tabbar-wrap {
   position: fixed;
   left: 0; right: 0;
   bottom: 0;
   z-index: 99;
-  display: flex;
-  justify-content: center;
-  pointer-events: auto;
-  padding: 0 0 env(safe-area-inset-bottom);
-  background: var(--color-paper);
-  box-shadow: 0 -1rpx 0 var(--color-line);
+  background: #FBF7EE;
+  border-top: 1rpx solid rgba(58,58,58,0.08);
+  box-shadow: 0 -2rpx 12rpx rgba(58,58,58,0.04);
+  padding-bottom: env(safe-area-inset-bottom);
   transform: translateY(0);
-  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.35s ease;
 }
-.tabbar--hidden {
-  transform: translateY(160%);
-  pointer-events: none;
-}
+.tabbar--hidden { transform: translateY(110%); }
 .tabbar {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  pointer-events: auto;
-}
-.tabbar-bg {
-  position: absolute;
-  inset: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.tabbar-row {
-  position: relative;
   display: flex;
   align-items: stretch;
   justify-content: space-around;
-  padding: 14rpx 8rpx 12rpx;
+  padding: 10rpx 0 6rpx;
 }
-
 .tab {
-  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4rpx;
+  gap: 6rpx;
   padding: 4rpx 0;
-  text-align: center;
-  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.18s ease;
 }
-.tab:active { transform: scale(0.9); }
-
-.tab-glyph {
-  font-size: 44rpx;
-  line-height: 1;
-  color: var(--color-ink-faint);
-  transition: color 0.25s ease, transform 0.25s ease;
-}
-.tab--on .tab-glyph {
-  color: var(--color-ink);
-  transform: scale(1.08);
-}
+.tab:active { transform: scale(0.92); }
 .tab-icon {
-  width: 44rpx;
-  height: 36rpx;
+  position: relative;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.ic {
-  position: relative;
-  width: 32rpx;
-  height: 32rpx;
+.ic { position: relative; width: 48rpx; height: 48rpx; }
+
+/* 通用：未选浅墨色，选中深墨色 */
+.tab .stroke,
+.eaves, .pillar, .floor,
+.rhomb,
+.bag-handle, .bag-body, .bag-line,
+.seal-out, .seal-in {
+  border-color: #9C9385;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+.tab--on .eaves,
+.tab--on .pillar,
+.tab--on .floor,
+.tab--on .rhomb,
+.tab--on .bag-handle,
+.tab--on .bag-body,
+.tab--on .bag-line,
+.tab--on .seal-out,
+.tab--on .seal-in {
+  border-color: #2B2B2B;
 }
 
-/* —— 通用细线条颜色 —— */
-.ic-home-roof, .ic-home-base,
-.ic-cat-l,
-.ic-bag-handle, .ic-bag-body,
-.ic-me-head, .ic-me-body {
-  background: var(--color-ink-faint);
-  border-color: var(--color-ink-faint);
-  transition: all 0.25s ease;
-}
-.tab--on .ic-home-roof,
-.tab--on .ic-home-base,
-.tab--on .ic-cat-l,
-.tab--on .ic-bag-handle,
-.tab--on .ic-bag-body,
-.tab--on .ic-me-head,
-.tab--on .ic-me-body {
-  background: var(--color-ink);
-  border-color: var(--color-ink);
-}
-
-/* 首页 · 屋顶 */
-.ic-home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.ic-home-roof {
+/* 首页：屋檐 + 立柱 + 地基（中式建筑剪影） */
+.ic-home { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.eaves {
   width: 0; height: 0;
-  background: transparent !important;
-  border-left: 16rpx solid transparent;
-  border-right: 16rpx solid transparent;
-  border-bottom: 14rpx solid var(--color-ink-faint);
-  margin-bottom: -1rpx;
+  border-left: 26rpx solid transparent;
+  border-right: 26rpx solid transparent;
+  border-bottom: 12rpx solid #9C9385;
+  position: relative;
 }
-.tab--on .ic-home-roof { border-bottom-color: var(--color-ink); }
-.ic-home-base {
-  width: 24rpx;
-  height: 16rpx;
-  background: transparent !important;
-  border: 1.2rpx solid var(--color-ink-faint);
-  border-top: none;
+.tab--on .eaves { border-bottom-color: #2B2B2B; }
+.eaves::after {
+  content: '';
+  position: absolute;
+  left: -32rpx; right: -32rpx; top: 12rpx;
+  height: 2rpx;
+  background: #9C9385;
 }
-.tab--on .ic-home-base { border-color: var(--color-ink); }
-
-/* 分类 · 三横线 */
-.ic-cat {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 6rpx 0;
-}
-.ic-cat-l {
-  width: 100%;
-  height: 1.2rpx;
-}
-.ic-cat-l:nth-child(2) { width: 70%; }
-
-/* 购物袋 */
-.ic-bag {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.ic-bag-handle {
-  width: 14rpx;
-  height: 8rpx;
-  background: transparent !important;
-  border: 1.2rpx solid var(--color-ink-faint);
-  border-bottom: none;
-  border-radius: 8rpx 8rpx 0 0;
-}
-.tab--on .ic-bag-handle { border-color: var(--color-ink); }
-.ic-bag-body {
-  width: 26rpx;
+.tab--on .eaves::after { background: #2B2B2B; }
+.pillar {
+  position: absolute;
+  width: 2rpx;
   height: 22rpx;
-  background: transparent !important;
-  border: 1.2rpx solid var(--color-ink-faint);
-  border-radius: 2rpx 2rpx 4rpx 4rpx;
-  margin-top: -1rpx;
+  top: 18rpx;
+  background: #9C9385;
 }
-.tab--on .ic-bag-body { border-color: var(--color-ink); }
+.pillar-l { left: 14rpx; }
+.pillar-r { right: 14rpx; }
+.tab--on .pillar { background: #2B2B2B; }
+.floor {
+  position: absolute;
+  bottom: 8rpx;
+  left: 8rpx; right: 8rpx;
+  height: 2rpx;
+  background: #9C9385;
+}
+.tab--on .floor { background: #2B2B2B; }
 
-/* 我 */
-.ic-me {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rpx;
+/* 分类：双菱方胜纹 */
+.ic-cat { display: flex; align-items: center; justify-content: center; }
+.rhomb {
+  position: absolute;
+  width: 22rpx;
+  height: 22rpx;
+  border: 1.5rpx solid #9C9385;
+  transform: rotate(45deg);
 }
-.ic-me-head {
-  width: 14rpx;
-  height: 14rpx;
-  border-radius: 50%;
-  background: transparent !important;
-  border: 1.2rpx solid var(--color-ink-faint);
-}
-.tab--on .ic-me-head { border-color: var(--color-ink); }
-.ic-me-body {
-  width: 24rpx;
+.rhomb-1 { left: 4rpx; top: 12rpx; }
+.rhomb-2 { right: 4rpx; top: 12rpx; }
+
+/* 购物：竹篮（半圆把手 + 梯形篮身 + 一道横纹） */
+.ic-bag { display: flex; flex-direction: column; align-items: center; }
+.bag-handle {
+  width: 22rpx;
   height: 12rpx;
-  border-radius: 12rpx 12rpx 0 0;
-  background: transparent !important;
-  border: 1.2rpx solid var(--color-ink-faint);
+  border: 1.5rpx solid #9C9385;
   border-bottom: none;
+  border-radius: 22rpx 22rpx 0 0;
+  margin-top: 4rpx;
 }
-.tab--on .ic-me-body { border-color: var(--color-ink); }
+.bag-body {
+  width: 36rpx;
+  height: 26rpx;
+  border: 1.5rpx solid #9C9385;
+  border-radius: 4rpx 4rpx 8rpx 8rpx;
+  margin-top: -1rpx;
+  position: relative;
+}
+.bag-line {
+  position: absolute;
+  width: 28rpx;
+  height: 1.5rpx;
+  background: #9C9385;
+  bottom: 14rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 我：方形印章（外方内方） */
+.ic-me { display: flex; align-items: center; justify-content: center; }
+.seal-out {
+  position: absolute;
+  width: 36rpx; height: 36rpx;
+  border: 1.5rpx solid #9C9385;
+  border-radius: 4rpx;
+}
+.seal-in {
+  position: absolute;
+  width: 16rpx; height: 16rpx;
+  border: 1.5rpx solid #9C9385;
+  border-radius: 2rpx;
+}
 
 .tab-label {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 24rpx;
+  font-size: 22rpx;
   letter-spacing: 2rpx;
-  color: var(--color-ink-faint);
-  width: 100%;
-  text-align: center;
+  color: #9C9385;
   line-height: 1.2;
-  transition: all 0.25s ease;
 }
 .tab--on .tab-label {
-  color: var(--color-ink);
+  color: #2B2B2B;
   font-weight: 600;
-  letter-spacing: 3rpx;
 }
 
 .badge {
   position: absolute;
-  top: -2rpx;
-  right: 50%;
-  transform: translateX(40rpx);
+  top: -6rpx;
+  right: -6rpx;
   min-width: 28rpx;
   height: 28rpx;
   padding: 0 8rpx;
   border-radius: 14rpx;
-  background: var(--color-ink);
-  color: #F6F1E6;
+  background: #B85B47;
+  color: #FBF7EE;
   font-size: 18rpx;
-  font-family: "PingFang SC", sans-serif;
   line-height: 28rpx;
   text-align: center;
-  letter-spacing: 0;
-  box-shadow: 0 2rpx 8rpx rgba(58, 58, 58, 0.25);
+  font-family: "PingFang SC", sans-serif;
+  box-shadow: 0 2rpx 6rpx rgba(184,91,71,0.3);
 }
-
-/* 仅图标模式 */
-.tab-label { display: none !important; }
-.tab-icon { width: 56rpx; height: 56rpx; }
-.ic { width: 44rpx; height: 44rpx; }
