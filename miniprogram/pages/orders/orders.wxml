@@ -3,7 +3,7 @@
     <view class="navbar-inner" style="height: {{navBarHeight}}px;">
       <text class="back" bindtap="back">‹</text>
       <view class="page-title">
-        <text class="t-cn">订 · 单</text>
+        <text class="t-cn">订单</text>
         <text class="t-en">ORDERS</text>
       </view>
       <view></view>

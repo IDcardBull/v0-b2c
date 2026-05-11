@@ -1,4 +1,4 @@
-.page { min-height: 100vh; background: #1F2828; color: #ECE4D4; }
+.page { min-height: 100vh; background: #F6F1E6; color: #3A3A3A; }
 .scroll { height: 100vh; box-sizing: border-box; padding-bottom: 200rpx; }
 
 /* ===== navbar ===== */
@@ -6,7 +6,7 @@
   position: fixed; top: 0; left: 0; right: 0; z-index: 20;
   background: rgba(31, 40, 40, 0.92);
   backdrop-filter: saturate(180%) blur(24rpx);
-  border-bottom: 1rpx solid rgba(184, 207, 200, 0.08);
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.06);
 }
 .navbar-inner {
   display: flex; align-items: center; justify-content: space-between;
@@ -14,17 +14,17 @@
 }
 .back {
   width: 64rpx; height: 64rpx; line-height: 56rpx; text-align: center;
-  font-size: 56rpx; color: rgba(236, 228, 212, 0.7);
+  font-size: 56rpx; color: #5A5A5A;
 }
 .page-title { display: flex; flex-direction: column; align-items: center; gap: 2rpx; }
 .t-cn {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 32rpx; letter-spacing: 8rpx; color: #ECE4D4;
+  font-size: 32rpx; letter-spacing: 8rpx; color: #3A3A3A;
 }
 .t-en {
   font-family: "PingFang SC", sans-serif;
   font-size: 18rpx; letter-spacing: 4rpx;
-  color: rgba(184, 207, 200, 0.55);
+  color: rgba(90, 138, 128, 0.7);
 }
 .nav-add {
   width: 64rpx; height: 64rpx;
@@ -33,7 +33,7 @@
   background: rgba(184, 207, 200, 0.15);
   border: 1rpx solid rgba(184, 207, 200, 0.4);
 }
-.plus { font-size: 36rpx; color: #B8CFC8; line-height: 1; }
+.plus { font-size: 36rpx; color: #5A8A80; line-height: 1; }
 
 /* ===== hero ===== */
 .hero {
@@ -42,18 +42,18 @@
 }
 .hero-cn {
   font-family: "Songti SC", "STSong", serif;
-  font-size: 52rpx; letter-spacing: 4rpx; color: #ECE4D4;
+  font-size: 52rpx; letter-spacing: 4rpx; color: #3A3A3A;
 }
 .hero-en {
   font-family: "PingFang SC", sans-serif;
   font-size: 20rpx; letter-spacing: 6rpx;
-  color: rgba(184, 207, 200, 0.55);
+  color: rgba(90, 138, 128, 0.7);
 }
 .hero-sub {
   margin-top: 8rpx;
   font-family: "PingFang SC", sans-serif;
   font-size: 24rpx;
-  color: rgba(236, 228, 212, 0.55);
+  color: #5A5A5A;
 }
 
 /* ===== empty ===== */
@@ -64,21 +64,21 @@
 .empty-seal {
   width: 96rpx; height: 96rpx; line-height: 96rpx; text-align: center;
   font-family: "Songti SC", serif; font-size: 44rpx;
-  color: rgba(236, 228, 212, 0.4);
+  color: rgba(58, 58, 58, 0.45);
   border: 1rpx solid rgba(184, 207, 200, 0.2);
   border-radius: 4rpx;
 }
 .empty-cn {
   font-family: "Songti SC", serif;
   font-size: 30rpx; letter-spacing: 4rpx;
-  color: rgba(236, 228, 212, 0.5);
+  color: rgba(58, 58, 58, 0.55);
 }
 .empty-btn {
   margin-top: 16rpx;
   padding: 18rpx 40rpx;
   border: 1rpx solid rgba(184, 207, 200, 0.5);
   border-radius: 8rpx;
-  color: #B8CFC8;
+  color: #5A8A80;
   font-size: 26rpx; letter-spacing: 4rpx;
 }
 
@@ -91,7 +91,7 @@
   display: flex; gap: 20rpx;
   padding: 24rpx;
   background: rgba(184, 207, 200, 0.06);
-  border: 1rpx solid rgba(184, 207, 200, 0.12);
+  border: 1rpx solid rgba(58, 58, 58, 0.08);
   border-radius: 16rpx;
 }
 
@@ -102,18 +102,18 @@
 .rank-num {
   width: 56rpx; height: 56rpx; line-height: 56rpx; text-align: center;
   border-radius: 50%;
-  background: linear-gradient(160deg, #B8CFC8 0%, #8AAFA6 100%);
-  color: #1F2828;
+  background: linear-gradient(160deg, #5A8A80 0%, #5A8A80 100%);
+  color: #F6F1E6;
   font-family: "DIN Alternate", "PingFang SC", sans-serif;
   font-size: 26rpx; font-weight: 600;
 }
 .rank-tools { display: flex; flex-direction: column; gap: 8rpx; }
 .rank-btn {
   width: 56rpx; height: 44rpx; line-height: 40rpx; text-align: center;
-  border: 1rpx solid rgba(184, 207, 200, 0.3);
+  border: 1rpx solid rgba(58, 58, 58, 0.15);
   border-radius: 8rpx;
   font-size: 26rpx;
-  color: rgba(236, 228, 212, 0.75);
+  color: #3A3A3A;
 }
 .rank-btn.is-disabled {
   opacity: 0.3;
@@ -133,8 +133,8 @@
 .cover-placeholder {
   width: 100%; height: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8rpx;
-  color: rgba(236, 228, 212, 0.5);
-  border: 1rpx dashed rgba(184, 207, 200, 0.3);
+  color: rgba(58, 58, 58, 0.55);
+  border: 1rpx dashed rgba(58, 58, 58, 0.15);
   border-radius: 12rpx;
 }
 .ph-icon { font-size: 48rpx; color: rgba(184, 207, 200, 0.5); }
@@ -144,14 +144,14 @@
   padding: 8rpx;
   text-align: center;
   font-size: 22rpx; letter-spacing: 4rpx;
-  color: #ECE4D4;
+  color: #3A3A3A;
   background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
 }
 .cover-tag {
   position: absolute; top: 12rpx; left: 12rpx;
   padding: 4rpx 12rpx;
   font-size: 20rpx; letter-spacing: 2rpx;
-  color: #ECE4D4;
+  color: #3A3A3A;
   background: rgba(197, 106, 85, 0.85);
   border-radius: 4rpx;
 }
@@ -163,7 +163,7 @@
 }
 .meta-title {
   font-family: "Songti SC", serif;
-  font-size: 30rpx; color: #ECE4D4;
+  font-size: 30rpx; color: #3A3A3A;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .meta-link {
@@ -184,17 +184,17 @@
   border: 1rpx solid;
 }
 .act--edit {
-  color: #B8CFC8;
+  color: #5A8A80;
   border-color: rgba(184, 207, 200, 0.4);
 }
 .act--off {
-  color: rgba(236, 228, 212, 0.55);
+  color: #5A5A5A;
   border-color: rgba(236, 228, 212, 0.25);
 }
 .act--on {
-  color: #1F2828;
-  background: #B8CFC8;
-  border-color: #B8CFC8;
+  color: #F6F1E6;
+  background: #5A8A80;
+  border-color: #5A8A80;
 }
 .act--del {
   color: #C56A55;
@@ -211,8 +211,8 @@
 }
 .btn-save {
   height: 96rpx; line-height: 96rpx; text-align: center;
-  background: linear-gradient(160deg, #B8CFC8 0%, #8AAFA6 100%);
-  color: #1F2828;
+  background: linear-gradient(160deg, #5A8A80 0%, #5A8A80 100%);
+  color: #F6F1E6;
   border-radius: 16rpx;
   font-family: "Songti SC", serif;
   font-size: 32rpx; letter-spacing: 8rpx;
@@ -232,7 +232,7 @@
   border-top-left-radius: 24rpx;
   border-top-right-radius: 24rpx;
   padding: 16rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
-  color: #ECE4D4;
+  color: #3A3A3A;
   display: flex; flex-direction: column; gap: 24rpx;
 }
 .editor-handle {
@@ -244,7 +244,7 @@
 .editor-title {
   font-family: "Songti SC", serif;
   font-size: 32rpx; letter-spacing: 6rpx;
-  color: #ECE4D4;
+  color: #3A3A3A;
 }
 
 .form-row {
@@ -262,12 +262,12 @@
   height: 76rpx;
   padding: 0 20rpx;
   background: rgba(0, 0, 0, 0.25);
-  border: 1rpx solid rgba(184, 207, 200, 0.18);
+  border: 1rpx solid rgba(58, 58, 58, 0.1);
   border-radius: 10rpx;
-  color: #ECE4D4;
+  color: #3A3A3A;
   font-size: 26rpx;
 }
-.form-ph { color: rgba(236, 228, 212, 0.3); }
+.form-ph { color: rgba(58, 58, 58, 0.35); }
 
 .editor-btns {
   display: flex; gap: 16rpx;
@@ -282,9 +282,9 @@
 }
 .ed-btn--ghost {
   border: 1rpx solid rgba(184, 207, 200, 0.4);
-  color: rgba(236, 228, 212, 0.75);
+  color: #3A3A3A;
 }
 .ed-btn--solid {
-  background: linear-gradient(160deg, #B8CFC8 0%, #8AAFA6 100%);
-  color: #1F2828;
+  background: linear-gradient(160deg, #5A8A80 0%, #5A8A80 100%);
+  color: #F6F1E6;
 }

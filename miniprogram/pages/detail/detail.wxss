@@ -113,7 +113,7 @@
 
 /* 标题区 —— 增加层次 */
 .head {
-  padding: 48rpx 40rpx 36rpx;
+  padding: 32rpx 40rpx 24rpx;
   display: flex;
   flex-direction: column;
   gap: 16rpx;
@@ -257,13 +257,13 @@
 
 /* Section 标题 */
 .section {
-  padding: 48rpx 40rpx 16rpx;
+  padding: 32rpx 40rpx 12rpx;
 }
 .section-head {
   display: flex;
   align-items: baseline;
   gap: 16rpx;
-  margin-bottom: 32rpx;
+  margin-bottom: 20rpx;
 }
 .s-cn {
   font-family: "Songti SC", serif;

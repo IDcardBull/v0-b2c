@@ -53,8 +53,8 @@
         <text wx:elif="{{item.shippingFee > 0}}" class="ship-tag">运费 ¥{{item.shippingFee}}</text>
       </view>
       <view wx:if="{{item.salesCount > 0 || item.rating > 0}}" class="meta-row">
-        <text wx:if="{{item.rating > 0}}" class="meta-text">评 · {{item.rating}}</text>
-        <text wx:if="{{item.salesCount > 0}}" class="meta-text">已售 · {{item.salesCount}}</text>
+        <text wx:if="{{item.rating > 0}}" class="meta-text">评分 {{item.rating}}</text>
+        <text wx:if="{{item.salesCount > 0}}" class="meta-text">已售 {{item.salesCount}}</text>
       </view>
     </view>
 
@@ -74,7 +74,7 @@
     <!-- 款识 / 介绍 -->
     <view wx:if="{{item.intro}}" class="section">
       <view class="section-head">
-        <text class="s-cn">款 · 识</text>
+        <text class="s-cn">款识</text>
         <text class="s-en">INSCRIPTION</text>
       </view>
       <view class="intro">
@@ -89,7 +89,7 @@
     <!-- 款号（保留商品编码这一项简单信息） -->
     <view wx:if="{{item.code}}" class="section">
       <view class="section-head">
-        <text class="s-cn">款 · 号</text>
+        <text class="s-cn">款号</text>
         <text class="s-en">CODE</text>
       </view>
       <view class="specs">
@@ -100,29 +100,10 @@
       </view>
     </view>
 
-    <!-- 匠人 / 分类（v2 移除品牌字段，仅按分类做作坊门面） -->
-    <view wx:if="{{item.category}}" class="section">
-      <view class="section-head">
-        <text class="s-cn">工 · 坊</text>
-        <text class="s-en">THE MAKER</text>
-      </view>
-      <view class="maker">
-        <view class="maker-avatar"><text>作</text></view>
-        <view class="maker-body">
-          <text class="maker-name">{{item.category.name || '釉见 · 作坊'}}</text>
-          <text class="maker-desc">手拉坯·柴烧；一年不过四窑，每窑不过数件。</text>
-          <view class="maker-link" bindtap="viewMaker">
-            <text>查看作坊</text>
-            <text class="arrow">→</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
     <!-- 相似推荐 -->
     <view wx:if="{{related.length > 0}}" class="section">
       <view class="section-head">
-        <text class="s-cn">同 · 堂</text>
+        <text class="s-cn">同堂</text>
         <text class="s-en">YOU MAY ALSO LIKE</text>
       </view>
       <scroll-view scroll-x enable-flex class="related">
@@ -165,7 +146,7 @@
         <text>加入购物袋</text>
       </view>
       <view class="action-btn primary" data-action="buy" bindtap="openSheet">
-        <text>立 即 请 购</text>
+        <text>立即购买</text>
       </view>
     </view>
   </view>
@@ -181,7 +162,7 @@
           </view>
           <text wx:if="{{selectedSku}}" class="sheet-stock">库存 {{selectedSku.stock}}</text>
           <text wx:else class="sheet-stock">请选择规格</text>
-          <text wx:if="{{pickedSpecText}}" class="sheet-pick">已选 · {{pickedSpecText}}</text>
+          <text wx:if="{{pickedSpecText}}" class="sheet-pick">已选 {{pickedSpecText}}</text>
         </view>
         <view class="sheet-close" bindtap="closeSheet">×</view>
       </view>
@@ -214,7 +195,7 @@
 
       <view class="sheet-bottom safe-bottom">
         <view class="sheet-btn" bindtap="confirmSheet">
-          <text>{{sheetAction === 'buy' ? '立 即 请 购' : '加 入 购 物 袋'}}</text>
+          <text>{{sheetAction === 'buy' ? '立即购买' : '加入购物袋'}}</text>
         </view>
       </view>
     </view>

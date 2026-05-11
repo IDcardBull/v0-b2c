@@ -1,54 +1,54 @@
-.page { min-height: 100vh; background: #1F2828; color: #ECE4D4; }
+.page { min-height: 100vh; background: #F6F1E6; color: #3A3A3A; }
 .scroll { height: 100vh; box-sizing: border-box; }
 
 .navbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 30;
   background: rgba(31, 40, 40, 0.92);
   backdrop-filter: saturate(180%) blur(24rpx);
-  border-bottom: 1rpx solid rgba(184, 207, 200, 0.08);
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.06);
 }
 .navbar-inner { display: flex; align-items: center; justify-content: space-between; padding: 0 40rpx; }
-.back { font-size: 56rpx; line-height: 1; width: 64rpx; color: #ECE4D4; }
+.back { font-size: 56rpx; line-height: 1; width: 64rpx; color: #3A3A3A; }
 .page-title { text-align: center; flex: 1; }
 .t-cn { font-size: 30rpx; letter-spacing: 8rpx; }
 .t-en {
   display: block; margin-top: 4rpx;
   font-family: "PingFang SC", sans-serif;
   font-size: 18rpx; letter-spacing: 6rpx;
-  color: rgba(236, 228, 212, 0.45);
+  color: rgba(58, 58, 58, 0.5);
 }
 
 .search {
   position: fixed; left: 0; right: 0; z-index: 25;
   padding: 16rpx 32rpx;
-  background: #1F2828;
+  background: #F6F1E6;
 }
 .search-input {
   display: flex; align-items: center; gap: 16rpx;
   height: 64rpx; padding: 0 24rpx;
-  background: rgba(246, 241, 230, 0.06);
-  border: 1rpx solid rgba(184, 207, 200, 0.12);
+  background: #FFFFFF;
+  border: 1rpx solid rgba(58, 58, 58, 0.08);
   border-radius: 8rpx;
 }
-.search-icon { color: rgba(236, 228, 212, 0.5); font-size: 28rpx; }
+.search-icon { color: rgba(58, 58, 58, 0.55); font-size: 28rpx; }
 .search-input input {
   flex: 1;
   font-family: "PingFang SC", sans-serif;
-  font-size: 26rpx; color: #ECE4D4;
+  font-size: 26rpx; color: #3A3A3A;
 }
 .scan {
   width: 56rpx; height: 56rpx; line-height: 56rpx; text-align: center;
   border-radius: 6rpx;
-  border: 1rpx solid rgba(184, 207, 200, 0.3);
-  color: #B8CFC8; font-size: 24rpx;
+  border: 1rpx solid rgba(58, 58, 58, 0.15);
+  color: #5A8A80; font-size: 24rpx;
   flex-shrink: 0;
 }
-.ph { color: rgba(236, 228, 212, 0.3); }
+.ph { color: rgba(58, 58, 58, 0.35); }
 
 .empty {
   text-align: center;
   padding: 200rpx 0;
-  color: rgba(236, 228, 212, 0.5);
+  color: rgba(58, 58, 58, 0.55);
   font-size: 26rpx;
   display: flex;
   flex-direction: column;
@@ -57,7 +57,7 @@
 }
 .empty-seal {
   width: 96rpx; height: 96rpx; line-height: 96rpx; text-align: center;
-  border: 1rpx solid rgba(184, 207, 200, 0.3);
+  border: 1rpx solid rgba(58, 58, 58, 0.15);
   color: rgba(184, 207, 200, 0.7);
   border-radius: 8rpx;
   font-size: 36rpx;
@@ -68,31 +68,31 @@
   display: flex; gap: 24rpx;
   margin: 16rpx 32rpx 0;
   padding: 24rpx;
-  background: rgba(246, 241, 230, 0.04);
+  background: #FFFFFF;
   border: 1rpx solid rgba(184, 207, 200, 0.1);
   border-radius: 16rpx;
 }
-.cover { width: 160rpx; height: 160rpx; border-radius: 8rpx; flex-shrink: 0; background: rgba(184, 207, 200, 0.08); }
+.cover { width: 160rpx; height: 160rpx; border-radius: 8rpx; flex-shrink: 0; background: rgba(58, 58, 58, 0.06); }
 .meta { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; gap: 8rpx; }
 .meta-top {
   display: flex; align-items: baseline; gap: 12rpx;
   justify-content: space-between;
 }
 .name {
-  font-size: 28rpx; letter-spacing: 1rpx; color: #ECE4D4;
+  font-size: 28rpx; letter-spacing: 1rpx; color: #3A3A3A;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   flex: 1; min-width: 0;
 }
 .code {
   font-family: "PingFang SC", sans-serif;
-  font-size: 20rpx; color: rgba(236, 228, 212, 0.4);
+  font-size: 20rpx; color: rgba(58, 58, 58, 0.45);
   flex-shrink: 0;
 }
 
 .meta-mid { display: flex; align-items: center; justify-content: space-between; }
 .price {
   font-family: "DIN Alternate", "PingFang SC", sans-serif;
-  font-size: 30rpx; color: #B8CFC8;
+  font-size: 30rpx; color: #5A8A80;
 }
 .price .unit { font-size: 20rpx; margin-right: 4rpx; color: rgba(184, 207, 200, 0.7); }
 .badge {
@@ -101,13 +101,13 @@
   padding: 4rpx 12rpx;
   border-radius: 4rpx;
 }
-.badge-online { background: rgba(184, 207, 200, 0.16); color: #B8CFC8; }
-.badge-offline { background: rgba(236, 228, 212, 0.08); color: rgba(236, 228, 212, 0.45); }
+.badge-online { background: rgba(184, 207, 200, 0.16); color: #5A8A80; }
+.badge-offline { background: rgba(236, 228, 212, 0.08); color: rgba(58, 58, 58, 0.5); }
 .badge-hidden { background: rgba(232, 195, 111, 0.12); color: #E8C36F; }
 
 .meta-bottom { display: flex; align-items: center; justify-content: space-between; }
 .info {
   font-family: "PingFang SC", sans-serif;
-  font-size: 22rpx; color: rgba(236, 228, 212, 0.55);
+  font-size: 22rpx; color: #5A5A5A;
 }
 .switch { transform: scale(0.7); }

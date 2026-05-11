@@ -105,7 +105,7 @@ Page({
 
   cancel() {
     wx.showModal({
-      title: '撤 · 单',
+      title: '撤单',
       content: '确认撤销此订单？',
       success: ({ confirm }) => {
         if (!confirm) return
@@ -124,7 +124,7 @@ Page({
 
   confirm() {
     wx.showModal({
-      title: '确 · 收',
+      title: '确收',
       content: '确认已收到此器物？',
       success: ({ confirm }) => {
         if (!confirm) return

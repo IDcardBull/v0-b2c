@@ -111,7 +111,7 @@ Page({
   cancelOrder(e) {
     const id = e.currentTarget.dataset.id
     wx.showModal({
-      title: '撤 · 单',
+      title: '撤单',
       content: '确认撤销此订单？',
       confirmText: '撤销',
       cancelText: '保留',
@@ -133,7 +133,7 @@ Page({
   confirmReceive(e) {
     const id = e.currentTarget.dataset.id
     wx.showModal({
-      title: '确 · 收',
+      title: '确收',
       content: '确认已收到此器物？',
       success: ({ confirm }) => {
         if (!confirm) return

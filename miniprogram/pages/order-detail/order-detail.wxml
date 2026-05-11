@@ -20,25 +20,20 @@
 
       <view wx:if="{{order.receiverSnapshot || order.address}}" class="section">
         <view class="section-title">
-          <text class="s-cn">收 · 件</text>
+          <text class="s-cn">收件</text>
           <text class="s-en">SHIPPING</text>
         </view>
         <view class="addr-head">
           <text class="receiver">{{(order.receiverSnapshot && order.receiverSnapshot.receiver) || (order.address && order.address.receiver)}}</text>
           <text class="phone">{{(order.receiverSnapshot && order.receiverSnapshot.phone) || (order.address && order.address.phone)}}</text>
         </view>
-        <text class="addr-text">
-          {{(order.receiverSnapshot && order.receiverSnapshot.province) || (order.address && order.address.province)}}
-          {{(order.receiverSnapshot && order.receiverSnapshot.city) || (order.address && order.address.city)}}
-          {{(order.receiverSnapshot && order.receiverSnapshot.district) || (order.address && order.address.district)}}
-          {{(order.receiverSnapshot && order.receiverSnapshot.detail) || (order.address && order.address.detail)}}
-        </text>
+        <text class="addr-text">{{(order.receiverSnapshot && order.receiverSnapshot.province) || (order.address && order.address.province)}}{{(order.receiverSnapshot && order.receiverSnapshot.city) || (order.address && order.address.city)}}{{(order.receiverSnapshot && order.receiverSnapshot.district) || (order.address && order.address.district)}} {{(order.receiverSnapshot && order.receiverSnapshot.detail) || (order.address && order.address.detail)}}</text>
         <view wx:if="{{order.status === 'pending_pay' || order.status === 'pending_ship'}}" class="addr-edit-btn" bindtap="editAddress">发货前修改地址</view>
       </view>
 
       <view wx:if="{{order.trackingNo}}" class="section">
         <view class="section-title">
-          <text class="s-cn">运 · 单</text>
+          <text class="s-cn">运单</text>
           <text class="s-en">TRACKING</text>
         </view>
         <view class="logi-row">
@@ -50,7 +45,7 @@
 
       <view class="section">
         <view class="section-title">
-          <text class="s-cn">器 · 物</text>
+          <text class="s-cn">器物</text>
           <text class="s-en">ITEMS</text>
         </view>
         <view wx:for="{{order.items}}" wx:for-item="goods" wx:key="id" class="goods-row">
@@ -68,7 +63,7 @@
 
       <view wx:if="{{order.remark}}" class="section">
         <view class="section-title">
-          <text class="s-cn">随 · 函</text>
+          <text class="s-cn">随函</text>
           <text class="s-en">NOTE</text>
         </view>
         <text class="remark-text">{{order.remark}}</text>
@@ -76,7 +71,7 @@
 
       <view class="section">
         <view class="section-title">
-          <text class="s-cn">款 · 项</text>
+          <text class="s-cn">款项</text>
           <text class="s-en">SUMMARY</text>
         </view>
         <view class="sum-row">
@@ -84,23 +79,23 @@
           <text class="sum-num"><text class="unit">¥</text>{{order.totalAmount || order.amount}}</text>
         </view>
         <view wx:if="{{order.freight}}" class="sum-row">
-          <text>邮 · 资</text>
+          <text>邮资</text>
           <text class="sum-num">{{order.freight === 0 ? '包邮' : '¥' + order.freight}}</text>
         </view>
         <view wx:if="{{order.discountAmount > 0}}" class="sum-row">
-          <text>优 · 惠</text>
+          <text>优惠</text>
           <text class="sum-num">- ¥{{order.discountAmount}}</text>
         </view>
         <view class="sum-divider"></view>
         <view class="sum-row total-row">
-          <text>实 · 付</text>
+          <text>实付</text>
           <text class="total-num"><text class="unit">¥</text>{{order.amount || order.paidAmount}}</text>
         </view>
       </view>
 
       <view class="section">
         <view class="section-title">
-          <text class="s-cn">时 · 序</text>
+          <text class="s-cn">时序</text>
           <text class="s-en">TIMELINE</text>
         </view>
         <view wx:if="{{order.createdAt}}" class="time-row">
